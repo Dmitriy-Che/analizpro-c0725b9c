@@ -77,9 +77,7 @@ const Index = () => {
             <strong>JPG/PNG:</strong> Фото или скан вашего анализа
           </div>
           
-          <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg mt-3 inline-block shadow-sm border border-border/50 italic">
-            Кликните/тапните или перетащите фото сюда
-          </div>
+          <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg mt-3 inline-block shadow-sm border border-border/50 italic">Кликните/тапните или сфотографируйте документ</div>
           
           {selectedFile && <div className="mt-3 text-sm text-accent font-semibold">
               ✓ {selectedFile.name}
