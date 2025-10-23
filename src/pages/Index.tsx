@@ -66,8 +66,20 @@ const Index = () => {
           Бесплатная расшифровка анализов по фото с помощью нейросети
         </p>
 
+        {/* Disclaimer - Positioned BEFORE the upload form */}
+        <Card className="mb-5 bg-card border border-border p-3 rounded-xl shadow-sm">
+          <div className="text-sm">
+            <strong className="text-foreground">Дисклеймер:</strong>
+            <br />
+            <span className="text-foreground/90">
+              Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
+              Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
+            </span>
+          </div>
+        </Card>
+
         {/* File Upload Dropzone */}
-        <div className={`bg-input border-2 rounded-2xl p-7 text-center mb-5 cursor-pointer transition-all duration-[170ms] ${isDragging ? "border-accent bg-accent/5" : "border-border hover:border-primary hover:bg-primary/5"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+        <div className={`bg-input border-2 rounded-2xl p-7 text-center mb-5 cursor-pointer transition-all duration-[170ms] ${isDragging ? "border-accent bg-[#eefbfa]" : "border-border hover:border-primary hover:bg-primary/5"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
           <label htmlFor="file-input" className="block cursor-pointer text-lg font-semibold mb-2 text-primary">
             Загрузите фото анализа
           </label>
@@ -77,7 +89,7 @@ const Index = () => {
             <strong>JPG/PNG:</strong> Фото или скан вашего анализа
           </div>
           
-          <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg mt-3 inline-block shadow-sm border border-border/50 italic">Кликните/тапните или сфотографируйте документ</div>
+          <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg mt-3 inline-block shadow-sm border border-border/50 italic">Кликните/тапните или перетащите фото сюда</div>
           
           {selectedFile && <div className="mt-3 text-sm text-accent font-semibold">
               ✓ {selectedFile.name}
@@ -89,20 +101,8 @@ const Index = () => {
           Анализировать
         </Button>
 
-        {/* Disclaimer - Positioned AFTER the Analyze button */}
-        <Card className="mt-5 mb-4 bg-card/50 border-l-4 border-l-primary p-4 rounded-xl shadow-sm">
-          <div className="text-sm">
-            <strong className="text-foreground">Дисклеймер:</strong>
-            <br />
-            <span className="text-foreground/90">
-              Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
-              Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
-            </span>
-          </div>
-        </Card>
-
-        {/* Results */}
-        {result && <Card className="mt-3 bg-card/80 border-l-4 border-l-primary p-4 rounded-xl shadow-sm">
+        {/* Results - Positioned AFTER the Analyze button */}
+        {result && <Card className="mt-5 bg-card/80 border-l-4 border-l-primary p-4 rounded-xl shadow-sm">
             <div className="whitespace-pre-line text-sm text-foreground">
               {result}
             </div>
