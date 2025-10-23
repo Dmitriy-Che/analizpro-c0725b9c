@@ -157,7 +157,7 @@ const Index = () => {
             href="https://t.me/medgid_mo"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-base px-6 py-2.5 rounded-lg shadow-sm border-0 tracking-tight"
+            className="text-primary underline hover:text-accent transition-colors"
           >
             Перейти в наш канал
           </a>
