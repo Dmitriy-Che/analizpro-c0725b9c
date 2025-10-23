@@ -159,7 +159,7 @@ const Index = () => {
             rel="noopener noreferrer"
             className="inline-block bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-base px-6 py-2.5 rounded-lg shadow-sm border-0 tracking-tight"
           >
-            Перейти в Telegram
+            Перейти в наш канал
           </a>
           <div className="mt-2 text-xs opacity-60">Официальный канал MedGid MO</div>
         </div>
