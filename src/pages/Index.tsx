@@ -69,7 +69,7 @@ const Index = () => {
         {/* File Upload Dropzone */}
         <div className={`bg-input border-2 rounded-2xl p-7 text-center mb-5 cursor-pointer transition-all duration-[170ms] ${isDragging ? "border-accent bg-accent/5" : "border-border hover:border-primary hover:bg-primary/5"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
           <label htmlFor="file-input" className="block cursor-pointer text-lg font-semibold mb-2 text-primary">
-            Загрузи фото анализа
+            Загрузите фото анализа
           </label>
           <input id="file-input" type="file" className="hidden" accept="image/png,image/jpeg" onChange={handleFileSelect} />
           
