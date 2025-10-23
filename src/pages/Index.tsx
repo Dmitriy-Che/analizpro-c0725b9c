@@ -3,7 +3,7 @@ import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import medicalLogo from "@/assets/medical-logo.png";
+import medicalLogo from "@/assets/logomedgid.png";
 
 const Index = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
