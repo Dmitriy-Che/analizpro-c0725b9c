@@ -1,0 +1,4 @@
+project_id = "xxxkqyfelhihipptghsm"
+
+[functions.analyze-medical-photo]
+verify_jwt = false

@@ -35,17 +35,56 @@ const Index = () => {
       }
     }
   };
-  const handleAnalyze = () => {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleAnalyze = async () => {
     if (!selectedFile) {
       toast.error("Пожалуйста, загрузите файл для анализа");
       return;
     }
 
-    // Симуляция анализа
+    setIsAnalyzing(true);
+    setResult("");
     toast.success("Анализ начат");
-    setTimeout(() => {
-      setResult("Результаты анализа будут отображены здесь после обработки изображения.");
-    }, 1500);
+
+    try {
+      // Конвертация файла в base64
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      
+      const base64Image = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+      });
+
+      // Вызов edge function
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-medical-photo`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ imageBase64: base64Image }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Ошибка при анализе');
+      }
+
+      const data = await response.json();
+      setResult(data.result);
+      toast.success("Анализ завершен");
+    } catch (error) {
+      console.error('Ошибка анализа:', error);
+      toast.error(error instanceof Error ? error.message : "Ошибка при анализе изображения");
+      setResult("");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
   return <div className="min-h-screen bg-background py-6 px-4 sm:py-10">
       <Card className="max-w-[430px] mx-auto rounded-[23px] p-6 sm:p-8 shadow-[var(--shadow-card)] border-border">
@@ -85,8 +124,12 @@ const Index = () => {
         </div>
 
         {/* Analyze Button */}
-        <Button onClick={handleAnalyze} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight">
-          Анализировать
+        <Button 
+          onClick={handleAnalyze} 
+          disabled={isAnalyzing || !selectedFile}
+          className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isAnalyzing ? "Анализируем..." : "Анализировать"}
         </Button>
 
         {/* Disclaimer - Positioned AFTER the Analyze button */}
