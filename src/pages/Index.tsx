@@ -134,7 +134,7 @@ const Index = () => {
         </Card>
 
         {/* Results */}
-        {result && <Card className="mt-5 bg-card/80 border-l-4 border-l-primary p-4 rounded-xl shadow-sm">
+        {result && <Card className="mt-5 border-l-4 border-l-primary p-4 rounded-xl shadow-sm bg-green-100">
             <div className="whitespace-pre-line text-sm text-foreground">
               {result}
             </div>
@@ -144,29 +144,10 @@ const Index = () => {
         <div className="mt-8 p-4 bg-input text-primary text-center rounded-xl border border-border shadow-sm">
           <div className="text-base font-semibold mb-1">Будьте в курсе!</div>
           <div className="text-sm mb-3">Присоединяйтесь к нашему Telegram-каналу</div>
-          <Button 
-            variant="outline" 
-            asChild 
-            className="mb-4 border-primary/50 hover:bg-primary/10"
-          >
-            <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
-              Перейти в наш канал
-            </a>
-          </Button>
-          
-          {/* Footer Info */}
-          <div className="space-y-1 text-xs text-foreground/60">
-            <div>Версия 3.69.25</div>
-            <div>© 2025 АнализПро. Все права защищены.</div>
-            <div>Использование сервиса означает согласие с условиями использования.</div>
-            <a href="#" className="text-primary underline hover:text-accent">
-              [Политика конфиденциальности]
-            </a>
-          </div>
-          
-          <div className="mt-3 text-xs text-foreground/70 font-medium">
-            Не является медицинской консультацией.
-          </div>
+          <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-accent transition-colors">
+            Перейти в наш канал
+          </a>
+          <div className="mt-2 text-xs opacity-60">Версия 3.69.25</div>
         </div>
       </Card>
     </div>;
