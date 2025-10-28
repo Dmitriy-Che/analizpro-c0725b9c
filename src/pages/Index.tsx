@@ -36,45 +36,38 @@ const Index = () => {
     }
   };
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
   const handleAnalyze = async () => {
     if (!selectedFile) {
       toast.error("Пожалуйста, загрузите файл для анализа");
       return;
     }
-
     setIsAnalyzing(true);
     setResult("");
     toast.success("Анализ начат");
-
     try {
       // Конвертация файла в base64
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
-      
       const base64Image = await new Promise<string>((resolve, reject) => {
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = reject;
       });
 
       // Вызов edge function
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-medical-photo`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ imageBase64: base64Image }),
-        }
-      );
-
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-medical-photo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
+        },
+        body: JSON.stringify({
+          imageBase64: base64Image
+        })
+      });
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Ошибка при анализе');
       }
-
       const data = await response.json();
       setResult(data.result);
       toast.success("Анализ завершен");
@@ -124,20 +117,16 @@ const Index = () => {
         </div>
 
         {/* Analyze Button */}
-        <Button 
-          onClick={handleAnalyze} 
-          disabled={isAnalyzing || !selectedFile}
-          className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed">
           {isAnalyzing ? "Анализируем..." : "Анализировать"}
         </Button>
 
         {/* Disclaimer - Positioned AFTER the Analyze button */}
-        <Card className="mt-5 mb-4 bg-card border border-border p-3 rounded-xl shadow-sm">
+        <Card className="mt-5 mb-4 border border-border p-3 rounded-xl shadow-sm bg-[#cee8fc]">
           <div className="text-sm">
             <strong className="text-foreground">Дисклеймер:</strong>
             <br />
-            <span className="text-foreground/90">
+            <span className="text-foreground/90 text-justify">
               Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
               Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
             </span>
