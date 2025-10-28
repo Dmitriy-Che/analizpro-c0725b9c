@@ -89,9 +89,7 @@ const Index = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-extrabold text-primary text-center mb-2 tracking-tight">
-          МедГид-Анализ
-        </h1>
+        <h1 className="text-3xl font-extrabold text-primary text-center mb-2 tracking-tight">АнализПро</h1>
         
         {/* Subtitle */}
         <p className="text-center text-foreground/75 font-medium mb-5">
