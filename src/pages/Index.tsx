@@ -122,16 +122,7 @@ const Index = () => {
         </Button>
 
         {/* Disclaimer - Positioned AFTER the Analyze button */}
-        <Card className="mt-5 mb-4 border border-border p-3 rounded-xl shadow-sm bg-[#cee8fc]">
-          <div className="text-sm">
-            <strong className="text-foreground">Дисклеймер:</strong>
-            <br />
-            <span className="text-foreground/90 text-justify">
-              Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
-              Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
-            </span>
-          </div>
-        </Card>
+        
 
         {/* Results */}
         {result && <Card className="mt-5 border-l-4 border-l-primary p-4 rounded-xl shadow-sm bg-green-100">
