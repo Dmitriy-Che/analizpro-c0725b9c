@@ -132,7 +132,7 @@ const Index = () => {
         </Card>
 
         {/* Results */}
-        {result && <Card className="mt-5 bg-card/80 border-l-4 border-l-primary p-4 rounded-xl shadow-sm">
+        {result && <Card className="mt-5 border-l-4 border-l-primary p-4 rounded-xl shadow-sm bg-lime-50">
             <div className="whitespace-pre-line text-sm text-foreground">
               {result}
             </div>
