@@ -119,7 +119,14 @@ const Index = () => {
           {isAnalyzing ? "Анализируем..." : "Анализировать"}
         </Button>
 
-        {/* Disclaimer - Positioned AFTER the Analyze button */}
+        {/* Results */}
+        {result && <Card className="mt-5 border-l-4 border-l-primary p-4 rounded-xl shadow-sm bg-lime-50">
+            <div className="whitespace-pre-line text-sm text-foreground">
+              {result}
+            </div>
+          </Card>}
+
+        {/* Disclaimer - Positioned AFTER the Results */}
         <Card className="mt-5 mb-4 border border-border p-3 rounded-xl shadow-sm bg-[#cee8fc]">
           <div className="text-sm">
             <strong className="text-foreground">Дисклеймер:</strong>
@@ -130,13 +137,6 @@ const Index = () => {
             </span>
           </div>
         </Card>
-
-        {/* Results */}
-        {result && <Card className="mt-5 border-l-4 border-l-primary p-4 rounded-xl shadow-sm bg-lime-50">
-            <div className="whitespace-pre-line text-sm text-foreground">
-              {result}
-            </div>
-          </Card>}
 
         {/* Telegram Block */}
         <div className="mt-8 p-4 bg-input text-primary text-center rounded-xl border border-border shadow-sm">
