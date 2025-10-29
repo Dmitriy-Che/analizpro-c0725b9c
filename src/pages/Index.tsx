@@ -89,9 +89,7 @@ const Index = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-extrabold text-primary text-center mb-2 tracking-tight">
-          МедГид-Анализ
-        </h1>
+        <h1 className="text-3xl font-extrabold text-primary text-center mb-2 tracking-tight">АнализПро</h1>
         
         {/* Subtitle */}
         <p className="text-center text-foreground/75 font-medium mb-5">
@@ -144,11 +142,7 @@ const Index = () => {
         <div className="mt-8 p-4 bg-input text-primary text-center rounded-xl border border-border shadow-sm">
           <div className="text-base font-semibold mb-1">Будьте в курсе!</div>
           <div className="text-sm mb-3">Присоединяйтесь к нашему Telegram-каналу</div>
-          <Button 
-            variant="outline" 
-            asChild 
-            className="mb-4 border-primary/50 hover:bg-primary/10"
-          >
+          <Button variant="outline" asChild className="mb-4 border-primary/50 hover:bg-primary/10">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
               Перейти в наш канал
             </a>
