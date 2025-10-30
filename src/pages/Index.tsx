@@ -128,7 +128,7 @@ const Index = () => {
 
         {/* Disclaimer - Positioned AFTER the Results */}
         <Card className="mt-5 mb-4 border border-border p-3 rounded-xl shadow-sm bg-[#cee8fc]">
-          <div className="text-sm">
+          <div className="text-xs">
             <strong className="text-foreground">Дисклеймер:</strong>
             <br />
             <span className="text-foreground/90 text-justify">
