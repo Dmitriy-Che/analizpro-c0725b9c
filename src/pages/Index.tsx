@@ -150,7 +150,7 @@ const Index = () => {
           <div className="space-y-1 text-xs text-foreground/60">
             <div>Версия 3.69.25</div>
             <div>© 2025 АнализПро. Все права защищены.</div>
-            <div>Использование сервиса означает согласие с условиями использования.</div>
+            
             <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-accent">
               [Политика конфиденциальности]
             </a>
