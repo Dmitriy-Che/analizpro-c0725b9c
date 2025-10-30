@@ -8,6 +8,8 @@ const Index = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [result, setResult] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
+  const [age, setAge] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
@@ -41,6 +43,14 @@ const Index = () => {
       toast.error("Пожалуйста, загрузите файл для анализа");
       return;
     }
+    if (!age) {
+      toast.error("Пожалуйста, укажите возраст");
+      return;
+    }
+    if (!gender) {
+      toast.error("Пожалуйста, выберите пол");
+      return;
+    }
     setIsAnalyzing(true);
     setResult("");
     toast.success("Анализ начат");
@@ -61,7 +71,9 @@ const Index = () => {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
         },
         body: JSON.stringify({
-          imageBase64: base64Image
+          imageBase64: base64Image,
+          age: parseInt(age),
+          gender: gender
         })
       });
       if (!response.ok) {
@@ -96,6 +108,40 @@ const Index = () => {
           Бесплатная расшифровка анализов по фото с помощью нейросети
         </p>
 
+        {/* Age Input */}
+        <div className="mb-4">
+          <label htmlFor="age-input" className="block text-sm font-semibold mb-2 text-primary">
+            Возраст пациента
+          </label>
+          <input
+            id="age-input"
+            type="number"
+            min="0"
+            max="120"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="Введите возраст"
+            className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground"
+          />
+        </div>
+
+        {/* Gender Select */}
+        <div className="mb-5">
+          <label htmlFor="gender-select" className="block text-sm font-semibold mb-2 text-primary">
+            Пол пациента
+          </label>
+          <select
+            id="gender-select"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground"
+          >
+            <option value="">Выберите пол</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+          </select>
+        </div>
+
         {/* File Upload Dropzone */}
         <div className={`bg-input border-2 rounded-2xl p-7 text-center mb-5 cursor-pointer transition-all duration-[170ms] ${isDragging ? "border-accent bg-[#eefbfa]" : "border-border hover:border-primary hover:bg-primary/5"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
           <label htmlFor="file-input" className="block cursor-pointer text-lg font-semibold mb-2 text-primary">
@@ -115,7 +161,7 @@ const Index = () => {
         </div>
 
         {/* Analyze Button */}
-        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed">
+        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile || !age || !gender} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed">
           {isAnalyzing ? "Анализируем..." : "Анализировать"}
         </Button>
 
