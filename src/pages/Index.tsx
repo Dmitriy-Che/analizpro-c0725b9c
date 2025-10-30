@@ -93,20 +93,18 @@ const Index = () => {
   };
   return <div className="min-h-screen bg-background py-6 px-4 sm:py-10">
       <Card className="max-w-[430px] mx-auto rounded-[23px] p-6 sm:p-8 shadow-[var(--shadow-card)] border-border">
-        {/* Logo */}
-        <div className="flex justify-center mb-4">
-          <div className="w-20 h-20 rounded-full bg-card shadow-[var(--shadow-subtle)] p-1.5 border-2 border-border flex items-center justify-center">
-            <img src={medicalLogo} alt="МедГид-Анализ логотип" className="w-16 h-16 rounded-full object-cover" />
+        {/* Logo and Title */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-16 h-16 rounded-full bg-card shadow-[var(--shadow-subtle)] p-1.5 border-2 border-border flex items-center justify-center flex-shrink-0">
+            <img src={medicalLogo} alt="МедГид-Анализ логотип" className="w-14 h-14 rounded-full object-cover" />
+          </div>
+          <div className="flex-1">
+            <h1 className="text-3xl font-extrabold text-primary mb-1 tracking-tight">АнализПро</h1>
+            <p className="text-sm text-foreground/75 font-medium">
+              Бесплатная расшифровка анализов по фото с помощью нейросети
+            </p>
           </div>
         </div>
-
-        {/* Title */}
-        <h1 className="text-3xl font-extrabold text-primary text-center mb-2 tracking-tight">АнализПро</h1>
-        
-        {/* Subtitle */}
-        <p className="text-center text-foreground/75 font-medium mb-5">
-          Бесплатная расшифровка анализов по фото с помощью нейросети
-        </p>
 
         {/* Age Input */}
         <div className="mb-4">
