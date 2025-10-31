@@ -108,32 +108,14 @@ const Index = () => {
 
         {/* Age Input */}
         <div className="mb-4">
-          <label htmlFor="age-input" className="block text-sm font-semibold mb-2 text-primary">
-            Возраст пациента
-          </label>
-          <input
-            id="age-input"
-            type="number"
-            min="0"
-            max="120"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            placeholder="Введите возраст"
-            className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground"
-          />
+          <label htmlFor="age-input" className="block text-sm font-semibold mb-2 text-primary">Укажите Ваш возраст</label>
+          <input id="age-input" type="number" min="0" max="120" value={age} onChange={e => setAge(e.target.value)} placeholder="Введите возраст" className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground" />
         </div>
 
         {/* Gender Select */}
         <div className="mb-5">
-          <label htmlFor="gender-select" className="block text-sm font-semibold mb-2 text-primary">
-            Пол пациента
-          </label>
-          <select
-            id="gender-select"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground"
-          >
+          <label htmlFor="gender-select" className="block text-sm font-semibold mb-2 text-primary">Выберите Ваш пол</label>
+          <select id="gender-select" value={gender} onChange={e => setGender(e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground">
             <option value="">Выберите пол</option>
             <option value="male">Мужской</option>
             <option value="female">Женский</option>
