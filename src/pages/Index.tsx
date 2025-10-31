@@ -99,8 +99,8 @@ const Index = () => {
             <img src={medicalLogo} alt="МедГид-Анализ логотип" className="w-full h-full rounded-full object-contain" />
           </div>
           <div className="flex-1">
-            <h1 className="text-3xl font-black text-primary mb-1 tracking-tight">АнализПро</h1>
-            <p className="text-sm text-foreground/75 font-medium">
+            <h1 className="font-black text-primary mb-1 tracking-tight text-4xl text-center">АнализПро</h1>
+            <p className="text-sm text-foreground/75 font-medium text-center">
               Бесплатная расшифровка анализов по фото с помощью нейросети
             </p>
           </div>
