@@ -95,9 +95,7 @@ const Index = () => {
       <Card className="max-w-[430px] mx-auto rounded-[23px] p-6 sm:p-8 shadow-[var(--shadow-card)] border-border">
         {/* Logo and Title */}
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 aspect-square rounded-full bg-card shadow-md p-1.5 border-2 border-border flex items-center justify-center flex-shrink-0">
-            <img src={medicalLogo} alt="МедГид-Анализ логотип" className="w-full h-full rounded-full object-contain" />
-          </div>
+          
           <div className="flex-1">
             <h1 className="font-black text-primary mb-1 tracking-tight text-4xl text-center">АнализПро</h1>
             <p className="text-sm text-foreground/75 font-medium text-center">
