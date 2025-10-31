@@ -164,7 +164,7 @@ const Index = () => {
 
         {/* Telegram Block */}
         <div className="mt-8 p-4 bg-input text-primary text-center rounded-xl border border-border shadow-sm">
-          
+          <div className="text-base font-semibold mb-1">Будьте в курсе!</div>
           <div className="text-sm mb-3">Присоединяйтесь к нашему Telegram-каналу</div>
           <Button variant="outline" asChild className="mb-4 bg-accent text-accent-foreground border-accent hover:bg-primary hover:text-primary-foreground hover:border-primary">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
