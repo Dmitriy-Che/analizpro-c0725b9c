@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Upload, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import medicalLogo from "@/assets/logomedgid.png";
 const Index = () => {
@@ -10,6 +11,7 @@ const Index = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [age, setAge] = useState<string>("");
   const [gender, setGender] = useState<string>("");
+  const [consentChecked, setConsentChecked] = useState(false);
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
@@ -49,6 +51,10 @@ const Index = () => {
     }
     if (!gender) {
       toast.error("Пожалуйста, выберите пол");
+      return;
+    }
+    if (!consentChecked) {
+      toast.error("Пожалуйста, дайте согласие на обработку персональных данных");
       return;
     }
     setIsAnalyzing(true);
@@ -138,8 +144,24 @@ const Index = () => {
             </div>}
         </div>
 
+        {/* Consent Checkbox */}
+        <div className="flex items-start gap-3 mb-5 p-4 bg-input rounded-xl border border-border">
+          <Checkbox 
+            id="consent-checkbox" 
+            checked={consentChecked}
+            onCheckedChange={(checked) => setConsentChecked(checked === true)}
+            className="mt-0.5"
+          />
+          <label 
+            htmlFor="consent-checkbox" 
+            className="text-sm text-foreground cursor-pointer leading-relaxed"
+          >
+            Согласен(-на) на обработку персональных данных
+          </label>
+        </div>
+
         {/* Analyze Button */}
-        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile || !age || !gender} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed">
+        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile || !age || !gender || !consentChecked} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed">
           {isAnalyzing ? "Анализируем..." : "Анализировать"}
         </Button>
 
