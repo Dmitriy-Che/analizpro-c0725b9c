@@ -93,15 +93,12 @@ const Index = () => {
   };
   return <div className="min-h-screen bg-background py-6 px-4 sm:py-10">
       <Card className="max-w-[430px] mx-auto rounded-[23px] p-6 sm:p-8 shadow-[var(--shadow-card)] border-border">
-        {/* Logo and Title */}
-        <div className="flex items-center gap-4 mb-6">
-          
-          <div className="flex-1">
-            <h1 className="font-black text-primary mb-1 tracking-tight text-4xl text-center">АнализПро</h1>
-            <p className="text-sm text-foreground/75 font-medium text-center">
-              Бесплатная расшифровка анализов по фото с помощью нейросети
-            </p>
-          </div>
+        {/* Title */}
+        <div className="mb-6">
+          <h1 className="font-black text-primary mb-1 tracking-tight text-4xl text-center">АнализПро</h1>
+          <p className="text-sm text-foreground/75 font-medium text-center">
+            Бесплатная расшифровка анализов по фото с помощью нейросети
+          </p>
         </div>
 
         {/* Age Input */}
@@ -183,6 +180,11 @@ const Index = () => {
           <div className="mt-3 text-xs text-foreground/70 font-medium">
             Не является медицинской консультацией.
           </div>
+        </div>
+
+        {/* Logo at Bottom */}
+        <div className="flex justify-center mt-6">
+          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full aspect-square shadow-md object-contain" />
         </div>
       </Card>
     </div>;
