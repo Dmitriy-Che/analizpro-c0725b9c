@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload } from "lucide-react";
+import { Upload, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -128,7 +128,10 @@ const Index = () => {
             <strong>JPG/PNG:</strong> Фото или скан вашего анализа
           </div>
           
-          <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg mt-3 inline-block shadow-sm border border-border/50 italic">Кликните/тапните или перетащите фото сюда</div>
+          <div className="flex flex-col items-center gap-2 mt-3">
+            <FileText size={32} className="text-primary" />
+            <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg inline-block shadow-sm border border-border/50 italic">Кликните/тапните</div>
+          </div>
           
           {selectedFile && <div className="mt-3 text-sm text-accent font-semibold">
               ✓ {selectedFile.name}
