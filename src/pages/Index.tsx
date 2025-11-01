@@ -146,16 +146,8 @@ const Index = () => {
 
         {/* Consent Checkbox */}
         <div className="flex items-start gap-3 mb-5 p-4 bg-input rounded-xl border border-border">
-          <Checkbox 
-            id="consent-checkbox" 
-            checked={consentChecked}
-            onCheckedChange={(checked) => setConsentChecked(checked === true)}
-            className="mt-0.5"
-          />
-          <label 
-            htmlFor="consent-checkbox" 
-            className="text-sm text-foreground cursor-pointer leading-relaxed"
-          >
+          <Checkbox id="consent-checkbox" checked={consentChecked} onCheckedChange={checked => setConsentChecked(checked === true)} className="mt-0.5" />
+          <label htmlFor="consent-checkbox" className="text-foreground cursor-pointer leading-relaxed text-xs">
             Согласен(-на) на обработку персональных данных
           </label>
         </div>
