@@ -279,7 +279,7 @@ const Index = () => {
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
             <div className="text-xs">
-              <strong className="text-foreground block mb-1">⚠️ Важное уведомление:</strong>
+              <strong className="text-foreground block mb-1">Важное уведомление:</strong>
               <span className="text-foreground/80 leading-relaxed">
                 Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
                 Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
