@@ -120,7 +120,7 @@ const Index = () => {
         <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 animate-fade-in">
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-1">Уже проанализировано</p>
-            <p className="text-3xl font-bold text-primary">1245+</p>
+            <p className="text-3xl font-bold text-primary">1369+</p>
           </div>
         </div>
 
