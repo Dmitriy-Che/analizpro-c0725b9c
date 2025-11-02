@@ -120,7 +120,7 @@ const Index = () => {
         <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 animate-fade-in">
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-1">Уже проанализировано</p>
-            <p className="text-3xl font-bold text-primary">10,245+</p>
+            <p className="text-3xl font-bold text-primary">1245+</p>
           </div>
         </div>
 
@@ -148,16 +148,7 @@ const Index = () => {
           <label htmlFor="age-input" className="block text-sm font-bold mb-2 text-foreground">
             Шаг 1: Укажите Ваш возраст
           </label>
-          <input 
-            id="age-input" 
-            type="number" 
-            min="0" 
-            max="120" 
-            value={age} 
-            onChange={e => setAge(e.target.value)} 
-            placeholder="Введите возраст" 
-            className="w-full px-5 py-4 rounded-2xl border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none bg-input text-foreground transition-all text-lg font-medium shadow-sm hover:shadow-md"
-          />
+          <input id="age-input" type="number" min="0" max="120" value={age} onChange={e => setAge(e.target.value)} placeholder="Введите возраст" className="w-full px-5 py-4 rounded-2xl border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none bg-input text-foreground transition-all text-lg font-medium shadow-sm hover:shadow-md" />
         </div>
 
         {/* Gender Select */}
@@ -166,26 +157,10 @@ const Index = () => {
             Шаг 2: Выберите Ваш пол
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setGender('male')}
-              className={`py-4 px-6 rounded-2xl border-2 font-semibold text-base transition-all ${
-                gender === 'male'
-                  ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105'
-                  : 'bg-input text-foreground border-border hover:border-primary hover:shadow-md'
-              }`}
-            >
+            <button type="button" onClick={() => setGender('male')} className={`py-4 px-6 rounded-2xl border-2 font-semibold text-base transition-all ${gender === 'male' ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105' : 'bg-input text-foreground border-border hover:border-primary hover:shadow-md'}`}>
               👨 Мужской
             </button>
-            <button
-              type="button"
-              onClick={() => setGender('female')}
-              className={`py-4 px-6 rounded-2xl border-2 font-semibold text-base transition-all ${
-                gender === 'female'
-                  ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105'
-                  : 'bg-input text-foreground border-border hover:border-primary hover:shadow-md'
-              }`}
-            >
+            <button type="button" onClick={() => setGender('female')} className={`py-4 px-6 rounded-2xl border-2 font-semibold text-base transition-all ${gender === 'female' ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105' : 'bg-input text-foreground border-border hover:border-primary hover:shadow-md'}`}>
               👩 Женский
             </button>
           </div>
@@ -196,19 +171,7 @@ const Index = () => {
           <label className="block text-sm font-bold mb-3 text-foreground">
             Шаг 3: Загрузите фото анализа
           </label>
-          <div 
-            className={`bg-gradient-to-br from-input to-muted/50 border-3 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${
-              isDragging 
-                ? "border-accent bg-accent/10 scale-105 shadow-xl" 
-                : selectedFile
-                ? "border-success bg-success/5 shadow-lg"
-                : "border-dashed border-border hover:border-primary hover:shadow-md hover:scale-[1.02]"
-            }`} 
-            onClick={() => document.getElementById("file-input")?.click()} 
-            onDragOver={handleDragOver} 
-            onDragLeave={handleDragLeave} 
-            onDrop={handleDrop}
-          >
+          <div className={`bg-gradient-to-br from-input to-muted/50 border-3 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${isDragging ? "border-accent bg-accent/10 scale-105 shadow-xl" : selectedFile ? "border-success bg-success/5 shadow-lg" : "border-dashed border-border hover:border-primary hover:shadow-md hover:scale-[1.02]"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
             <input id="file-input" type="file" className="hidden" accept="image/png,image/jpeg" onChange={handleFileSelect} />
             
             <div className="flex flex-col items-center gap-3">
@@ -216,57 +179,39 @@ const Index = () => {
                 <FileText size={40} className={selectedFile ? 'text-success' : 'text-primary'} />
               </div>
               
-              {selectedFile ? (
-                <div className="flex flex-col items-center gap-2">
+              {selectedFile ? <div className="flex flex-col items-center gap-2">
                   <CheckCircle2 className="w-6 h-6 text-success" />
                   <p className="text-sm font-bold text-success">{selectedFile.name}</p>
                   <p className="text-xs text-muted-foreground">Файл готов к анализу</p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-2">
+                </div> : <div className="flex flex-col items-center gap-2">
                   <p className="text-base font-semibold text-foreground">Кликните или перетащите</p>
                   <p className="text-sm text-muted-foreground">JPG или PNG до 10 МБ</p>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
         </div>
 
         {/* Consent Checkbox */}
         <div className="flex items-start gap-3 mb-6 p-5 bg-muted/50 rounded-2xl border-2 border-border animate-fade-in">
-          <Checkbox 
-            id="consent-checkbox" 
-            checked={consentChecked} 
-            onCheckedChange={checked => setConsentChecked(checked === true)} 
-            className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
+          <Checkbox id="consent-checkbox" checked={consentChecked} onCheckedChange={checked => setConsentChecked(checked === true)} className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
           <label htmlFor="consent-checkbox" className="text-foreground cursor-pointer leading-relaxed text-sm font-medium">
             Согласен(-на) на обработку персональных данных
           </label>
         </div>
 
         {/* Analyze Button */}
-        <Button 
-          onClick={handleAnalyze} 
-          disabled={isAnalyzing || !selectedFile || !age || !gender || !consentChecked} 
-          className="w-full bg-gradient-to-r from-primary to-accent text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold text-lg py-7 rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-fade-in"
-        >
-          {isAnalyzing ? (
-            <span className="flex items-center gap-2">
+        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile || !age || !gender || !consentChecked} className="w-full bg-gradient-to-r from-primary to-accent text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold text-lg py-7 rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-fade-in">
+          {isAnalyzing ? <span className="flex items-center gap-2">
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               Анализируем...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
+            </span> : <span className="flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
               Анализировать
-            </span>
-          )}
+            </span>}
         </Button>
 
         {/* Results */}
-        {result && (
-          <Card className="mt-6 border-2 border-primary/20 rounded-2xl shadow-xl overflow-hidden animate-fade-in">
+        {result && <Card className="mt-6 border-2 border-primary/20 rounded-2xl shadow-xl overflow-hidden animate-fade-in">
             <div className="bg-gradient-to-r from-primary to-accent p-4">
               <h3 className="text-white font-bold text-lg flex items-center gap-2">
                 <CheckCircle2 className="w-6 h-6" />
@@ -278,37 +223,30 @@ const Index = () => {
                 {result}
               </div>
               <div className="flex gap-3 mt-4">
-                <Button 
-                  variant="outline" 
-                  className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all"
-                  onClick={() => {
-                    const blob = new Blob([result], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'analiz-pro-result.txt';
-                    a.click();
-                    toast.success("Результат скачан");
-                  }}
-                >
+                <Button variant="outline" className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" onClick={() => {
+              const blob = new Blob([result], {
+                type: 'text/plain'
+              });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'analiz-pro-result.txt';
+              a.click();
+              toast.success("Результат скачан");
+            }}>
                   <Download className="w-4 h-4" />
                   Скачать
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all"
-                  onClick={() => {
-                    navigator.clipboard.writeText(result);
-                    toast.success("Скопировано в буфер обмена");
-                  }}
-                >
+                <Button variant="outline" className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" onClick={() => {
+              navigator.clipboard.writeText(result);
+              toast.success("Скопировано в буфер обмена");
+            }}>
                   <Share2 className="w-4 h-4" />
                   Поделиться
                 </Button>
               </div>
             </div>
-          </Card>
-        )}
+          </Card>}
 
         {/* FAQ Section */}
         <Collapsible className="mt-8 animate-fade-in">
@@ -354,10 +292,7 @@ const Index = () => {
         <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md animate-fade-in">
           <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
           <p className="text-sm text-muted-foreground mb-4">Получайте советы по здоровью и новости медицины</p>
-          <Button 
-            asChild 
-            className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105"
-          >
+          <Button asChild className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
               Перейти в Telegram-канал
             </a>
@@ -368,12 +303,7 @@ const Index = () => {
         <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
           <div className="font-medium">Версия 3.69.25</div>
           <div>© 2025 АнализПро. Все права защищены.</div>
-          <a 
-            href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-primary hover:text-accent underline transition-colors inline-block"
-          >
+          <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-accent underline transition-colors inline-block">
             Политика конфиденциальности
           </a>
         </div>
