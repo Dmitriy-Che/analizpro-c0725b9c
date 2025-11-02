@@ -291,7 +291,7 @@ const Index = () => {
         {/* Telegram Block */}
         <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md animate-fade-in">
           <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
-          <p className="text-sm text-muted-foreground mb-4">Получайте советы по здоровью и новости медицины</p>
+          <p className="text-sm text-muted-foreground mb-4">Обновления, советы по здоровью и новости медицины</p>
           <Button asChild className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
               Перейти в Telegram-канал
