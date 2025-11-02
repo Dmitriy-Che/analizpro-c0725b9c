@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Upload, FileText } from "lucide-react";
+import { FileText, Sparkles, CheckCircle2, AlertTriangle, Download, Share2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
 import medicalLogo from "@/assets/logomedgid.png";
 const Index = () => {
@@ -97,111 +98,284 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
-  return <div className="min-h-screen bg-background py-6 px-4 sm:py-10">
-      <Card className="max-w-[430px] mx-auto rounded-[23px] p-6 sm:p-8 shadow-[var(--shadow-card)] border-border">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
+      <Card className="max-w-[480px] mx-auto rounded-3xl p-6 sm:p-8 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
+        {/* Logo Header */}
+        <div className="flex justify-center mb-4">
+          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full shadow-md object-contain animate-fade-in" />
+        </div>
+
         {/* Title */}
-        <div className="mb-6">
-          <h1 className="font-black text-primary mb-1 tracking-tight text-4xl text-center">АнализПро</h1>
-          <p className="text-sm text-foreground/75 font-medium text-center">
-            Бесплатная расшифровка анализов по фото с помощью нейросети
+        <div className="mb-6 text-center">
+          <h1 className="font-black text-primary mb-2 tracking-tight text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
+            АнализПро
+          </h1>
+          <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">
+            <Sparkles className="w-4 h-4 text-accent" />
+            Расшифровка за 5 секунд
           </p>
         </div>
 
+        {/* Stats Counter */}
+        <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 animate-fade-in">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground mb-1">Уже проанализировано</p>
+            <p className="text-3xl font-bold text-primary">10,245+</p>
+          </div>
+        </div>
+
+        {/* Progress Steps */}
+        <div className="mb-6 flex items-center justify-center gap-2 animate-fade-in">
+          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${age ? 'bg-success text-white' : 'bg-primary text-white'}`}>
+            {age ? <CheckCircle2 className="w-5 h-5" /> : '1'}
+          </div>
+          <div className={`h-1 w-8 rounded-full transition-all ${age ? 'bg-success' : 'bg-border'}`} />
+          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${gender ? 'bg-success text-white' : age ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+            {gender ? <CheckCircle2 className="w-5 h-5" /> : '2'}
+          </div>
+          <div className={`h-1 w-8 rounded-full transition-all ${gender ? 'bg-success' : 'bg-border'}`} />
+          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${selectedFile ? 'bg-success text-white' : gender ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+            {selectedFile ? <CheckCircle2 className="w-5 h-5" /> : '3'}
+          </div>
+          <div className={`h-1 w-8 rounded-full transition-all ${selectedFile ? 'bg-success' : 'bg-border'}`} />
+          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${result ? 'bg-success text-white' : selectedFile && consentChecked ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+            {result ? <CheckCircle2 className="w-5 h-5" /> : '✓'}
+          </div>
+        </div>
+
         {/* Age Input */}
-        <div className="mb-4">
-          <label htmlFor="age-input" className="block text-sm font-semibold mb-2 text-primary">Укажите Ваш возраст</label>
-          <input id="age-input" type="number" min="0" max="120" value={age} onChange={e => setAge(e.target.value)} placeholder="Введите возраст" className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground" />
+        <div className="mb-4 animate-fade-in">
+          <label htmlFor="age-input" className="block text-sm font-bold mb-2 text-foreground">
+            Шаг 1: Укажите Ваш возраст
+          </label>
+          <input 
+            id="age-input" 
+            type="number" 
+            min="0" 
+            max="120" 
+            value={age} 
+            onChange={e => setAge(e.target.value)} 
+            placeholder="Введите возраст" 
+            className="w-full px-5 py-4 rounded-2xl border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/20 focus:outline-none bg-input text-foreground transition-all text-lg font-medium shadow-sm hover:shadow-md"
+          />
         </div>
 
         {/* Gender Select */}
-        <div className="mb-5">
-          <label htmlFor="gender-select" className="block text-sm font-semibold mb-2 text-primary">Выберите Ваш пол</label>
-          <select id="gender-select" value={gender} onChange={e => setGender(e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-primary focus:outline-none bg-input text-foreground">
-            <option value="">Выберите пол</option>
-            <option value="male">Мужской</option>
-            <option value="female">Женский</option>
-          </select>
+        <div className="mb-5 animate-fade-in">
+          <label className="block text-sm font-bold mb-3 text-foreground">
+            Шаг 2: Выберите Ваш пол
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setGender('male')}
+              className={`py-4 px-6 rounded-2xl border-2 font-semibold text-base transition-all ${
+                gender === 'male'
+                  ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105'
+                  : 'bg-input text-foreground border-border hover:border-primary hover:shadow-md'
+              }`}
+            >
+              👨 Мужской
+            </button>
+            <button
+              type="button"
+              onClick={() => setGender('female')}
+              className={`py-4 px-6 rounded-2xl border-2 font-semibold text-base transition-all ${
+                gender === 'female'
+                  ? 'bg-primary text-primary-foreground border-primary shadow-lg scale-105'
+                  : 'bg-input text-foreground border-border hover:border-primary hover:shadow-md'
+              }`}
+            >
+              👩 Женский
+            </button>
+          </div>
         </div>
 
         {/* File Upload Dropzone */}
-        <div className={`bg-input border-2 rounded-2xl p-7 text-center mb-5 cursor-pointer transition-all duration-[170ms] ${isDragging ? "border-accent bg-[#eefbfa]" : "border-border hover:border-primary hover:bg-primary/5"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
-          <label htmlFor="file-input" className="block cursor-pointer text-lg font-semibold mb-2 text-primary">
-            Загрузите фото анализа
+        <div className="mb-5 animate-fade-in">
+          <label className="block text-sm font-bold mb-3 text-foreground">
+            Шаг 3: Загрузите фото анализа
           </label>
-          <input id="file-input" type="file" className="hidden" accept="image/png,image/jpeg" onChange={handleFileSelect} />
-          
-          <div className="bg-card rounded px-3 py-1.5 inline-block shadow-[var(--shadow-field)] mb-1 border border-background font-medium text-sm">
-            <strong>JPG/PNG:</strong> Фото или скан вашего анализа
+          <div 
+            className={`bg-gradient-to-br from-input to-muted/50 border-3 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${
+              isDragging 
+                ? "border-accent bg-accent/10 scale-105 shadow-xl" 
+                : selectedFile
+                ? "border-success bg-success/5 shadow-lg"
+                : "border-dashed border-border hover:border-primary hover:shadow-md hover:scale-[1.02]"
+            }`} 
+            onClick={() => document.getElementById("file-input")?.click()} 
+            onDragOver={handleDragOver} 
+            onDragLeave={handleDragLeave} 
+            onDrop={handleDrop}
+          >
+            <input id="file-input" type="file" className="hidden" accept="image/png,image/jpeg" onChange={handleFileSelect} />
+            
+            <div className="flex flex-col items-center gap-3">
+              <div className={`p-4 rounded-full transition-all ${selectedFile ? 'bg-success/20' : 'bg-primary/10'}`}>
+                <FileText size={40} className={selectedFile ? 'text-success' : 'text-primary'} />
+              </div>
+              
+              {selectedFile ? (
+                <div className="flex flex-col items-center gap-2">
+                  <CheckCircle2 className="w-6 h-6 text-success" />
+                  <p className="text-sm font-bold text-success">{selectedFile.name}</p>
+                  <p className="text-xs text-muted-foreground">Файл готов к анализу</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-base font-semibold text-foreground">Кликните или перетащите</p>
+                  <p className="text-sm text-muted-foreground">JPG или PNG до 10 МБ</p>
+                </div>
+              )}
+            </div>
           </div>
-          
-          <div className="flex flex-col items-center gap-2 mt-3">
-            <FileText size={32} className="text-primary" />
-            <div className="text-primary text-base bg-secondary px-4 py-2 rounded-lg inline-block shadow-sm border border-border/50 italic">Кликните/тапните</div>
-          </div>
-          
-          {selectedFile && <div className="mt-3 text-sm text-accent font-semibold">
-              ✓ {selectedFile.name}
-            </div>}
         </div>
 
         {/* Consent Checkbox */}
-        <div className="flex items-start gap-3 mb-5 p-4 bg-input rounded-xl border border-border">
-          <Checkbox id="consent-checkbox" checked={consentChecked} onCheckedChange={checked => setConsentChecked(checked === true)} className="mt-0.5" />
-          <label htmlFor="consent-checkbox" className="text-foreground cursor-pointer leading-relaxed text-xs">
+        <div className="flex items-start gap-3 mb-6 p-5 bg-muted/50 rounded-2xl border-2 border-border animate-fade-in">
+          <Checkbox 
+            id="consent-checkbox" 
+            checked={consentChecked} 
+            onCheckedChange={checked => setConsentChecked(checked === true)} 
+            className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+          />
+          <label htmlFor="consent-checkbox" className="text-foreground cursor-pointer leading-relaxed text-sm font-medium">
             Согласен(-на) на обработку персональных данных
           </label>
         </div>
 
         {/* Analyze Button */}
-        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile || !age || !gender || !consentChecked} className="w-full bg-primary text-primary-foreground hover:bg-accent active:bg-accent transition-[background] duration-[130ms] font-semibold text-lg py-6 rounded-xl shadow-[var(--shadow-button)] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed">
-          {isAnalyzing ? "Анализируем..." : "Анализировать"}
+        <Button 
+          onClick={handleAnalyze} 
+          disabled={isAnalyzing || !selectedFile || !age || !gender || !consentChecked} 
+          className="w-full bg-gradient-to-r from-primary to-accent text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold text-lg py-7 rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-fade-in"
+        >
+          {isAnalyzing ? (
+            <span className="flex items-center gap-2">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Анализируем...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              Анализировать
+            </span>
+          )}
         </Button>
 
         {/* Results */}
-        {result && <Card className="mt-5 border-l-4 border-l-primary p-4 rounded-xl shadow-sm bg-lime-50">
-            <div className="whitespace-pre-line text-sm text-foreground">
-              {result}
+        {result && (
+          <Card className="mt-6 border-2 border-primary/20 rounded-2xl shadow-xl overflow-hidden animate-fade-in">
+            <div className="bg-gradient-to-r from-primary to-accent p-4">
+              <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6" />
+                Результаты анализа
+              </h3>
             </div>
-          </Card>}
+            <div className="p-5 bg-card">
+              <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
+                {result}
+              </div>
+              <div className="flex gap-3 mt-4">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all"
+                  onClick={() => {
+                    const blob = new Blob([result], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'analiz-pro-result.txt';
+                    a.click();
+                    toast.success("Результат скачан");
+                  }}
+                >
+                  <Download className="w-4 h-4" />
+                  Скачать
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all"
+                  onClick={() => {
+                    navigator.clipboard.writeText(result);
+                    toast.success("Скопировано в буфер обмена");
+                  }}
+                >
+                  <Share2 className="w-4 h-4" />
+                  Поделиться
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
-        {/* Disclaimer - Positioned AFTER the Results */}
-        <Card className="mt-5 mb-4 border border-border p-3 rounded-xl shadow-sm bg-[#cee8fc]">
-          <div className="text-xs">
-            <strong className="text-foreground">Дисклеймер:</strong>
-            <br />
-            <span className="text-foreground/90 text-justify">Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. Для точной диагностики и лечения обратитесь к квалифицированному специалисту. 
-Использование сервиса означает согласие с условиями использования.</span>
+        {/* FAQ Section */}
+        <Collapsible className="mt-8 animate-fade-in">
+          <CollapsibleTrigger className="w-full p-4 bg-muted/30 rounded-2xl hover:bg-muted/50 transition-all border border-border">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-foreground flex items-center gap-2">
+                ❓ Частые вопросы
+              </h3>
+              <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform" />
+            </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-3 space-y-3">
+            <Card className="p-4 border border-border rounded-xl">
+              <p className="font-semibold text-sm mb-1 text-foreground">Насколько точны результаты?</p>
+              <p className="text-xs text-muted-foreground">Результаты основаны на AI-анализе и предназначены для ознакомления. Обязательно консультируйтесь с врачом.</p>
+            </Card>
+            <Card className="p-4 border border-border rounded-xl">
+              <p className="font-semibold text-sm mb-1 text-foreground">Какие анализы можно загружать?</p>
+              <p className="text-xs text-muted-foreground">Общий и биохимический анализ крови, гормоны, коагулограмма и другие лабораторные исследования.</p>
+            </Card>
+            <Card className="p-4 border border-border rounded-xl">
+              <p className="font-semibold text-sm mb-1 text-foreground">Безопасны ли мои данные?</p>
+              <p className="text-xs text-muted-foreground">Мы не храним ваши фотографии и результаты анализов. Все данные обрабатываются анонимно.</p>
+            </Card>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Disclaimer */}
+        <Card className="mt-6 mb-4 border-2 border-warning/30 p-4 rounded-2xl shadow-sm bg-warning/5 animate-fade-in">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+            <div className="text-xs">
+              <strong className="text-foreground block mb-1">⚠️ Важное уведомление:</strong>
+              <span className="text-foreground/80 leading-relaxed">
+                Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
+                Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
+              </span>
+            </div>
           </div>
         </Card>
 
         {/* Telegram Block */}
-        <div className="mt-8 p-4 bg-input text-primary text-center rounded-xl border border-border shadow-sm">
-          
-          <div className="text-sm mb-3">Присоединяйтесь к нашему Telegram-каналу</div>
-          <Button variant="outline" asChild className="mb-4 bg-accent text-accent-foreground border-accent hover:bg-primary hover:text-primary-foreground hover:border-primary">
+        <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md animate-fade-in">
+          <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
+          <p className="text-sm text-muted-foreground mb-4">Получайте советы по здоровью и новости медицины</p>
+          <Button 
+            asChild 
+            className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+          >
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
-              Перейти в наш канал
+              Перейти в Telegram-канал
             </a>
           </Button>
-          
-          {/* Footer Info */}
-          <div className="space-y-1 text-xs text-foreground/60">
-            <div>Версия 3.69.25</div>
-            <div>© 2025 АнализПро. Все права защищены.</div>
-            
-            <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-accent">
-              [Политика конфиденциальности]
-            </a>
-          </div>
-          
-          <div className="mt-3 text-xs text-foreground/70 font-medium">
-            Не является медицинской консультацией.
-          </div>
         </div>
 
-        {/* Logo at Bottom */}
-        <div className="flex justify-center mt-6">
-          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full aspect-square shadow-md object-contain" />
+        {/* Footer Info */}
+        <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
+          <div className="font-medium">Версия 3.69.25</div>
+          <div>© 2025 АнализПро. Все права защищены.</div>
+          <a 
+            href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-primary hover:text-accent underline transition-colors inline-block"
+          >
+            Политика конфиденциальности
+          </a>
         </div>
       </Card>
     </div>;

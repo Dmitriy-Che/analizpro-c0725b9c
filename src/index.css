@@ -8,43 +8,47 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 213 24% 96%;
-    --foreground: 210 18% 17%;
-
+    --background: 200 20% 98%;
+    --foreground: 200 15% 20%;
+    
     --card: 0 0% 100%;
-    --card-foreground: 210 18% 17%;
-
+    --card-foreground: 200 15% 20%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 210 18% 17%;
-
-    --primary: 211 100% 50%;
+    --popover-foreground: 200 15% 20%;
+    
+    --primary: 189 94% 43%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 100% 97%;
-    --secondary-foreground: 211 100% 50%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 16% 47%;
-
-    --accent: 152 69% 47%;
+    
+    --secondary: 160 84% 39%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 200 20% 95%;
+    --muted-foreground: 200 10% 45%;
+    
+    --accent: 173 80% 40%;
     --accent-foreground: 0 0% 100%;
-
+    
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 206 35% 91%;
-    --input: 210 29% 97%;
-    --ring: 211 100% 50%;
-
-    --radius: 0.75rem;
-
-    /* iOS Style shadows and effects */
-    --shadow-card: 0 8px 40px hsl(211 100% 50% / 0.08), 0 2px 19px hsl(152 69% 47% / 0.07);
-    --shadow-subtle: 0 2px 12px hsl(211 100% 50% / 0.08), 0 1px 8px hsl(152 69% 47% / 0.1);
-    --shadow-button: 0 1px 12px hsl(211 100% 50% / 0.09);
-    --shadow-field: 0 1px 6px hsl(228 20% 92% / 0.6);
     
-    --transition-smooth: all 0.17s ease;
+    --border: 200 20% 90%;
+    --input: 200 20% 96%;
+    --ring: 189 94% 43%;
+    
+    --radius: 1rem;
+    
+    /* Modern shadows */
+    --shadow-soft: 0 2px 8px hsla(200, 20%, 20%, 0.08);
+    --shadow-medium: 0 4px 16px hsla(200, 20%, 20%, 0.12);
+    --shadow-large: 0 8px 32px hsla(200, 20%, 20%, 0.16);
+    
+    --gradient-primary: linear-gradient(135deg, hsl(189, 94%, 43%) 0%, hsl(173, 80%, 40%) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(142, 71%, 45%) 100%);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
