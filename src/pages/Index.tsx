@@ -261,11 +261,15 @@ const Index = () => {
           <CollapsibleContent className="mt-3 space-y-3">
             <Card className="p-4 border border-border rounded-xl">
               <p className="font-semibold text-sm mb-1 text-foreground">Насколько точны результаты?</p>
-              <p className="text-xs text-muted-foreground">Результаты основаны на AI-анализе и предназначены для ознакомления. Обязательно консультируйтесь с врачом.</p>
+              <p className="text-xs text-muted-foreground">Результаты основаны на AI-анализе и предназначены для ознакомления. 
+Нейросеть анализирует данные по стандартам ведущих мировых институтов
+— World Health Organization (WHO), Американская ассоциация клинической химии (AACC), Европейская федерация лабораторной медицины (EFLM), Актуальные протоколы 2025 года.
+
+Обязательно консультируйтесь с врачом.</p>
             </Card>
             <Card className="p-4 border border-border rounded-xl">
               <p className="font-semibold text-sm mb-1 text-foreground">Какие анализы можно загружать?</p>
-              <p className="text-xs text-muted-foreground">Общий и биохимический анализ крови, гормоны, коагулограмма и другие лабораторные исследования.</p>
+              <p className="text-xs text-muted-foreground">Общий и биохимический анализ крови, мочи, гормоны, онкомаркеры, коагулограмма и другие лабораторные исследования.</p>
             </Card>
             <Card className="p-4 border border-border rounded-xl">
               <p className="font-semibold text-sm mb-1 text-foreground">Безопасны ли мои данные?</p>
