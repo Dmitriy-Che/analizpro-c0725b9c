@@ -111,7 +111,7 @@ const Index = () => {
             АнализПро<span className="text-lg align-super">©</span>
           </h1>
           <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">
-            <Sparkles className="w-4 h-4 text-accent" />
+            
             Расшифровка медицинских анализов за 5 секунд
           </p>
         </div>
