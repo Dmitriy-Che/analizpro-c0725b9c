@@ -108,7 +108,7 @@ const Index = () => {
         {/* Title */}
         <div className="mb-6 text-center">
           <h1 className="font-black text-primary mb-2 tracking-tight text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
-            АнализПро©
+            АнализПро<span className="text-lg align-super">©</span>
           </h1>
           <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">
             <Sparkles className="w-4 h-4 text-accent" />
