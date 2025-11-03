@@ -43,6 +43,66 @@ const Index = () => {
     }
   };
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  // Определяем статус результата на основе ключевых слов
+  const getResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
+    const lowerText = text.toLowerCase();
+    
+    // Критический статус
+    if (
+      lowerText.includes('срочно') ||
+      lowerText.includes('критично') ||
+      lowerText.includes('немедленно') ||
+      lowerText.includes('опасно') ||
+      lowerText.includes('серьезное отклонение') ||
+      lowerText.includes('значительное превышение') ||
+      lowerText.includes('угроза')
+    ) {
+      return 'critical';
+    }
+    
+    // Статус предупреждения
+    if (
+      lowerText.includes('обратить внимание') ||
+      lowerText.includes('повышен') ||
+      lowerText.includes('понижен') ||
+      lowerText.includes('отклонение') ||
+      lowerText.includes('рекомендуется') ||
+      lowerText.includes('следует')
+    ) {
+      return 'warning';
+    }
+    
+    // Нормальный статус
+    return 'normal';
+  };
+  
+  const resultStatus = result ? getResultStatus(result) : 'normal';
+  
+  const getStatusColors = (status: 'normal' | 'warning' | 'critical') => {
+    switch (status) {
+      case 'normal':
+        return {
+          header: 'bg-gradient-to-r from-green-500 to-green-600',
+          body: 'bg-green-50/80',
+          border: 'border-green-200'
+        };
+      case 'warning':
+        return {
+          header: 'bg-gradient-to-r from-yellow-500 to-yellow-600',
+          body: 'bg-yellow-50/80',
+          border: 'border-yellow-200'
+        };
+      case 'critical':
+        return {
+          header: 'bg-gradient-to-r from-red-400 to-red-500',
+          body: 'bg-red-50/80',
+          border: 'border-red-200'
+        };
+    }
+  };
+  
+  const statusColors = getStatusColors(resultStatus);
   const handleAnalyze = async () => {
     if (!selectedFile) {
       toast.error("Пожалуйста, загрузите файл для анализа");
@@ -213,14 +273,14 @@ const Index = () => {
         </Button>
 
         {/* Results */}
-        {result && <Card className="mt-6 border-2 border-primary/20 rounded-2xl shadow-xl overflow-hidden animate-fade-in">
-            <div className="bg-gradient-to-r from-primary to-accent p-4">
+        {result && <Card className={`mt-6 border-2 ${statusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
+            <div className={`${statusColors.header} p-4`}>
               <h3 className="text-white font-bold text-lg flex items-center gap-2">
                 <CheckCircle2 className="w-6 h-6" />
                 Результаты анализа
               </h3>
             </div>
-            <div className="p-5 bg-card">
+            <div className={`p-5 ${statusColors.body}`}>
               <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
                 {result}
               </div>
