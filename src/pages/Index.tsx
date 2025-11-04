@@ -43,42 +43,25 @@ const Index = () => {
     }
   };
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  
+
   // Определяем статус результата на основе ключевых слов
   const getResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
     const lowerText = text.toLowerCase();
-    
+
     // Критический статус
-    if (
-      lowerText.includes('срочно') ||
-      lowerText.includes('критично') ||
-      lowerText.includes('немедленно') ||
-      lowerText.includes('опасно') ||
-      lowerText.includes('серьезное отклонение') ||
-      lowerText.includes('значительное превышение') ||
-      lowerText.includes('угроза')
-    ) {
+    if (lowerText.includes('срочно') || lowerText.includes('критично') || lowerText.includes('немедленно') || lowerText.includes('опасно') || lowerText.includes('серьезное отклонение') || lowerText.includes('значительное превышение') || lowerText.includes('угроза')) {
       return 'critical';
     }
-    
+
     // Статус предупреждения
-    if (
-      lowerText.includes('обратить внимание') ||
-      lowerText.includes('повышен') ||
-      lowerText.includes('понижен') ||
-      lowerText.includes('отклонение') ||
-      lowerText.includes('рекомендуется') ||
-      lowerText.includes('следует')
-    ) {
+    if (lowerText.includes('обратить внимание') || lowerText.includes('повышен') || lowerText.includes('понижен') || lowerText.includes('отклонение') || lowerText.includes('рекомендуется') || lowerText.includes('следует')) {
       return 'warning';
     }
-    
+
     // Нормальный статус
     return 'normal';
   };
-  
   const resultStatus = result ? getResultStatus(result) : 'normal';
-  
   const getStatusColors = (status: 'normal' | 'warning' | 'critical') => {
     switch (status) {
       case 'normal':
@@ -101,7 +84,6 @@ const Index = () => {
         };
     }
   };
-  
   const statusColors = getStatusColors(resultStatus);
   const handleAnalyze = async () => {
     if (!selectedFile) {
@@ -172,10 +154,7 @@ const Index = () => {
           <h1 className="font-black text-primary mb-2 tracking-tight text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
             АнализПро<span className="text-lg align-super">©</span>
           </h1>
-          <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">
-            
-            Расшифровка медицинских анализов за 5 секунд
-          </p>
+          <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">Расшифровка медицинских анализов и УЗИ</p>
         </div>
 
         {/* Stats Counter - removed for cleaner UI */}
@@ -293,11 +272,7 @@ const Index = () => {
                   <Download className="w-4 h-4" />
                   Скачать
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
-                  onClick={() => setShareDialogOpen(true)}
-                >
+                <Button variant="outline" className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" onClick={() => setShareDialogOpen(true)}>
                   <Share2 className="w-4 h-4" />
                   Отправить
                 </Button>
@@ -315,15 +290,11 @@ const Index = () => {
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 py-4">
-              <Button
-                variant="outline"
-                className="w-full gap-2 border-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(result);
-                  toast.success("Скопировано в буфер обмена");
-                  setShareDialogOpen(false);
-                }}
-              >
+              <Button variant="outline" className="w-full gap-2 border-2" onClick={() => {
+              navigator.clipboard.writeText(result);
+              toast.success("Скопировано в буфер обмена");
+              setShareDialogOpen(false);
+            }}>
                 <Copy className="w-4 h-4" />
                 Скопировать текст
               </Button>
