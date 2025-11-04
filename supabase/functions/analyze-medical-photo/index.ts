@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -146,6 +147,59 @@ serve(async (req) => {
     const analysisResult = data.choices[0].message.content;
 
     console.log('Анализ успешно завершен');
+
+    // Determine status based on keywords
+    let status = 'normal';
+    const lowerResult = analysisResult.toLowerCase();
+    
+    if (
+      lowerResult.includes('срочно') ||
+      lowerResult.includes('критично') ||
+      lowerResult.includes('немедленно') ||
+      lowerResult.includes('опасно')
+    ) {
+      status = 'critical';
+    } else if (
+      lowerResult.includes('обратить внимание') ||
+      lowerResult.includes('повышен') ||
+      lowerResult.includes('понижен') ||
+      lowerResult.includes('отклонение')
+    ) {
+      status = 'warning';
+    }
+
+    // Log the analysis to database
+    const authHeader = req.headers.get('Authorization');
+    if (authHeader) {
+      try {
+        const token = authHeader.replace('Bearer ', '');
+        const supabaseClient = createClient(
+          Deno.env.get('SUPABASE_URL') ?? '',
+          Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+          {
+            global: {
+              headers: { Authorization: authHeader },
+            },
+          }
+        );
+
+        const { data: { user } } = await supabaseClient.auth.getUser(token);
+        
+        if (user) {
+          await supabaseClient.from('analysis_logs').insert({
+            user_id: user.id,
+            age: age,
+            gender: gender,
+            status: status,
+          });
+          
+          console.log('Analysis logged successfully');
+        }
+      } catch (logError) {
+        console.error('Failed to log analysis:', logError);
+        // Don't fail the request if logging fails
+      }
+    }
 
     return new Response(
       JSON.stringify({ result: analysisResult }), 
