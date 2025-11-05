@@ -13,6 +13,41 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !password) {
+      toast.error("Заполните все поля");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        toast.success("Регистрация выполнена! Войдите в систему");
+        setIsSignUp(false);
+        setPassword("");
+      }
+    } catch (error: any) {
+      console.error("SignUp error:", error);
+      toast.error(error.message || "Ошибка регистрации");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,15 +107,15 @@ const Login = () => {
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-black text-primary mb-2">
-            Вход для администратора
+            {isSignUp ? "Регистрация администратора" : "Вход для администратора"}
           </h1>
           <p className="text-muted-foreground">
-            Войдите для доступа к админ-панели
+            {isSignUp ? "Создайте аккаунт администратора" : "Войдите для доступа к админ-панели"}
           </p>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-5">
+        {/* Login/SignUp Form */}
+        <form onSubmit={isSignUp ? handleSignUp : handleLogin} className="space-y-5">
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-bold mb-2 text-foreground">
@@ -133,10 +168,24 @@ const Login = () => {
             ) : (
               <span className="flex items-center gap-2">
                 <LogIn className="w-5 h-5" />
-                Войти
+                {isSignUp ? "Зарегистрироваться" : "Войти"}
               </span>
             )}
           </Button>
+
+          {/* Toggle Sign Up / Login */}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setPassword("");
+              }}
+              className="text-sm text-primary hover:underline"
+            >
+              {isSignUp ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться"}
+            </button>
+          </div>
 
           {/* Back to Home */}
           <Button
