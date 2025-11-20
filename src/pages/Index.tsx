@@ -323,7 +323,7 @@ const Index = () => {
             </Card>
             <Card className="p-4 border border-border rounded-xl">
               <p className="font-semibold text-sm mb-1 text-foreground">Какие анализы можно загружать?</p>
-              <p className="text-xs text-muted-foreground">Общий и биохимический анализ крови, мочи, гормоны, онкомаркеры, коагулограмма и другие лабораторные исследования.</p>
+              <p className="text-xs text-muted-foreground">Общий и биохимический анализ крови, мочи, гормоны, онкомаркеры, коагулограмма и другие лабораторные исследования. А также МРТ и УЗИ.</p>
             </Card>
             <Card className="p-4 border border-border rounded-xl">
               <p className="font-semibold text-sm mb-1 text-foreground">Безопасны ли мои данные?</p>
