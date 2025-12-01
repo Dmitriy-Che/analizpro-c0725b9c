@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CheckCircle2, AlertTriangle, Download, Share2, Copy, ArrowLeft } from "lucide-react";
 
 // Extend Window interface for DocDoc widget
@@ -26,6 +26,9 @@ const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [widgetLoaded, setWidgetLoaded] = useState(false);
+  const [widgetError, setWidgetError] = useState(false);
+  const widgetContainerRef = useRef<HTMLDivElement>(null);
   
   // Получаем результат из state
   const result = location.state?.result || "";
@@ -39,17 +42,15 @@ const Results = () => {
     }
   }, [result, navigate]);
 
-  // Загрузка скрипта DocDoc виджета
+  // Загрузка скрипта DocDoc виджета с улучшенной логикой retry
   useEffect(() => {
-    // Проверяем, загружен ли уже скрипт
-    if (!document.getElementById('docdoc-widget-script')) {
-      const script = document.createElement('script');
-      script.id = 'docdoc-widget-script';
-      script.src = 'https://docdoc.ru/widget/js';
-      script.type = 'text/javascript';
-      script.onload = () => {
-        // После загрузки скрипта инициализируем виджет
-        if (window.DdWidget) {
+    let attempts = 0;
+    const maxAttempts = 10;
+    let timeoutId: NodeJS.Timeout;
+    
+    const initWidget = () => {
+      if (window.DdWidget && widgetContainerRef.current) {
+        try {
           window.DdWidget({
             widget: 'Button',
             template: 'Button_common',
@@ -59,22 +60,65 @@ const Results = () => {
             action: 'LoadWidget',
             city: 'msk'
           });
+          setWidgetLoaded(true);
+          return true;
+        } catch (error) {
+          console.error('Ошибка инициализации виджета DocDoc:', error);
+          return false;
         }
+      }
+      return false;
+    };
+
+    const tryInit = () => {
+      if (attempts >= maxAttempts) {
+        setWidgetError(true);
+        return;
+      }
+      
+      if (!initWidget()) {
+        attempts++;
+        timeoutId = setTimeout(tryInit, 500);
+      }
+    };
+
+    // Проверяем, загружен ли уже скрипт
+    const existingScript = document.getElementById('docdoc-widget-script');
+    
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.id = 'docdoc-widget-script';
+      script.src = 'https://docdoc.ru/widget/js';
+      script.type = 'text/javascript';
+      script.async = true;
+      
+      script.onload = () => {
+        setTimeout(tryInit, 300);
       };
+      
+      script.onerror = () => {
+        console.error('Не удалось загрузить скрипт DocDoc');
+        setWidgetError(true);
+      };
+      
       document.body.appendChild(script);
-    } else if (window.DdWidget) {
-      // Если скрипт уже загружен, просто инициализируем виджет
-      window.DdWidget({
-        widget: 'Button',
-        template: 'Button_common',
-        pid: '35704',
-        id: 'DDWidgetButton',
-        container: 'DDWidgetButton',
-        action: 'LoadWidget',
-        city: 'msk'
-      });
+    } else {
+      // Если скрипт уже загружен, пробуем инициализировать
+      setTimeout(tryInit, 300);
     }
-  }, []);
+
+    // Fallback таймер на 5 секунд
+    const fallbackTimer = setTimeout(() => {
+      if (!widgetLoaded) {
+        setWidgetError(true);
+      }
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearTimeout(fallbackTimer);
+    };
+  }, [widgetLoaded]);
 
   // Определяем статус результата на основе ключевых слов
   const getResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
@@ -191,7 +235,24 @@ const Results = () => {
               <p className="text-sm font-bold text-foreground mb-4 text-center">
                 Записаться к любому врачу в вашем городе только сейчас со скидкой 20%
               </p>
-              <div id="DDWidgetButton" className="flex justify-center"></div>
+              
+              {/* Контейнер виджета */}
+              <div ref={widgetContainerRef} id="DDWidgetButton" className="flex justify-center min-h-[50px] items-center">
+                {!widgetLoaded && !widgetError && (
+                  <span className="text-sm text-muted-foreground animate-pulse">Загрузка...</span>
+                )}
+              </div>
+              
+              {/* Fallback кнопка если виджет не загрузился */}
+              {widgetError && (
+                <div className="flex justify-center">
+                  <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                    <a href="https://docdoc.ru/?pid=35704" target="_blank" rel="noopener noreferrer">
+                      Записаться на приём
+                    </a>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </Card>
