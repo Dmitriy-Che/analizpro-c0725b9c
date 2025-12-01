@@ -1,6 +1,21 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CheckCircle2, AlertTriangle, Download, Share2, Copy, ArrowLeft } from "lucide-react";
+
+// Extend Window interface for DocDoc widget
+declare global {
+  interface Window {
+    DdWidget?: (config: {
+      widget: string;
+      template: string;
+      pid: string;
+      id: string;
+      container: string;
+      action: string;
+      city: string;
+    }) => void;
+  }
+}
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -23,6 +38,43 @@ const Results = () => {
       navigate("/");
     }
   }, [result, navigate]);
+
+  // Загрузка скрипта DocDoc виджета
+  useEffect(() => {
+    // Проверяем, загружен ли уже скрипт
+    if (!document.getElementById('docdoc-widget-script')) {
+      const script = document.createElement('script');
+      script.id = 'docdoc-widget-script';
+      script.src = 'https://docdoc.ru/widget/js';
+      script.type = 'text/javascript';
+      script.onload = () => {
+        // После загрузки скрипта инициализируем виджет
+        if (window.DdWidget) {
+          window.DdWidget({
+            widget: 'Button',
+            template: 'Button_common',
+            pid: '35704',
+            id: 'DDWidgetButton',
+            container: 'DDWidgetButton',
+            action: 'LoadWidget',
+            city: 'msk'
+          });
+        }
+      };
+      document.body.appendChild(script);
+    } else if (window.DdWidget) {
+      // Если скрипт уже загружен, просто инициализируем виджет
+      window.DdWidget({
+        widget: 'Button',
+        template: 'Button_common',
+        pid: '35704',
+        id: 'DDWidgetButton',
+        container: 'DDWidgetButton',
+        action: 'LoadWidget',
+        city: 'msk'
+      });
+    }
+  }, []);
 
   // Определяем статус результата на основе ключевых слов
   const getResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
@@ -132,6 +184,14 @@ const Results = () => {
                 <Share2 className="w-4 h-4" />
                 Отправить
               </Button>
+            </div>
+
+            {/* DocDoc Widget */}
+            <div className="mt-6 pt-6 border-t-2 border-border/20">
+              <p className="text-sm font-bold text-foreground mb-4 text-center">
+                Записаться к любому врачу в вашем городе только сейчас со скидкой 20%
+              </p>
+              <div id="DDWidgetButton" className="flex justify-center"></div>
             </div>
           </div>
         </Card>
