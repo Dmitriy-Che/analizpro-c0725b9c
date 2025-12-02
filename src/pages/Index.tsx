@@ -14,6 +14,7 @@ const Index = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [age, setAge] = useState<string>("");
   const [gender, setGender] = useState<string>("");
+  const [studyType, setStudyType] = useState<string>("");
   const [consentChecked, setConsentChecked] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -62,6 +63,10 @@ const Index = () => {
       toast.error("Пожалуйста, выберите пол");
       return;
     }
+    if (!studyType) {
+      toast.error("Пожалуйста, выберите тип исследования");
+      return;
+    }
     if (!consentChecked) {
       toast.error("Пожалуйста, дайте согласие на обработку персональных данных");
       return;
@@ -91,7 +96,8 @@ const Index = () => {
           body: JSON.stringify({
             imageBase64: base64Image,
             age: parseInt(age),
-            gender: gender
+            gender: gender,
+            studyType: studyType
           })
         }
       );
@@ -147,13 +153,17 @@ const Index = () => {
           <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${age ? 'bg-success text-white' : 'bg-primary text-white'}`}>
             {age ? <CheckCircle2 className="w-5 h-5" /> : '1'}
           </div>
-          <div className={`h-1 w-8 rounded-full transition-all ${age ? 'bg-success' : 'bg-border'}`} />
+          <div className={`h-1 w-6 rounded-full transition-all ${age ? 'bg-success' : 'bg-border'}`} />
           <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${gender ? 'bg-success text-white' : age ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
             {gender ? <CheckCircle2 className="w-5 h-5" /> : '2'}
           </div>
-          <div className={`h-1 w-8 rounded-full transition-all ${gender ? 'bg-success' : 'bg-border'}`} />
-          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${selectedFile ? 'bg-success text-white' : gender ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
-            {selectedFile ? <CheckCircle2 className="w-5 h-5" /> : '3'}
+          <div className={`h-1 w-6 rounded-full transition-all ${gender ? 'bg-success' : 'bg-border'}`} />
+          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${studyType ? 'bg-success text-white' : gender ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+            {studyType ? <CheckCircle2 className="w-5 h-5" /> : '3'}
+          </div>
+          <div className={`h-1 w-6 rounded-full transition-all ${studyType ? 'bg-success' : 'bg-border'}`} />
+          <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${selectedFile ? 'bg-success text-white' : studyType ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+            {selectedFile ? <CheckCircle2 className="w-5 h-5" /> : '4'}
           </div>
         </div>
 
@@ -202,10 +212,49 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Study Type Selection */}
+        <div className="mb-5 animate-fade-in">
+          <label className="block text-sm font-bold mb-3 text-foreground">
+            Шаг 3: Выберите тип исследования
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            <button
+              onClick={() => setStudyType("lab")}
+              className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${
+                studyType === "lab"
+                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
+                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
+              }`}
+            >
+              🩸 Анализы
+            </button>
+            <button
+              onClick={() => setStudyType("ultrasound")}
+              className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${
+                studyType === "ultrasound"
+                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
+                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
+              }`}
+            >
+              📡 УЗИ
+            </button>
+            <button
+              onClick={() => setStudyType("mri")}
+              className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${
+                studyType === "mri"
+                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
+                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
+              }`}
+            >
+              🧲 МРТ
+            </button>
+          </div>
+        </div>
+
         {/* File Upload Dropzone */}
         <div className="mb-5 animate-fade-in">
           <label className="block text-sm font-bold mb-3 text-foreground">
-            Шаг 3: Загрузите фото анализа
+            Шаг 4: Загрузите {studyType === "lab" ? "фото анализа" : studyType === "ultrasound" ? "снимок или заключение УЗИ" : studyType === "mri" ? "снимок или заключение МРТ" : "изображение"}
           </label>
           <div
             className={`bg-gradient-to-br from-input to-muted/50 border-3 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${
@@ -268,7 +317,7 @@ const Index = () => {
         {/* Analyze Button */}
         <Button
           onClick={handleAnalyze}
-          disabled={isAnalyzing || !selectedFile || !age || !gender || !consentChecked}
+          disabled={isAnalyzing || !selectedFile || !age || !gender || !studyType || !consentChecked}
           className="w-full bg-gradient-to-r from-primary to-accent text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold text-lg py-7 rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-fade-in"
         >
           {isAnalyzing ? (
