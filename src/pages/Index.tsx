@@ -7,7 +7,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
 import medicalLogo from "@/assets/logomedgid.png";
-
 const Index = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -17,28 +16,23 @@ const Index = () => {
   const [studyType, setStudyType] = useState<string>("");
   const [consentChecked, setConsentChecked] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
       toast.success("Файл загружен");
     }
   };
-
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
-
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
   };
-
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.type === "image/png" || file.type === "image/jpeg") {
@@ -49,7 +43,6 @@ const Index = () => {
       }
     }
   };
-
   const handleAnalyze = async () => {
     if (!selectedFile) {
       toast.error("Пожалуйста, загрузите файл для анализа");
@@ -71,10 +64,8 @@ const Index = () => {
       toast.error("Пожалуйста, дайте согласие на обработку персональных данных");
       return;
     }
-
     setIsAnalyzing(true);
     toast.success("Анализ начат");
-
     try {
       // Конвертация файла в base64
       const reader = new FileReader();
@@ -85,38 +76,33 @@ const Index = () => {
       });
 
       // Вызов edge function
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-medical-photo`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
-          },
-          body: JSON.stringify({
-            imageBase64: base64Image,
-            age: parseInt(age),
-            gender: gender,
-            studyType: studyType
-          })
-        }
-      );
-
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-medical-photo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
+        },
+        body: JSON.stringify({
+          imageBase64: base64Image,
+          age: parseInt(age),
+          gender: gender,
+          studyType: studyType
+        })
+      });
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Ошибка при анализе');
       }
-
       const data = await response.json();
       toast.success("Анализ завершен");
-      
+
       // Перенаправляем на страницу результатов
-      navigate("/results", { 
-        state: { 
+      navigate("/results", {
+        state: {
           result: data.result,
           age: age,
           gender: gender
-        } 
+        }
       });
     } catch (error) {
       console.error('Ошибка анализа:', error);
@@ -125,17 +111,11 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
       <Card className="max-w-[480px] mx-auto rounded-3xl p-6 sm:p-8 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
         {/* Logo Header */}
         <div className="flex justify-center mb-4">
-          <img 
-            src={medicalLogo} 
-            alt="Medical Logo" 
-            className="w-16 h-16 rounded-full shadow-md object-contain animate-fade-in" 
-          />
+          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full shadow-md object-contain animate-fade-in" />
         </div>
 
         {/* Title */}
@@ -172,15 +152,7 @@ const Index = () => {
           <label className="block text-sm font-bold mb-3 text-foreground">
             Шаг 1: Укажите возраст
           </label>
-          <input
-            type="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            placeholder="Введите возраст"
-            className="w-full px-4 py-3 rounded-xl border-2 border-border bg-input text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
-            min="0"
-            max="120"
-          />
+          <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="Введите возраст" className="w-full px-4 py-3 rounded-xl border-2 border-border bg-input text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium" min="0" max="120" />
         </div>
 
         {/* Gender Selection */}
@@ -189,24 +161,10 @@ const Index = () => {
             Шаг 2: Выберите пол
           </label>
           <div className="flex gap-3">
-            <button
-              onClick={() => setGender("male")}
-              className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all font-semibold ${
-                gender === "male"
-                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
-                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
-              }`}
-            >
+            <button onClick={() => setGender("male")} className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all font-semibold ${gender === "male" ? "bg-primary text-white border-primary shadow-md scale-[1.02]" : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"}`}>
               👨 Мужской
             </button>
-            <button
-              onClick={() => setGender("female")}
-              className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all font-semibold ${
-                gender === "female"
-                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
-                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
-              }`}
-            >
+            <button onClick={() => setGender("female")} className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all font-semibold ${gender === "female" ? "bg-primary text-white border-primary shadow-md scale-[1.02]" : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"}`}>
               👩 Женский
             </button>
           </div>
@@ -218,34 +176,13 @@ const Index = () => {
             Шаг 3: Выберите тип исследования
           </label>
           <div className="grid grid-cols-3 gap-3">
-            <button
-              onClick={() => setStudyType("lab")}
-              className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${
-                studyType === "lab"
-                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
-                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
-              }`}
-            >
+            <button onClick={() => setStudyType("lab")} className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${studyType === "lab" ? "bg-primary text-white border-primary shadow-md scale-[1.02]" : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"}`}>
               🩸 Анализы
             </button>
-            <button
-              onClick={() => setStudyType("ultrasound")}
-              className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${
-                studyType === "ultrasound"
-                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
-                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
-              }`}
-            >
+            <button onClick={() => setStudyType("ultrasound")} className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${studyType === "ultrasound" ? "bg-primary text-white border-primary shadow-md scale-[1.02]" : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"}`}>
               📡 УЗИ
             </button>
-            <button
-              onClick={() => setStudyType("mri")}
-              className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${
-                studyType === "mri"
-                  ? "bg-primary text-white border-primary shadow-md scale-[1.02]"
-                  : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"
-              }`}
-            >
+            <button onClick={() => setStudyType("mri")} className={`py-3 px-3 rounded-xl border-2 transition-all font-semibold text-sm ${studyType === "mri" ? "bg-primary text-white border-primary shadow-md scale-[1.02]" : "bg-input border-border text-foreground hover:border-primary/50 hover:shadow-sm"}`}>
               🧲 МРТ
             </button>
           </div>
@@ -256,81 +193,43 @@ const Index = () => {
           <label className="block text-sm font-bold mb-3 text-foreground">
             Шаг 4: Загрузите {studyType === "lab" ? "фото анализа" : studyType === "ultrasound" ? "снимок или заключение УЗИ" : studyType === "mri" ? "снимок или заключение МРТ" : "изображение"}
           </label>
-          <div
-            className={`bg-gradient-to-br from-input to-muted/50 border-3 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${
-              isDragging
-                ? "border-accent bg-accent/10 scale-105 shadow-xl"
-                : selectedFile
-                ? "border-success bg-success/5 shadow-lg"
-                : "border-dashed border-border hover:border-primary hover:shadow-md hover:scale-[1.02]"
-            }`}
-            onClick={() => document.getElementById("file-input")?.click()}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            <input
-              id="file-input"
-              type="file"
-              className="hidden"
-              accept="image/png,image/jpeg"
-              onChange={handleFileSelect}
-            />
+          <div className={`bg-gradient-to-br from-input to-muted/50 border-3 rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 ${isDragging ? "border-accent bg-accent/10 scale-105 shadow-xl" : selectedFile ? "border-success bg-success/5 shadow-lg" : "border-dashed border-border hover:border-primary hover:shadow-md hover:scale-[1.02]"}`} onClick={() => document.getElementById("file-input")?.click()} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+            <input id="file-input" type="file" className="hidden" accept="image/png,image/jpeg" onChange={handleFileSelect} />
             
             <div className="flex flex-col items-center gap-3">
               <div className={`p-4 rounded-full transition-all ${selectedFile ? 'bg-success/20' : 'bg-primary/10'}`}>
                 <FileText size={40} className={selectedFile ? 'text-success' : 'text-primary'} />
               </div>
               
-              {selectedFile ? (
-                <div className="flex flex-col items-center gap-2">
+              {selectedFile ? <div className="flex flex-col items-center gap-2">
                   <CheckCircle2 className="w-6 h-6 text-success" />
                   <p className="text-sm font-bold text-success">{selectedFile.name}</p>
                   <p className="text-xs text-muted-foreground">Файл готов к анализу</p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-2">
+                </div> : <div className="flex flex-col items-center gap-2">
                   <p className="text-base font-semibold text-foreground">Кликните или перетащите</p>
                   <p className="text-sm text-muted-foreground">JPG или PNG до 10 МБ</p>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
         </div>
 
         {/* Consent Checkbox */}
         <div className="flex items-start gap-3 mb-6 p-5 bg-muted/50 rounded-2xl border-2 border-border animate-fade-in">
-          <Checkbox
-            id="consent-checkbox"
-            checked={consentChecked}
-            onCheckedChange={(checked) => setConsentChecked(checked === true)}
-            className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-          />
-          <label
-            htmlFor="consent-checkbox"
-            className="text-foreground cursor-pointer leading-relaxed text-sm font-medium"
-          >
+          <Checkbox id="consent-checkbox" checked={consentChecked} onCheckedChange={checked => setConsentChecked(checked === true)} className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+          <label htmlFor="consent-checkbox" className="text-foreground cursor-pointer leading-relaxed text-sm font-medium">
             Согласен(-на) на обработку персональных данных
           </label>
         </div>
 
         {/* Analyze Button */}
-        <Button
-          onClick={handleAnalyze}
-          disabled={isAnalyzing || !selectedFile || !age || !gender || !studyType || !consentChecked}
-          className="w-full bg-gradient-to-r from-primary to-accent text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold text-lg py-7 rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-fade-in"
-        >
-          {isAnalyzing ? (
-            <span className="flex items-center gap-2">
+        <Button onClick={handleAnalyze} disabled={isAnalyzing || !selectedFile || !age || !gender || !studyType || !consentChecked} className="w-full bg-gradient-to-r from-primary to-accent text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold text-lg py-7 rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-fade-in">
+          {isAnalyzing ? <span className="flex items-center gap-2">
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               Анализируем...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
+            </span> : <span className="flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
               Анализировать
-            </span>
-          )}
+            </span>}
         </Button>
 
         {/* FAQ Section */}
@@ -398,20 +297,13 @@ const Index = () => {
 
         {/* Footer Info */}
         <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
-          <div className="font-medium">Версия 3.69.25</div>
+          <div className="font-medium">Версия 3.70.25</div>
           <div>© 2025 АнализПро. Все права защищены.</div>
-          <a
-            href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:text-accent underline transition-colors inline-block"
-          >
+          <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-accent underline transition-colors inline-block">
             Политика конфиденциальности
           </a>
         </div>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
