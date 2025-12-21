@@ -38,6 +38,7 @@ export type Database = {
       analysis_logs: {
         Row: {
           age: number | null
+          city: string | null
           created_at: string | null
           gender: string | null
           id: string
@@ -46,6 +47,7 @@ export type Database = {
         }
         Insert: {
           age?: number | null
+          city?: string | null
           created_at?: string | null
           gender?: string | null
           id?: string
@@ -54,6 +56,7 @@ export type Database = {
         }
         Update: {
           age?: number | null
+          city?: string | null
           created_at?: string | null
           gender?: string | null
           id?: string
@@ -83,6 +86,30 @@ export type Database = {
         }
         Relationships: []
       }
+      visits: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string | null
+          id: string
+          ip_address: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -93,10 +120,22 @@ export type Database = {
         Returns: {
           avg_age: number
           critical_count: number
+          female_count: number
+          male_count: number
           normal_count: number
           today_analyses: number
+          top_cities: Json
           total_analyses: number
+          total_visits: number
+          visits_last_30_days: number
           warning_count: number
+        }[]
+      }
+      get_visits_by_day: {
+        Args: never
+        Returns: {
+          visit_count: number
+          visit_date: string
         }[]
       }
       has_role: {

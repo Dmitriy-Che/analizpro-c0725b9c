@@ -14,8 +14,16 @@ import {
   CheckCircle,
   AlertTriangle,
   LogOut,
-  Home
+  Home,
+  MapPin,
+  Eye
 } from "lucide-react";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 interface AnalysisStats {
   total_analyses: number;
@@ -24,12 +32,23 @@ interface AnalysisStats {
   warning_count: number;
   critical_count: number;
   avg_age: number;
+  total_visits: number;
+  visits_last_30_days: number;
+  male_count: number;
+  female_count: number;
+  top_cities: { city: string; count: number }[];
+}
+
+interface VisitsByDay {
+  visit_date: string;
+  visit_count: number;
 }
 
 const Admin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [stats, setStats] = useState<AnalysisStats | null>(null);
+  const [visitsByDay, setVisitsByDay] = useState<VisitsByDay[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -60,7 +79,7 @@ const Admin = () => {
       }
 
       setIsAdmin(true);
-      await loadStats();
+      await Promise.all([loadStats(), loadVisitsByDay()]);
     } catch (error) {
       console.error("Admin check error:", error);
       toast.error("Ошибка проверки доступа");
@@ -77,11 +96,34 @@ const Admin = () => {
       if (error) throw error;
 
       if (data && data.length > 0) {
-        setStats(data[0]);
+        const rawStats = data[0];
+        // Parse top_cities if it's a string
+        const topCities = typeof rawStats.top_cities === 'string' 
+          ? JSON.parse(rawStats.top_cities) 
+          : rawStats.top_cities || [];
+        
+        setStats({
+          ...rawStats,
+          top_cities: topCities
+        });
       }
     } catch (error) {
       console.error("Stats loading error:", error);
       toast.error("Ошибка загрузки статистики");
+    }
+  };
+
+  const loadVisitsByDay = async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_visits_by_day");
+
+      if (error) throw error;
+
+      if (data) {
+        setVisitsByDay(data);
+      }
+    } catch (error) {
+      console.error("Visits by day loading error:", error);
     }
   };
 
@@ -102,6 +144,23 @@ const Admin = () => {
   if (!isAdmin) {
     return null;
   }
+
+  const genderData = stats ? [
+    { name: 'Мужчины', value: stats.male_count, color: 'hsl(210, 100%, 50%)' },
+    { name: 'Женщины', value: stats.female_count, color: 'hsl(330, 100%, 60%)' },
+  ] : [];
+
+  const chartData = visitsByDay.map(item => ({
+    date: new Date(item.visit_date).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }),
+    visits: Number(item.visit_count)
+  }));
+
+  const chartConfig = {
+    visits: {
+      label: "Визиты",
+      color: "hsl(var(--primary))",
+    },
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
@@ -136,102 +195,265 @@ const Admin = () => {
 
         {/* Stats Grid */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Total Analyses */}
-            <Card className="p-6 border-2 border-primary/20 hover:border-primary/40 transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-primary/10 rounded-xl">
-                  <BarChart3 className="w-6 h-6 text-primary" />
+          <>
+            {/* Visits Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              {/* Total Visits */}
+              <Card className="p-6 border-2 border-primary/20 hover:border-primary/40 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-primary/10 rounded-xl">
+                    <Eye className="w-6 h-6 text-primary" />
+                  </div>
+                  <TrendingUp className="w-5 h-5 text-green-500" />
                 </div>
-                <TrendingUp className="w-5 h-5 text-success" />
-              </div>
-              <h3 className="text-3xl font-bold text-foreground mb-1">
-                {stats.total_analyses.toLocaleString()}
-              </h3>
-              <p className="text-sm text-muted-foreground">Всего анализов</p>
-            </Card>
+                <h3 className="text-3xl font-bold text-foreground mb-1">
+                  {stats.total_visits.toLocaleString()}
+                </h3>
+                <p className="text-sm text-muted-foreground">Всего визитов</p>
+              </Card>
 
-            {/* Today's Analyses */}
-            <Card className="p-6 border-2 border-accent/20 hover:border-accent/40 transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-accent/10 rounded-xl">
-                  <Calendar className="w-6 h-6 text-accent" />
+              {/* Visits Last 30 Days */}
+              <Card className="p-6 border-2 border-accent/20 hover:border-accent/40 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-accent/10 rounded-xl">
+                    <Calendar className="w-6 h-6 text-accent" />
+                  </div>
+                  <Activity className="w-5 h-5 text-accent" />
                 </div>
-                <Activity className="w-5 h-5 text-accent" />
-              </div>
-              <h3 className="text-3xl font-bold text-foreground mb-1">
-                {stats.today_analyses.toLocaleString()}
-              </h3>
-              <p className="text-sm text-muted-foreground">Сегодня</p>
-            </Card>
+                <h3 className="text-3xl font-bold text-foreground mb-1">
+                  {stats.visits_last_30_days.toLocaleString()}
+                </h3>
+                <p className="text-sm text-muted-foreground">За 30 дней</p>
+              </Card>
 
-            {/* Average Age */}
-            <Card className="p-6 border-2 border-border hover:border-primary/40 transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-muted rounded-xl">
-                  <Users className="w-6 h-6 text-foreground" />
+              {/* Male Count */}
+              <Card className="p-6 border-2 border-blue-200 hover:border-blue-300 transition-all bg-blue-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-blue-100 rounded-xl">
+                    <span className="text-2xl">👨</span>
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-3xl font-bold text-foreground mb-1">
-                {stats.avg_age ? stats.avg_age.toFixed(1) : "—"}
-              </h3>
-              <p className="text-sm text-muted-foreground">Средний возраст</p>
-            </Card>
+                <h3 className="text-3xl font-bold text-blue-700 mb-1">
+                  {stats.male_count.toLocaleString()}
+                </h3>
+                <p className="text-sm text-blue-600">Мужчин</p>
+                {(stats.male_count + stats.female_count) > 0 && (
+                  <p className="text-xs text-blue-500 mt-1">
+                    {((stats.male_count / (stats.male_count + stats.female_count)) * 100).toFixed(1)}%
+                  </p>
+                )}
+              </Card>
 
-            {/* Normal Results */}
-            <Card className="p-6 border-2 border-green-200 hover:border-green-300 transition-all bg-green-50/50">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
+              {/* Female Count */}
+              <Card className="p-6 border-2 border-pink-200 hover:border-pink-300 transition-all bg-pink-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-pink-100 rounded-xl">
+                    <span className="text-2xl">👩</span>
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-3xl font-bold text-green-700 mb-1">
-                {stats.normal_count.toLocaleString()}
-              </h3>
-              <p className="text-sm text-green-600">Норма</p>
-              {stats.total_analyses > 0 && (
-                <p className="text-xs text-green-500 mt-1">
-                  {((stats.normal_count / stats.total_analyses) * 100).toFixed(1)}%
+                <h3 className="text-3xl font-bold text-pink-700 mb-1">
+                  {stats.female_count.toLocaleString()}
+                </h3>
+                <p className="text-sm text-pink-600">Женщин</p>
+                {(stats.male_count + stats.female_count) > 0 && (
+                  <p className="text-xs text-pink-500 mt-1">
+                    {((stats.female_count / (stats.male_count + stats.female_count)) * 100).toFixed(1)}%
+                  </p>
+                )}
+              </Card>
+            </div>
+
+            {/* Analyses Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+              {/* Total Analyses */}
+              <Card className="p-6 border-2 border-primary/20 hover:border-primary/40 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-primary/10 rounded-xl">
+                    <BarChart3 className="w-6 h-6 text-primary" />
+                  </div>
+                  <TrendingUp className="w-5 h-5 text-green-500" />
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-1">
+                  {stats.total_analyses.toLocaleString()}
+                </h3>
+                <p className="text-sm text-muted-foreground">Всего анализов</p>
+              </Card>
+
+              {/* Today's Analyses */}
+              <Card className="p-6 border-2 border-accent/20 hover:border-accent/40 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-accent/10 rounded-xl">
+                    <Calendar className="w-6 h-6 text-accent" />
+                  </div>
+                  <Activity className="w-5 h-5 text-accent" />
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-1">
+                  {stats.today_analyses.toLocaleString()}
+                </h3>
+                <p className="text-sm text-muted-foreground">Анализов сегодня</p>
+              </Card>
+
+              {/* Average Age */}
+              <Card className="p-6 border-2 border-border hover:border-primary/40 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-muted rounded-xl">
+                    <Users className="w-6 h-6 text-foreground" />
+                  </div>
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-1">
+                  {stats.avg_age ? stats.avg_age.toFixed(1) : "—"}
+                </h3>
+                <p className="text-sm text-muted-foreground">Средний возраст</p>
+              </Card>
+            </div>
+
+            {/* Status Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Normal Results */}
+              <Card className="p-6 border-2 border-green-200 hover:border-green-300 transition-all bg-green-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-green-100 rounded-xl">
+                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <h3 className="text-3xl font-bold text-green-700 mb-1">
+                  {stats.normal_count.toLocaleString()}
+                </h3>
+                <p className="text-sm text-green-600">Норма</p>
+                {stats.total_analyses > 0 && (
+                  <p className="text-xs text-green-500 mt-1">
+                    {((stats.normal_count / stats.total_analyses) * 100).toFixed(1)}%
+                  </p>
+                )}
+              </Card>
+
+              {/* Warning Results */}
+              <Card className="p-6 border-2 border-yellow-200 hover:border-yellow-300 transition-all bg-yellow-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-yellow-100 rounded-xl">
+                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
+                  </div>
+                </div>
+                <h3 className="text-3xl font-bold text-yellow-700 mb-1">
+                  {stats.warning_count.toLocaleString()}
+                </h3>
+                <p className="text-sm text-yellow-600">Обратить внимание</p>
+                {stats.total_analyses > 0 && (
+                  <p className="text-xs text-yellow-500 mt-1">
+                    {((stats.warning_count / stats.total_analyses) * 100).toFixed(1)}%
+                  </p>
+                )}
+              </Card>
+
+              {/* Critical Results */}
+              <Card className="p-6 border-2 border-red-200 hover:border-red-300 transition-all bg-red-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-red-100 rounded-xl">
+                    <AlertCircle className="w-6 h-6 text-red-600" />
+                  </div>
+                </div>
+                <h3 className="text-3xl font-bold text-red-700 mb-1">
+                  {stats.critical_count.toLocaleString()}
+                </h3>
+                <p className="text-sm text-red-600">Критично</p>
+                {stats.total_analyses > 0 && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {((stats.critical_count / stats.total_analyses) * 100).toFixed(1)}%
+                  </p>
+                )}
+              </Card>
+            </div>
+
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Visits Chart */}
+              <Card className="p-6 border-2 border-border">
+                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-primary" />
+                  Визиты за 30 дней
+                </h2>
+                <div className="h-64">
+                  <ChartContainer config={chartConfig} className="h-full w-full">
+                    <BarChart data={chartData}>
+                      <XAxis 
+                        dataKey="date" 
+                        tick={{ fontSize: 10 }}
+                        interval="preserveStartEnd"
+                      />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Bar 
+                        dataKey="visits" 
+                        fill="hsl(var(--primary))" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ChartContainer>
+                </div>
+              </Card>
+
+              {/* Gender Pie Chart */}
+              <Card className="p-6 border-2 border-border">
+                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary" />
+                  Распределение по полу
+                </h2>
+                <div className="h-64 flex items-center justify-center">
+                  {(stats.male_count + stats.female_count) > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={genderData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        >
+                          {genderData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <p className="text-muted-foreground">Нет данных</p>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            {/* Top Cities */}
+            <Card className="p-6 border-2 border-border mb-8">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" />
+                Топ-5 городов
+              </h2>
+              {stats.top_cities && stats.top_cities.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                  {stats.top_cities.map((cityData, index) => (
+                    <div 
+                      key={index} 
+                      className="p-4 bg-muted/50 rounded-xl border border-border text-center"
+                    >
+                      <p className="text-2xl font-bold text-foreground mb-1">
+                        {cityData.count}
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {cityData.city || 'Неизвестно'}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-8">
+                  Данные о городах пока не собраны
                 </p>
               )}
             </Card>
-
-            {/* Warning Results */}
-            <Card className="p-6 border-2 border-yellow-200 hover:border-yellow-300 transition-all bg-yellow-50/50">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-yellow-100 rounded-xl">
-                  <AlertTriangle className="w-6 h-6 text-yellow-600" />
-                </div>
-              </div>
-              <h3 className="text-3xl font-bold text-yellow-700 mb-1">
-                {stats.warning_count.toLocaleString()}
-              </h3>
-              <p className="text-sm text-yellow-600">Обратить внимание</p>
-              {stats.total_analyses > 0 && (
-                <p className="text-xs text-yellow-500 mt-1">
-                  {((stats.warning_count / stats.total_analyses) * 100).toFixed(1)}%
-                </p>
-              )}
-            </Card>
-
-            {/* Critical Results */}
-            <Card className="p-6 border-2 border-red-200 hover:border-red-300 transition-all bg-red-50/50">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-red-100 rounded-xl">
-                  <AlertCircle className="w-6 h-6 text-red-600" />
-                </div>
-              </div>
-              <h3 className="text-3xl font-bold text-red-700 mb-1">
-                {stats.critical_count.toLocaleString()}
-              </h3>
-              <p className="text-sm text-red-600">Критично</p>
-              {stats.total_analyses > 0 && (
-                <p className="text-xs text-red-500 mt-1">
-                  {((stats.critical_count / stats.total_analyses) * 100).toFixed(1)}%
-                </p>
-              )}
-            </Card>
-          </div>
+          </>
         )}
 
         {/* Info Card */}
@@ -242,6 +464,7 @@ const Admin = () => {
           <div className="space-y-2 text-sm text-muted-foreground">
             <p>• Статистика обновляется в реальном времени</p>
             <p>• Все анализы логируются в базе данных</p>
+            <p>• Геолокация определяется по IP-адресу</p>
             <p>• Данные защищены Row Level Security (RLS)</p>
             <p>• Доступ к панели только у администраторов</p>
           </div>
