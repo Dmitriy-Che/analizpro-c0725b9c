@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FileText, Sparkles, CheckCircle2, AlertTriangle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,23 @@ const Index = () => {
   const [studyType, setStudyType] = useState<string>("");
   const [consentChecked, setConsentChecked] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Track visit on page load
+  useEffect(() => {
+    const trackVisit = async () => {
+      try {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/track-visit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        console.error('Failed to track visit:', error);
+      }
+    };
+    trackVisit();
+  }, []);
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);

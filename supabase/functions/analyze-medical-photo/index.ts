@@ -288,37 +288,43 @@ serve(async (req) => {
       status = 'warning';
     }
 
-    // Log the analysis to database
-    const authHeader = req.headers.get('Authorization');
-    if (authHeader) {
+    // Get city from IP
+    const forwardedFor = req.headers.get('x-forwarded-for');
+    const realIp = req.headers.get('x-real-ip');
+    const cfConnectingIp = req.headers.get('cf-connecting-ip');
+    const ipAddress = cfConnectingIp || forwardedFor?.split(',')[0]?.trim() || realIp || null;
+    
+    let city = null;
+    if (ipAddress) {
       try {
-        const token = authHeader.replace('Bearer ', '');
-        const supabaseClient = createClient(
-          Deno.env.get('SUPABASE_URL') ?? '',
-          Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-          {
-            global: {
-              headers: { Authorization: authHeader },
-            },
-          }
-        );
-
-        const { data: { user } } = await supabaseClient.auth.getUser(token);
-        
-        if (user) {
-          await supabaseClient.from('analysis_logs').insert({
-            user_id: user.id,
-            age: age,
-            gender: gender,
-            status: status,
-          });
-          
-          console.log('Analysis logged successfully');
+        const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,city`);
+        const geoData = await geoResponse.json();
+        if (geoData.status === 'success') {
+          city = geoData.city || null;
         }
-      } catch (logError) {
-        console.error('Failed to log analysis:', logError);
-        // Don't fail the request if logging fails
+      } catch (geoError) {
+        console.error('Geo lookup failed:', geoError);
       }
+    }
+
+    // Log the analysis to database using service role to bypass RLS
+    try {
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      );
+
+      await supabaseClient.from('analysis_logs').insert({
+        age: age,
+        gender: gender,
+        status: status,
+        city: city,
+      });
+      
+      console.log('Analysis logged successfully with city:', city);
+    } catch (logError) {
+      console.error('Failed to log analysis:', logError);
+      // Don't fail the request if logging fails
     }
 
     return new Response(
