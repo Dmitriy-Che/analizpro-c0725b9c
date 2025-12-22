@@ -65,6 +65,80 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_users: {
+        Row: {
+          created_at: string | null
+          first_name: string | null
+          id: string
+          last_login: string | null
+          last_name: string | null
+          photo_url: string | null
+          telegram_id: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_login?: string | null
+          last_name?: string | null
+          photo_url?: string | null
+          telegram_id: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_login?: string | null
+          last_name?: string | null
+          photo_url?: string | null
+          telegram_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_analyses: {
+        Row: {
+          age: number | null
+          created_at: string | null
+          full_result: string | null
+          gender: string | null
+          id: string
+          result_summary: string | null
+          study_type: string | null
+          telegram_id: string
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string | null
+          full_result?: string | null
+          gender?: string | null
+          id?: string
+          result_summary?: string | null
+          study_type?: string | null
+          telegram_id: string
+        }
+        Update: {
+          age?: number | null
+          created_at?: string | null
+          full_result?: string | null
+          gender?: string | null
+          id?: string
+          result_summary?: string | null
+          study_type?: string | null
+          telegram_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_analyses_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "telegram_users"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
