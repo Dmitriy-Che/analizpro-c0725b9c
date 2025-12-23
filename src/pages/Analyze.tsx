@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import logo from '@/assets/new-logo.png';
+import medicalLogo from '@/assets/logomedgid.png';
 
 type Step = 'age' | 'gender' | 'studyType' | 'upload';
 type Gender = 'male' | 'female' | null;
@@ -338,9 +338,9 @@ export default function Analyze() {
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center px-4">
         <Card className="w-full max-w-[400px] p-8 text-center">
           <img 
-            src={logo} 
+            src={medicalLogo} 
             alt="Logo" 
-            className="w-20 h-20 mx-auto shadow-lg mb-6 animate-pulse object-contain"
+            className="w-16 h-16 mx-auto rounded-full shadow-lg mb-6 animate-pulse"
           />
           <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-primary" />
           <h2 className="text-xl font-bold mb-2">Анализируем...</h2>

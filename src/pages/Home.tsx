@@ -5,7 +5,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, FileText, Clock, User, LogOut, Shield, Zap, Heart } from 'lucide-react';
-import logo from '@/assets/new-logo.png';
+import medicalLogo from '@/assets/logomedgid.png';
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -45,9 +45,9 @@ export default function Home() {
         {/* Header */}
         <div className="text-center mb-8">
           <img 
-            src={logo} 
+            src={medicalLogo} 
             alt="АнализПро" 
-            className="w-24 h-24 mx-auto shadow-lg mb-4 animate-fade-in object-contain"
+            className="w-20 h-20 mx-auto rounded-full shadow-lg mb-4 animate-fade-in"
           />
           <h1 className="text-4xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
             АнализПро<span className="text-sm align-super">©</span>
