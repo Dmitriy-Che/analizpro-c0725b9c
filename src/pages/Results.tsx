@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import medicalLogo from "@/assets/logomedgid.png";
+import logo from "@/assets/new-logo.png";
 
 const Results = () => {
   const location = useLocation();
@@ -74,7 +74,7 @@ const Results = () => {
       <Card className="max-w-[480px] mx-auto rounded-3xl p-6 sm:p-8 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
         {/* Logo Header */}
         <div className="flex justify-center mb-4">
-          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full shadow-md object-contain animate-fade-in" />
+          <img src={logo} alt="Medical Logo" className="w-20 h-20 shadow-md object-contain animate-fade-in" />
         </div>
 
         {/* Title */}
