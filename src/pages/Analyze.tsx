@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import medicalLogo from '@/assets/logomedgid.png';
+import logo from '@/assets/new-logo.png';
 
 type Step = 'age' | 'gender' | 'studyType' | 'upload';
 type Gender = 'male' | 'female' | null;
@@ -336,19 +336,25 @@ export default function Analyze() {
   if (isAnalyzing) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center px-4">
-        <Card className="w-full max-w-[400px] p-8 text-center">
+        {/* Desktop decorative background */}
+        <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        </div>
+        
+        <Card className="w-full max-w-[400px] lg:max-w-[450px] p-8 lg:p-10 text-center relative">
           <img 
-            src={medicalLogo} 
+            src={logo} 
             alt="Logo" 
-            className="w-16 h-16 mx-auto rounded-full shadow-lg mb-6 animate-pulse"
+            className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain"
           />
-          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-primary" />
-          <h2 className="text-xl font-bold mb-2">Анализируем...</h2>
-          <p className="text-muted-foreground text-sm mb-6">
+          <Loader2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto mb-4 animate-spin text-primary" />
+          <h2 className="text-xl lg:text-2xl font-bold mb-2">Анализируем...</h2>
+          <p className="text-muted-foreground text-sm lg:text-base mb-6">
             ИИ изучает ваш анализ и готовит расшифровку
           </p>
-          <Progress value={progress} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-2">{Math.round(progress)}%</p>
+          <Progress value={progress} className="h-2 lg:h-3" />
+          <p className="text-xs lg:text-sm text-muted-foreground mt-2">{Math.round(progress)}%</p>
         </Card>
       </div>
     );
@@ -356,13 +362,20 @@ export default function Analyze() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20">
-      <div className="max-w-[480px] mx-auto px-4 py-6">
+      {/* Desktop decorative background */}
+      <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
+      </div>
+      
+      <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
         {/* Progress */}
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-6 lg:mb-8">
           {steps.map((step, idx) => (
             <div key={step} className="flex-1">
               <div 
-                className={`h-1.5 rounded-full transition-colors ${
+                className={`h-1.5 lg:h-2 rounded-full transition-colors ${
                   idx <= currentStepIndex ? 'bg-primary' : 'bg-muted'
                 }`}
               />
@@ -371,7 +384,7 @@ export default function Analyze() {
         </div>
 
         {/* Step Content */}
-        <Card className="p-6 border-2 border-border/50 bg-card/95 mb-6">
+        <Card className="p-6 lg:p-8 border-2 border-border/50 bg-card/95 mb-6 lg:mb-8">
           {renderStep()}
         </Card>
 
@@ -381,7 +394,7 @@ export default function Analyze() {
             <Button
               variant="outline"
               onClick={prevStep}
-              className="flex-1 h-12 border-2"
+              className="flex-1 h-12 lg:h-14 border-2 lg:text-lg"
             >
               Назад
             </Button>
@@ -390,7 +403,7 @@ export default function Analyze() {
             <Button
               onClick={handleAnalyze}
               disabled={!canProceed()}
-              className="flex-1 h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              className="flex-1 h-12 lg:h-14 lg:text-lg bg-gradient-to-r from-primary to-accent hover:opacity-90"
             >
               Анализировать
             </Button>
@@ -398,7 +411,7 @@ export default function Analyze() {
             <Button
               onClick={nextStep}
               disabled={!canProceed()}
-              className="flex-1 h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              className="flex-1 h-12 lg:h-14 lg:text-lg bg-gradient-to-r from-primary to-accent hover:opacity-90"
             >
               Продолжить
             </Button>

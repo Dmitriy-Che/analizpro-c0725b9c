@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useTelegramAuth } from '@/contexts/TelegramAuthContext';
 import { TelegramLoginWidget } from '@/components/TelegramLoginWidget';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, FileText, Clock, User, LogOut, Shield, Zap, Heart } from 'lucide-react';
-import medicalLogo from '@/assets/logomedgid.png';
-import { useEffect } from 'react';
+import logo from '@/assets/new-logo.png';
 import { supabase } from '@/integrations/supabase/client';
 
-const TELEGRAM_BOT_NAME = 'MedGidAnalysisBot'; // Замените на имя вашего бота
+const TELEGRAM_BOT_NAME = 'MedGidAnalysisBot';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -41,33 +41,40 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20">
-      <div className="max-w-[480px] mx-auto px-4 py-6">
+      {/* Desktop decorative background */}
+      <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
+      </div>
+      
+      <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 lg:mb-10">
           <img 
-            src={medicalLogo} 
+            src={logo} 
             alt="АнализПро" 
-            className="w-20 h-20 mx-auto rounded-full shadow-lg mb-4 animate-fade-in"
+            className="w-24 h-24 lg:w-32 lg:h-32 mx-auto shadow-lg mb-4 animate-fade-in object-contain"
           />
-          <h1 className="text-4xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
             АнализПро<span className="text-sm align-super">©</span>
           </h1>
-          <p className="text-muted-foreground">Расшифровка анализов с помощью ИИ</p>
+          <p className="text-muted-foreground lg:text-lg">Расшифровка анализов с помощью ИИ</p>
         </div>
 
         {/* Features */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          <Card className="p-3 text-center border-2 border-primary/20 bg-card/80">
-            <Shield className="w-6 h-6 mx-auto mb-1 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground">Безопасно</span>
+        <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-8">
+          <Card className="p-3 lg:p-4 text-center border-2 border-primary/20 bg-card/80 hover:border-primary/40 transition-colors">
+            <Shield className="w-6 h-6 lg:w-7 lg:h-7 mx-auto mb-1 text-primary" />
+            <span className="text-xs lg:text-sm font-medium text-muted-foreground">Безопасно</span>
           </Card>
-          <Card className="p-3 text-center border-2 border-accent/20 bg-card/80">
-            <Zap className="w-6 h-6 mx-auto mb-1 text-accent" />
-            <span className="text-xs font-medium text-muted-foreground">Быстро</span>
+          <Card className="p-3 lg:p-4 text-center border-2 border-accent/20 bg-card/80 hover:border-accent/40 transition-colors">
+            <Zap className="w-6 h-6 lg:w-7 lg:h-7 mx-auto mb-1 text-accent" />
+            <span className="text-xs lg:text-sm font-medium text-muted-foreground">Быстро</span>
           </Card>
-          <Card className="p-3 text-center border-2 border-secondary/20 bg-card/80">
-            <Heart className="w-6 h-6 mx-auto mb-1 text-secondary" />
-            <span className="text-xs font-medium text-muted-foreground">Понятно</span>
+          <Card className="p-3 lg:p-4 text-center border-2 border-secondary/20 bg-card/80 hover:border-secondary/40 transition-colors">
+            <Heart className="w-6 h-6 lg:w-7 lg:h-7 mx-auto mb-1 text-secondary" />
+            <span className="text-xs lg:text-sm font-medium text-muted-foreground">Понятно</span>
           </Card>
         </div>
 
@@ -182,10 +189,10 @@ export default function Home() {
         {/* Start Button */}
         <Button
           onClick={() => navigate('/analyze')}
-          className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
+          className="w-full h-14 lg:h-16 text-lg lg:text-xl font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
         >
           Начать расшифровку
-          <ArrowRight className="w-5 h-5 ml-2" />
+          <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
         </Button>
 
         {/* Disclaimer */}

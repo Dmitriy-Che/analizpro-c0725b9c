@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import medicalLogo from "@/assets/logomedgid.png";
+import logo from "@/assets/new-logo.png";
 
 const Results = () => {
   const location = useLocation();
@@ -71,18 +71,25 @@ const Results = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
-      <Card className="max-w-[480px] mx-auto rounded-3xl p-6 sm:p-8 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
+      {/* Desktop decorative background */}
+      <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
+      </div>
+      
+      <Card className="relative max-w-[480px] lg:max-w-[560px] mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
         {/* Logo Header */}
-        <div className="flex justify-center mb-4">
-          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full shadow-md object-contain animate-fade-in" />
+        <div className="flex justify-center mb-4 lg:mb-6">
+          <img src={logo} alt="Medical Logo" className="w-20 h-20 lg:w-24 lg:h-24 shadow-md object-contain animate-fade-in" />
         </div>
 
         {/* Title */}
-        <div className="mb-6 text-center">
-          <h1 className="font-black text-primary mb-2 tracking-tight text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
+        <div className="mb-6 lg:mb-8 text-center">
+          <h1 className="font-black text-primary mb-2 tracking-tight text-4xl lg:text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
             АнализПро<span className="text-lg align-super">©</span>
           </h1>
-          <p className="text-base text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">Расшифровка медицинских анализов и УЗИ</p>
+          <p className="text-base lg:text-lg text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">Расшифровка медицинских анализов и УЗИ</p>
         </div>
 
         {/* Back Button */}
