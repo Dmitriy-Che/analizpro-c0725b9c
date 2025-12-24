@@ -343,11 +343,13 @@ export default function Analyze() {
         </div>
         
         <Card className="w-full max-w-[400px] lg:max-w-[450px] p-8 lg:p-10 text-center relative">
-          <img 
-            src={logo} 
-            alt="Logo" 
-            className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain"
-          />
+          <div className="w-20 h-20 lg:w-24 lg:h-24 mx-auto rounded-full bg-card shadow-lg mb-6 animate-pulse p-2 border-2 border-primary/20">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="w-full h-full object-contain"
+            />
+          </div>
           <Loader2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto mb-4 animate-spin text-primary" />
           <h2 className="text-xl lg:text-2xl font-bold mb-2">Анализируем...</h2>
           <p className="text-muted-foreground text-sm lg:text-base mb-6">
