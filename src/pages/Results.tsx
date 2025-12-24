@@ -4,8 +4,8 @@ import { CheckCircle2, AlertTriangle, Download, Share2, Copy, ArrowLeft } from "
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Header } from "@/components/Header";
 import { toast } from "sonner";
-import logo from "@/assets/new-logo.png";
 
 const Results = () => {
   const location = useLocation();
@@ -79,18 +79,8 @@ const Results = () => {
       </div>
       
       <Card className="relative max-w-[480px] lg:max-w-[560px] mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
-        {/* Logo Header */}
-        <div className="flex justify-center mb-4 lg:mb-6">
-          <img src={logo} alt="Medical Logo" className="w-20 h-20 lg:w-24 lg:h-24 shadow-md object-contain animate-fade-in" />
-        </div>
-
-        {/* Title */}
-        <div className="mb-6 lg:mb-8 text-center">
-          <h1 className="font-black text-primary mb-2 tracking-tight text-4xl lg:text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-fade-in">
-            АнализПро<span className="text-lg align-super">©</span>
-          </h1>
-          <p className="text-base lg:text-lg text-muted-foreground font-medium flex items-center justify-center gap-2 animate-fade-in">Расшифровка медицинских анализов и УЗИ</p>
-        </div>
+        {/* Header */}
+        <Header />
 
         {/* Back Button */}
         <Button 
@@ -196,7 +186,7 @@ const Results = () => {
 
         {/* Footer Info */}
         <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
-          <div className="font-medium">Версия 3.69.25</div>
+          <div className="font-medium">Версия 4.0.0</div>
           <div>© 2025 АнализПро. Все права защищены.</div>
           <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-accent underline transition-colors inline-block">
             Политика конфиденциальности

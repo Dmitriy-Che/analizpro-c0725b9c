@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTelegramAuth } from '@/contexts/TelegramAuthContext';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -29,7 +29,6 @@ type StudyType = 'lab' | 'ultrasound' | 'mri' | null;
 
 export default function Analyze() {
   const navigate = useNavigate();
-  const { user, refreshAnalyses } = useTelegramAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [currentStep, setCurrentStep] = useState<Step>('age');
@@ -112,7 +111,7 @@ export default function Analyze() {
           age: parseInt(age),
           gender,
           studyType,
-          telegramId: user?.id || null,
+          telegramId: null,
         },
       });
 
@@ -122,11 +121,6 @@ export default function Analyze() {
       if (error) throw error;
 
       if (data?.result) {
-        // Refresh user's analyses if authenticated
-        if (user) {
-          await refreshAnalyses();
-        }
-        
         navigate('/results', {
           state: {
             result: data.result,
@@ -346,7 +340,7 @@ export default function Analyze() {
           <img 
             src={logo} 
             alt="Logo" 
-            className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain"
+            className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain rounded-full"
           />
           <Loader2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto mb-4 animate-spin text-primary" />
           <h2 className="text-xl lg:text-2xl font-bold mb-2">Анализируем...</h2>
@@ -370,6 +364,9 @@ export default function Analyze() {
       </div>
       
       <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
+        {/* Header */}
+        <Header />
+
         {/* Progress */}
         <div className="flex items-center gap-2 mb-6 lg:mb-8">
           {steps.map((step, idx) => (
