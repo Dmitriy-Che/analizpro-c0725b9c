@@ -132,9 +132,7 @@ const Index = () => {
       <Card className="max-w-[480px] mx-auto rounded-3xl p-6 sm:p-8 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
         {/* Logo Header */}
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full bg-card shadow-md p-2 border-2 border-primary/20 animate-fade-in">
-            <img src={medicalLogo} alt="Medical Logo" className="w-full h-full object-contain" />
-          </div>
+          <img src={medicalLogo} alt="Medical Logo" className="w-16 h-16 rounded-full shadow-md object-contain animate-fade-in" />
         </div>
 
         {/* Title */}
