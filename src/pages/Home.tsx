@@ -51,11 +51,13 @@ export default function Home() {
       <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
         {/* Header */}
         <div className="text-center mb-8 lg:mb-10">
-          <img 
-            src={logo} 
-            alt="АнализПро" 
-            className="w-24 h-24 lg:w-32 lg:h-32 mx-auto shadow-lg mb-4 animate-fade-in object-contain"
-          />
+          <div className="w-24 h-24 lg:w-32 lg:h-32 mx-auto rounded-full bg-card shadow-lg mb-4 animate-fade-in p-3 border-2 border-primary/20">
+            <img 
+              src={logo} 
+              alt="АнализПро" 
+              className="w-full h-full object-contain"
+            />
+          </div>
           <h1 className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
             АнализПро<span className="text-sm align-super">©</span>
           </h1>

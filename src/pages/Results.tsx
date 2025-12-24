@@ -81,7 +81,9 @@ const Results = () => {
       <Card className="relative max-w-[480px] lg:max-w-[560px] mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
         {/* Logo Header */}
         <div className="flex justify-center mb-4 lg:mb-6">
-          <img src={logo} alt="Medical Logo" className="w-20 h-20 lg:w-24 lg:h-24 shadow-md object-contain animate-fade-in" />
+          <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-card shadow-md p-2 border-2 border-primary/20 animate-fade-in">
+            <img src={logo} alt="Medical Logo" className="w-full h-full object-contain" />
+          </div>
         </div>
 
         {/* Title */}
