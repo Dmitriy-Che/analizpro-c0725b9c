@@ -42,6 +42,7 @@ export type Database = {
           created_at: string | null
           gender: string | null
           id: string
+          partner_id: string | null
           status: string | null
           user_id: string | null
         }
@@ -51,6 +52,7 @@ export type Database = {
           created_at?: string | null
           gender?: string | null
           id?: string
+          partner_id?: string | null
           status?: string | null
           user_id?: string | null
         }
@@ -60,8 +62,56 @@ export type Database = {
           created_at?: string | null
           gender?: string | null
           id?: string
+          partner_id?: string | null
           status?: string | null
           user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_logs_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partners: {
+        Row: {
+          address: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          slug: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          slug: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          slug?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -167,6 +217,7 @@ export type Database = {
           created_at: string | null
           id: string
           ip_address: string | null
+          partner_id: string | null
         }
         Insert: {
           city?: string | null
@@ -174,6 +225,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           ip_address?: string | null
+          partner_id?: string | null
         }
         Update: {
           city?: string | null
@@ -181,8 +233,17 @@ export type Database = {
           created_at?: string | null
           id?: string
           ip_address?: string | null
+          partner_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "visits_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -205,6 +266,29 @@ export type Database = {
           warning_count: number
         }[]
       }
+      get_partner_stats: {
+        Args: { p_partner_id: string }
+        Returns: {
+          avg_age: number
+          critical_count: number
+          female_count: number
+          male_count: number
+          normal_count: number
+          today_analyses: number
+          top_cities: Json
+          total_analyses: number
+          total_visits: number
+          visits_last_30_days: number
+          warning_count: number
+        }[]
+      }
+      get_partner_visits_by_day: {
+        Args: { p_partner_id: string }
+        Returns: {
+          visit_count: number
+          visit_date: string
+        }[]
+      }
       get_visits_by_day: {
         Args: never
         Returns: {
@@ -222,7 +306,7 @@ export type Database = {
       increment_analysis_counter: { Args: never; Returns: number }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -350,7 +434,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "partner"],
     },
   },
 } as const

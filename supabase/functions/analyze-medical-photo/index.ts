@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, age, gender, studyType } = await req.json();
+    const { imageBase64, age, gender, studyType, partner_id } = await req.json();
     
     if (!imageBase64) {
       throw new Error('Не предоставлено изображение');
@@ -319,6 +319,7 @@ serve(async (req) => {
         gender: gender,
         status: status,
         city: city,
+        partner_id: partner_id || null
       });
       
       console.log('Analysis logged successfully with city:', city);

@@ -10,6 +10,16 @@ import Login from "./pages/Login";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
 
+// Partner pages
+import PartnerRegister from "./pages/partner/Register";
+import PartnerLogin from "./pages/partner/Login";
+import PartnerDashboard from "./pages/partner/Dashboard";
+
+// Clinic branded pages
+import ClinicHome from "./pages/clinic/Home";
+import ClinicAnalyze from "./pages/clinic/Analyze";
+import ClinicResults from "./pages/clinic/Results";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -19,11 +29,23 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Main app routes */}
           <Route path="/" element={<Home />} />
           <Route path="/analyze" element={<Analyze />} />
           <Route path="/results" element={<Results />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
+          
+          {/* Partner routes */}
+          <Route path="/partner/register" element={<PartnerRegister />} />
+          <Route path="/partner/login" element={<PartnerLogin />} />
+          <Route path="/partner/dashboard" element={<PartnerDashboard />} />
+          
+          {/* Clinic branded routes */}
+          <Route path="/c/:slug" element={<ClinicHome />} />
+          <Route path="/c/:slug/analyze" element={<ClinicAnalyze />} />
+          <Route path="/c/:slug/results" element={<ClinicResults />} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
