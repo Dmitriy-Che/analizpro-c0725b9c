@@ -24,8 +24,8 @@ export default function Home() {
       <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
         {/* Header */}
         <Header />
-        <p className="text-muted-foreground lg:text-lg text-center mb-8">Расшифровка любых анализов за 5 секунд
-совершенно - БЕСПЛАТНО!</p>
+        <p className="text-muted-foreground lg:text-lg text-center mb-8">Расшифровка любых анализов
+за 5 секунд совершенно - БЕСПЛАТНО!</p>
 
         {/* Features */}
         <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-8">
