@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { Header } from '@/components/Header';
+import { PartnerHeader } from '@/components/PartnerHeader';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,15 +21,18 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { usePartnerBySlug } from '@/hooks/usePartner';
 import logo from '@/assets/new-logo.png';
 
 type Step = 'age' | 'gender' | 'studyType' | 'upload';
 type Gender = 'male' | 'female' | null;
 type StudyType = 'lab' | 'ultrasound' | 'mri' | null;
 
-export default function Analyze() {
+export default function ClinicAnalyze() {
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { partner, loading: partnerLoading, error: partnerError } = usePartnerBySlug(slug);
 
   const [currentStep, setCurrentStep] = useState<Step>('age');
   const [age, setAge] = useState('');
@@ -90,13 +93,11 @@ export default function Analyze() {
     setIsAnalyzing(true);
     setProgress(0);
 
-    // Simulate progress
     const progressInterval = setInterval(() => {
       setProgress(prev => Math.min(prev + Math.random() * 15, 90));
     }, 500);
 
     try {
-      // Convert file to base64
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve) => {
         reader.onload = () => resolve(reader.result as string);
@@ -104,7 +105,6 @@ export default function Analyze() {
       });
       const imageBase64 = await base64Promise;
 
-      // Call analyze function
       const { data, error } = await supabase.functions.invoke('analyze-medical-photo', {
         body: {
           imageBase64,
@@ -112,7 +112,7 @@ export default function Analyze() {
           gender,
           studyType,
           telegramId: null,
-          partner_id: null,
+          partner_id: partner?.id || null,
         },
       });
 
@@ -122,7 +122,7 @@ export default function Analyze() {
       if (error) throw error;
 
       if (data?.result) {
-        navigate('/results', {
+        navigate(`/c/${slug}/results`, {
           state: {
             result: data.result,
             age,
@@ -141,6 +141,25 @@ export default function Analyze() {
       setIsAnalyzing(false);
     }
   };
+
+  if (partnerLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (partnerError || !partner) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center px-4">
+        <Card className="p-8 text-center max-w-md">
+          <h1 className="text-2xl font-bold mb-4">Клиника не найдена</h1>
+          <Button onClick={() => navigate('/')}>Перейти на главную</Button>
+        </Card>
+      </div>
+    );
+  }
 
   const renderStep = () => {
     switch (currentStep) {
@@ -331,7 +350,6 @@ export default function Analyze() {
   if (isAnalyzing) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center px-4">
-        {/* Desktop decorative background */}
         <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -339,9 +357,9 @@ export default function Analyze() {
         
         <Card className="w-full max-w-[400px] lg:max-w-[450px] p-8 lg:p-10 text-center relative">
           <img 
-            src={logo} 
-            alt="Logo" 
-            className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain rounded-full"
+            src={partner.logo_url || logo} 
+            alt={partner.name}
+            className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain rounded-full bg-white"
           />
           <Loader2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto mb-4 animate-spin text-primary" />
           <h2 className="text-xl lg:text-2xl font-bold mb-2">Анализируем...</h2>
@@ -357,7 +375,6 @@ export default function Analyze() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20">
-      {/* Desktop decorative background */}
       <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -365,10 +382,12 @@ export default function Analyze() {
       </div>
       
       <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
-        {/* Header */}
-        <Header />
+        <PartnerHeader 
+          clinicName={partner.name} 
+          clinicLogo={partner.logo_url} 
+          slug={partner.slug}
+        />
 
-        {/* Progress */}
         <div className="flex items-center gap-2 mb-6 lg:mb-8">
           {steps.map((step, idx) => (
             <div key={step} className="flex-1">
@@ -381,12 +400,10 @@ export default function Analyze() {
           ))}
         </div>
 
-        {/* Step Content */}
         <Card className="p-6 lg:p-8 border-2 border-border/50 bg-card/95 mb-6 lg:mb-8">
           {renderStep()}
         </Card>
 
-        {/* Navigation */}
         <div className="flex gap-3">
           {currentStepIndex > 0 && (
             <Button

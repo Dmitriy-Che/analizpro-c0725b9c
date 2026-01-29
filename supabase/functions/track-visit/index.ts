@@ -12,6 +12,15 @@ serve(async (req) => {
   }
 
   try {
+    // Get partner_id from request body if provided
+    let partner_id = null;
+    try {
+      const body = await req.json();
+      partner_id = body?.partner_id || null;
+    } catch {
+      // No body or invalid JSON - that's fine, partner_id stays null
+    }
+
     // Get IP address from headers
     const forwardedFor = req.headers.get('x-forwarded-for');
     const realIp = req.headers.get('x-real-ip');
@@ -19,7 +28,7 @@ serve(async (req) => {
     
     const ipAddress = cfConnectingIp || forwardedFor?.split(',')[0]?.trim() || realIp || 'unknown';
     
-    console.log(`Tracking visit from IP: ${ipAddress}`);
+    console.log(`Tracking visit from IP: ${ipAddress}, partner_id: ${partner_id}`);
 
     // Get city from IP using free API
     let city = null;
@@ -46,11 +55,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Insert visit record
+    // Insert visit record with partner_id
     const { error } = await supabaseClient.from('visits').insert({
       ip_address: ipAddress,
       city: city,
-      country: country
+      country: country,
+      partner_id: partner_id
     });
 
     if (error) {
