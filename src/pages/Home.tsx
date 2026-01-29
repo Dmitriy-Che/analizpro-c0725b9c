@@ -87,7 +87,7 @@ export default function Home() {
         {/* Footer */}
         <div className="mt-8 text-center text-xs text-muted-foreground space-y-1">
           <div>Версия 4.0.0</div>
-          <div>© 2025 АнализПро. Все права защищены.</div>
+          <div>© 2026 АнализПро. Все права защищены.</div>
           <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-block">
             Политика конфиденциальности
           </a>
