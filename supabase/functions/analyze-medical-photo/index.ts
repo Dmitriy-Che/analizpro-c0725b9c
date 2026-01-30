@@ -7,27 +7,103 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation helpers
+const VALID_GENDERS = ['male', 'female'] as const;
+const VALID_STUDY_TYPES = ['lab', 'ultrasound', 'mri'] as const;
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB in base64 characters
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidBase64Image(data: string): boolean {
+  if (!data || typeof data !== 'string') return false;
+  if (data.length > MAX_IMAGE_SIZE) return false;
+  // Check for valid image data URL prefix
+  return /^data:image\/(jpeg|jpg|png|gif|webp);base64,/.test(data);
+}
+
+function isValidAge(age: unknown): age is number {
+  if (typeof age !== 'number') return false;
+  return Number.isInteger(age) && age >= 0 && age <= 150;
+}
+
+function isValidGender(gender: unknown): gender is typeof VALID_GENDERS[number] {
+  return typeof gender === 'string' && VALID_GENDERS.includes(gender as typeof VALID_GENDERS[number]);
+}
+
+function isValidStudyType(studyType: unknown): studyType is typeof VALID_STUDY_TYPES[number] {
+  return typeof studyType === 'string' && VALID_STUDY_TYPES.includes(studyType as typeof VALID_STUDY_TYPES[number]);
+}
+
+function isValidUUID(id: unknown): boolean {
+  if (id === null || id === undefined) return true; // Optional field
+  return typeof id === 'string' && UUID_REGEX.test(id);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { imageBase64, age, gender, studyType, partner_id } = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Неверный формат запроса' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { imageBase64, age, gender, studyType, partner_id } = body;
     
+    // Validate imageBase64
     if (!imageBase64) {
-      throw new Error('Не предоставлено изображение');
+      return new Response(
+        JSON.stringify({ error: 'Не предоставлено изображение' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
     
-    if (!age || !gender) {
-      throw new Error('Не предоставлены возраст или пол пациента');
+    if (!isValidBase64Image(imageBase64)) {
+      return new Response(
+        JSON.stringify({ error: 'Неверный формат изображения. Поддерживаются JPEG, PNG, GIF, WebP до 10MB.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    if (!studyType) {
-      throw new Error('Не указан тип исследования');
+    // Validate age
+    if (!isValidAge(age)) {
+      return new Response(
+        JSON.stringify({ error: 'Неверный возраст. Укажите целое число от 0 до 150.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    console.log(`Начат анализ медицинского исследования: ${studyType}`);
+    // Validate gender
+    if (!isValidGender(gender)) {
+      return new Response(
+        JSON.stringify({ error: 'Неверный пол. Допустимые значения: male, female.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate studyType
+    if (!isValidStudyType(studyType)) {
+      return new Response(
+        JSON.stringify({ error: 'Неверный тип исследования. Допустимые значения: lab, ultrasound, mri.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate partner_id (optional)
+    if (!isValidUUID(partner_id)) {
+      return new Response(
+        JSON.stringify({ error: 'Неверный формат partner_id.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Начат анализ медицинского исследования: ${studyType}, возраст: ${age}, пол: ${gender}`);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -337,9 +413,8 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Ошибка в analyze-medical-photo:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
     return new Response(
-      JSON.stringify({ error: errorMessage }), 
+      JSON.stringify({ error: 'Произошла ошибка при обработке запроса. Попробуйте позже.' }), 
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

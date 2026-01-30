@@ -6,9 +6,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { generateSlug } from '@/hooks/usePartner';
 import logo from '@/assets/new-logo.png';
 import { Building2, Mail, Lock, Phone, MapPin, Loader2 } from 'lucide-react';
+
+// Input validation helpers
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) && email.length <= 255;
+};
+
+const isValidPhone = (phone: string): boolean => {
+  if (!phone) return true; // Optional field
+  const phoneRegex = /^[\+\d\s\-\(\)]{7,20}$/;
+  return phoneRegex.test(phone);
+};
 
 export default function PartnerRegister() {
   const navigate = useNavigate();
@@ -25,6 +36,17 @@ export default function PartnerRegister() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Client-side validation
+    if (!formData.email.trim()) {
+      toast.error('Введите email');
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      toast.error('Неверный формат email');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       toast.error('Пароли не совпадают');
       return;
@@ -35,76 +57,57 @@ export default function PartnerRegister() {
       return;
     }
 
-    if (!formData.clinicName.trim()) {
-      toast.error('Введите название клиники');
+    if (formData.password.length > 72) {
+      toast.error('Пароль слишком длинный');
+      return;
+    }
+
+    if (!formData.clinicName.trim() || formData.clinicName.trim().length < 2) {
+      toast.error('Введите название клиники (минимум 2 символа)');
+      return;
+    }
+
+    if (formData.contactPhone && !isValidPhone(formData.contactPhone)) {
+      toast.error('Неверный формат телефона');
       return;
     }
 
     setLoading(true);
 
     try {
-      // 1. Create user account
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/partner/dashboard`
+      // Call secure edge function for registration
+      const { data, error } = await supabase.functions.invoke('register-partner', {
+        body: {
+          email: formData.email.trim(),
+          password: formData.password,
+          clinicName: formData.clinicName.trim(),
+          contactPhone: formData.contactPhone.trim() || null,
+          address: formData.address.trim() || null
         }
       });
 
-      if (authError) {
-        if (authError.message.includes('already registered')) {
-          toast.error('Этот email уже зарегистрирован');
-        } else {
-          toast.error(authError.message);
-        }
+      if (error) {
+        console.error('Registration error:', error);
+        toast.error('Ошибка регистрации. Попробуйте позже.');
         return;
       }
 
-      if (!authData.user) {
-        toast.error('Ошибка создания аккаунта');
+      if (data?.error) {
+        toast.error(data.error);
         return;
       }
 
-      // 2. Generate unique slug
-      let slug = generateSlug(formData.clinicName);
-      
-      // Check if slug exists and make it unique
-      const { data: existingPartner } = await supabase
-        .from('partners')
-        .select('slug')
-        .eq('slug', slug)
-        .single();
-
-      if (existingPartner) {
-        slug = `${slug}-${Date.now().toString(36)}`;
-      }
-
-      // 3. Create partner record
-      const { error: partnerError } = await supabase.from('partners').insert({
-        user_id: authData.user.id,
-        name: formData.clinicName.trim(),
-        slug: slug,
-        contact_email: formData.email,
-        contact_phone: formData.contactPhone || null,
-        address: formData.address || null
+      // Sign in the user after successful registration
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email.trim(),
+        password: formData.password
       });
 
-      if (partnerError) {
-        console.error('Partner creation error:', partnerError);
-        toast.error('Ошибка создания профиля клиники');
+      if (signInError) {
+        console.error('Sign in error:', signInError);
+        toast.success('Регистрация успешна! Войдите в систему.');
+        navigate('/partner/login');
         return;
-      }
-
-      // 4. Assign partner role
-      const { error: roleError } = await supabase.from('user_roles').insert({
-        user_id: authData.user.id,
-        role: 'partner'
-      });
-
-      if (roleError) {
-        console.error('Role assignment error:', roleError);
-        // Don't fail registration for role error
       }
 
       toast.success('Регистрация успешна! Добро пожаловать!');
@@ -145,6 +148,7 @@ export default function PartnerRegister() {
                 value={formData.clinicName}
                 onChange={(e) => setFormData({ ...formData, clinicName: e.target.value })}
                 placeholder="Медицинский центр 'Здоровье'"
+                maxLength={100}
                 required
               />
             </div>
@@ -161,6 +165,7 @@ export default function PartnerRegister() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="clinic@example.com"
+                maxLength={255}
                 required
               />
             </div>
@@ -177,6 +182,7 @@ export default function PartnerRegister() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 placeholder="Минимум 6 символов"
+                maxLength={72}
                 required
               />
             </div>
@@ -193,6 +199,7 @@ export default function PartnerRegister() {
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 placeholder="Повторите пароль"
+                maxLength={72}
                 required
               />
             </div>
@@ -209,6 +216,7 @@ export default function PartnerRegister() {
                 value={formData.contactPhone}
                 onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
                 placeholder="+7 (999) 123-45-67"
+                maxLength={20}
               />
             </div>
 
@@ -223,6 +231,7 @@ export default function PartnerRegister() {
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 placeholder="г. Москва, ул. Примерная, д. 1"
+                maxLength={200}
               />
             </div>
 
