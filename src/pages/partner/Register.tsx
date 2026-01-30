@@ -86,14 +86,17 @@ export default function PartnerRegister() {
         }
       });
 
-      if (error) {
-        console.error('Registration error:', error);
-        toast.error('Ошибка регистрации. Попробуйте позже.');
+      // Handle edge function errors - check data.error first as it may contain specific message
+      if (data?.error) {
+        toast.error(data.error);
         return;
       }
 
-      if (data?.error) {
-        toast.error(data.error);
+      if (error) {
+        console.error('Registration error:', error);
+        // Try to parse error message from edge function response
+        const errorMessage = error.message || 'Ошибка регистрации. Попробуйте позже.';
+        toast.error(errorMessage);
         return;
       }
 
