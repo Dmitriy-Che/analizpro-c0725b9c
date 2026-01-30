@@ -165,55 +165,28 @@ export function PartnerStats({ stats, visitsByDay }: PartnerStatsProps) {
         </Card>
       </div>
 
-      {/* Status and Cities Row */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Status Distribution */}
-        <Card className="p-4 border-2 border-border/50">
-          <h3 className="font-semibold mb-4">Статусы анализов</h3>
-          {statusData.length > 0 ? (
-            <div className="space-y-3">
-              {statusData.map((status, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: status.color }}
-                    />
-                    <span className="text-sm">{status.name}</span>
-                  </div>
-                  <span className="font-medium">{status.value}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              Нет данных
-            </div>
-          )}
-        </Card>
-
-        {/* Top Cities */}
-        <Card className="p-4 border-2 border-border/50">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            Топ городов
-          </h3>
-          {stats.top_cities && stats.top_cities.length > 0 ? (
-            <div className="space-y-2">
-              {stats.top_cities.map((city, index) => (
-                <div key={index} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-                  <span className="text-sm">{city.city}</span>
-                  <span className="font-medium text-sm">{city.count}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              Нет данных о городах
-            </div>
-          )}
-        </Card>
-      </div>
+      {/* Status Distribution */}
+      <Card className="p-4 border-2 border-border/50">
+        <h3 className="font-semibold mb-4">Статусы анализов</h3>
+        {statusData.length > 0 ? (
+          <div className="grid grid-cols-3 gap-4">
+            {statusData.map((status, index) => (
+              <div key={index} className="flex flex-col items-center p-3 bg-muted/50 rounded-lg">
+                <div 
+                  className="w-4 h-4 rounded-full mb-2" 
+                  style={{ backgroundColor: status.color }}
+                />
+                <span className="font-bold text-xl">{status.value}</span>
+                <span className="text-xs text-muted-foreground">{status.name}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Нет данных
+          </div>
+        )}
+      </Card>
 
       {/* Average Age */}
       {stats.avg_age && (

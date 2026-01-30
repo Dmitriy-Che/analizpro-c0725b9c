@@ -16,7 +16,12 @@ import {
   LogOut,
   Home,
   MapPin,
-  Eye
+  Eye,
+  Building2,
+  Link2,
+  Copy,
+  ArrowLeft,
+  Loader2
 } from "lucide-react";
 import {
   ChartContainer,
@@ -24,6 +29,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { PartnerStats } from "@/components/PartnerStats";
 
 interface AnalysisStats {
   total_analyses: number;
@@ -44,12 +50,28 @@ interface VisitsByDay {
   visit_count: number;
 }
 
+interface Partner {
+  id: string;
+  name: string;
+  slug: string;
+  contact_email: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [stats, setStats] = useState<AnalysisStats | null>(null);
   const [visitsByDay, setVisitsByDay] = useState<VisitsByDay[]>([]);
   const [loading, setLoading] = useState(true);
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
+  const [partnerStats, setPartnerStats] = useState<AnalysisStats | null>(null);
+  const [partnerVisitsByDay, setPartnerVisitsByDay] = useState<VisitsByDay[]>([]);
+  const [partnerLoading, setPartnerLoading] = useState(false);
+
+  const partnerRegisterUrl = `${window.location.origin}/partner/register`;
 
   useEffect(() => {
     checkAdminAccess();
@@ -79,7 +101,7 @@ const Admin = () => {
       }
 
       setIsAdmin(true);
-      await Promise.all([loadStats(), loadVisitsByDay()]);
+      await Promise.all([loadStats(), loadVisitsByDay(), loadPartners()]);
     } catch (error) {
       console.error("Admin check error:", error);
       toast.error("Ошибка проверки доступа");
@@ -125,6 +147,62 @@ const Admin = () => {
     } catch (error) {
       console.error("Visits by day loading error:", error);
     }
+  };
+
+  const loadPartners = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('partners')
+        .select('id, name, slug, contact_email, is_active, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPartners(data || []);
+    } catch (error) {
+      console.error("Partners loading error:", error);
+    }
+  };
+
+  const handleSelectPartner = async (partner: Partner) => {
+    setSelectedPartner(partner);
+    setPartnerLoading(true);
+
+    try {
+      const [statsResult, visitsResult] = await Promise.all([
+        supabase.rpc('get_partner_stats', { p_partner_id: partner.id }),
+        supabase.rpc('get_partner_visits_by_day', { p_partner_id: partner.id })
+      ]);
+
+      if (statsResult.data && statsResult.data.length > 0) {
+        const rawStats = statsResult.data[0];
+        const topCities = typeof rawStats.top_cities === 'string' 
+          ? JSON.parse(rawStats.top_cities) 
+          : rawStats.top_cities || [];
+        
+        setPartnerStats({
+          ...rawStats,
+          top_cities: topCities
+        });
+      }
+
+      setPartnerVisitsByDay(visitsResult.data || []);
+    } catch (error) {
+      console.error("Partner stats loading error:", error);
+      toast.error("Ошибка загрузки статистики партнёра");
+    } finally {
+      setPartnerLoading(false);
+    }
+  };
+
+  const handleBackFromPartner = () => {
+    setSelectedPartner(null);
+    setPartnerStats(null);
+    setPartnerVisitsByDay([]);
+  };
+
+  const copyPartnerLink = () => {
+    navigator.clipboard.writeText(partnerRegisterUrl);
+    toast.success("Ссылка скопирована!");
   };
 
   const handleSignOut = async () => {
@@ -454,6 +532,106 @@ const Admin = () => {
               )}
             </Card>
           </>
+        )}
+
+        {/* Partner Registration Link */}
+        <Card className="p-6 border-2 border-primary/20 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-primary/10 rounded-xl">
+                <Link2 className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold">Ссылка для регистрации партнёров</h3>
+                <code className="text-sm text-muted-foreground break-all">{partnerRegisterUrl}</code>
+              </div>
+            </div>
+            <Button onClick={copyPartnerLink} variant="outline" className="gap-2 shrink-0">
+              <Copy className="w-4 h-4" />
+              Копировать
+            </Button>
+          </div>
+        </Card>
+
+        {/* Partners List */}
+        <Card className="p-6 border-2 border-border mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-primary" />
+            Клиники-партнёры ({partners.length})
+          </h2>
+          {partners.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {partners.map((partner) => (
+                <Card 
+                  key={partner.id}
+                  onClick={() => handleSelectPartner(partner)}
+                  className={`p-4 cursor-pointer transition-all hover:border-primary/50 hover:shadow-md ${
+                    partner.is_active ? 'border-green-200 bg-green-50/30' : 'border-red-200 bg-red-50/30'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-semibold">{partner.name}</h4>
+                      <p className="text-xs text-muted-foreground">/c/{partner.slug}</p>
+                      {partner.contact_email && (
+                        <p className="text-xs text-muted-foreground mt-1">{partner.contact_email}</p>
+                      )}
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      partner.is_active 
+                        ? 'bg-green-100 text-green-700' 
+                        : 'bg-red-100 text-red-700'
+                    }`}>
+                      {partner.is_active ? 'Активен' : 'Неактивен'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Добавлен: {new Date(partner.created_at).toLocaleDateString('ru-RU')}
+                  </p>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">
+              Пока нет зарегистрированных партнёров
+            </p>
+          )}
+        </Card>
+
+        {/* Partner Stats Modal/Section */}
+        {selectedPartner && (
+          <Card className="p-6 border-2 border-primary/30 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  onClick={handleBackFromPartner}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+                <div>
+                  <h2 className="text-xl font-bold">{selectedPartner.name}</h2>
+                  <p className="text-sm text-muted-foreground">/c/{selectedPartner.slug}</p>
+                </div>
+              </div>
+              <span className={`text-sm px-3 py-1 rounded-full ${
+                selectedPartner.is_active 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {selectedPartner.is_active ? 'Активен' : 'Неактивен'}
+              </span>
+            </div>
+            
+            {partnerLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <PartnerStats stats={partnerStats} visitsByDay={partnerVisitsByDay} />
+            )}
+          </Card>
         )}
 
         {/* Info Card */}
