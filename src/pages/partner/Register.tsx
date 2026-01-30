@@ -76,7 +76,7 @@ export default function PartnerRegister() {
 
     try {
       // Call secure edge function for registration
-      const { data, error } = await supabase.functions.invoke('register-partner', {
+      const response = await supabase.functions.invoke('register-partner', {
         body: {
           email: formData.email.trim(),
           password: formData.password,
@@ -86,17 +86,32 @@ export default function PartnerRegister() {
         }
       });
 
-      // Handle edge function errors - check data.error first as it may contain specific message
-      if (data?.error) {
-        toast.error(data.error);
+      const { data, error } = response;
+
+      // Handle edge function errors - parse response for Russian error messages
+      if (error) {
+        console.error('Registration error:', error);
+        // Try to extract error message from the context (edge function returns JSON with error field)
+        try {
+          // The error.context might contain the actual response
+          const context = error.context as { body?: string } | undefined;
+          if (context?.body) {
+            const parsed = JSON.parse(context.body);
+            if (parsed.error) {
+              toast.error(parsed.error);
+              return;
+            }
+          }
+        } catch {
+          // Parsing failed, use default message
+        }
+        toast.error('Ошибка регистрации. Попробуйте позже.');
         return;
       }
 
-      if (error) {
-        console.error('Registration error:', error);
-        // Try to parse error message from edge function response
-        const errorMessage = error.message || 'Ошибка регистрации. Попробуйте позже.';
-        toast.error(errorMessage);
+      // Check for error in response data
+      if (data?.error) {
+        toast.error(data.error);
         return;
       }
 
