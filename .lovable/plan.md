@@ -1,235 +1,121 @@
 
-## План: Преобразование в B2B платформу для медицинских клиник
+# План: Названия городов на русском языке
 
-### Архитектура решения
+## Проблема
+Блок «Топ городов» в админ-панели показывает названия на английском (например, "Moscow" вместо "Москва"), потому что API геолокации `ip-api.com` по умолчанию возвращает данные на английском.
+
+## Решение
+
+### 1. Для новых данных — изменить запросы к API геолокации
+Добавить параметр `lang=ru` в URL запроса к ip-api.com. Это заставит API возвращать названия городов сразу на русском языке.
+
+**Файлы для изменения:**
+- `supabase/functions/track-visit/index.ts` — строка 39
+- `supabase/functions/analyze-medical-photo/index.ts` — аналогичный запрос к ip-api.com
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│                    B2B Платформа АнализПро                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   ┌──────────────────┐        ┌──────────────────────────────┐ │
-│   │   Публичная      │        │   Личный кабинет клиники     │ │
-│   │   часть          │        │   /partner/dashboard         │ │
-│   │   /{slug}        │        │                              │ │
-│   │                  │        │   - Статистика               │ │
-│   │   - Брендированная       │   - Настройки                 │ │
-│   │     страница     │        │   - QR-код                   │ │
-│   │   - Анализ       │        │   - Ссылка                   │ │
-│   │   - Результаты   │        │                              │ │
-│   └──────────────────┘        └──────────────────────────────┘ │
-│                                                                 │
-│   ┌──────────────────┐        ┌──────────────────────────────┐ │
-│   │   Регистрация    │        │   Админ-панель (ваша)        │ │
-│   │   партнёров      │        │   /admin                     │ │
-│   │   /partner/register      │                              │ │
-│   │                  │        │   - Все клиники              │ │
-│   │   - Email/пароль │        │   - Общая статистика         │ │
-│   │   - Название     │        │   - Управление               │ │
-│   │   - Контакты     │        │                              │ │
-│   └──────────────────┘        └──────────────────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+Было:  http://ip-api.com/json/${ipAddress}?fields=status,country,city
+Будет: http://ip-api.com/json/${ipAddress}?fields=status,country,city&lang=ru
 ```
 
----
+### 2. Для существующих данных — словарь перевода
+Поскольку в базе уже есть записи с английскими названиями, добавить функцию-переводчик для отображения.
 
-### Шаг 1: Создание таблиц базы данных
+**Файл:** `src/pages/Admin.tsx`
 
-**1.1. Таблица `partners` (клиники-партнёры)**
-```sql
-CREATE TABLE public.partners (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  name TEXT NOT NULL,                    -- Название клиники
-  slug TEXT UNIQUE NOT NULL,             -- Уникальный URL (например: "klinika-zdorovye")
-  logo_url TEXT,                         -- Логотип клиники
-  contact_email TEXT,                    -- Контактный email
-  contact_phone TEXT,                    -- Контактный телефон
-  address TEXT,                          -- Адрес
-  is_active BOOLEAN DEFAULT true,        -- Статус активности
-  created_at TIMESTAMPTZ DEFAULT now()
-);
+Добавить словарь популярных городов:
+```text
+const cityTranslations: Record<string, string> = {
+  "Moscow": "Москва",
+  "Saint Petersburg": "Санкт-Петербург",
+  "Novosibirsk": "Новосибирск",
+  "Yekaterinburg": "Екатеринбург",
+  "Kazan": "Казань",
+  "Nizhny Novgorod": "Нижний Новгород",
+  "Chelyabinsk": "Челябинск",
+  "Samara": "Самара",
+  "Omsk": "Омск",
+  "Rostov-on-Don": "Ростов-на-Дону",
+  "Ufa": "Уфа",
+  "Krasnoyarsk": "Красноярск",
+  "Perm": "Пермь",
+  "Voronezh": "Воронеж",
+  "Volgograd": "Волгоград",
+  "Krasnodar": "Краснодар",
+  "Saratov": "Саратов",
+  "Tyumen": "Тюмень",
+  "Tolyatti": "Тольятти",
+  "Izhevsk": "Ижевск",
+  "Barnaul": "Барнаул",
+  "Ulyanovsk": "Ульяновск",
+  "Irkutsk": "Иркутск",
+  "Khabarovsk": "Хабаровск",
+  "Yaroslavl": "Ярославль",
+  "Vladivostok": "Владивосток",
+  "Makhachkala": "Махачкала",
+  "Tomsk": "Томск",
+  "Orenburg": "Оренбург",
+  "Kemerovo": "Кемерово",
+  "Novokuznetsk": "Новокузнецк",
+  "Ryazan": "Рязань",
+  "Astrakhan": "Астрахань",
+  "Naberezhnyye Chelny": "Набережные Челны",
+  "Penza": "Пенза",
+  "Kirov": "Киров",
+  "Lipetsk": "Липецк",
+  "Cheboksary": "Чебоксары",
+  "Balashikha": "Балашиха",
+  "Kaliningrad": "Калининград",
+  "Tula": "Тула",
+  "Kursk": "Курск",
+  "Sochi": "Сочи",
+  "Stavropol": "Ставрополь",
+  "Bryansk": "Брянск",
+  "Ivanovo": "Иваново",
+  "Belgorod": "Белгород",
+  "Surgut": "Сургут",
+  "Vladimir": "Владимир",
+  "Arkhangelsk": "Архангельск",
+  "Chita": "Чита",
+  "Kaluga": "Калуга",
+  "Smolensk": "Смоленск",
+  "Saransk": "Саранск",
+  "Vologda": "Вологда",
+  "Tver": "Тверь",
+  "Yoshkar-Ola": "Йошкар-Ола",
+  "Almaty": "Алматы",
+  "Nur-Sultan": "Нур-Султан",
+  "Astana": "Астана",
+  "Bishkek": "Бишкек",
+  "Tashkent": "Ташкент",
+  "Minsk": "Минск",
+  "Kyiv": "Киев",
+  "Kiev": "Киев"
+  // ... и другие
+};
+
+const translateCity = (city: string | null): string => {
+  if (!city) return 'Неизвестно';
+  return cityTranslations[city] || city;
+};
 ```
 
-**1.2. Таблица `partner_roles` (роли партнёров)**
-```sql
--- Роль "partner" добавляется к существующему enum app_role
-ALTER TYPE public.app_role ADD VALUE 'partner';
-
--- Партнёрам назначается роль через user_roles
-```
-
-**1.3. Обновление таблицы `analysis_logs`**
-```sql
-ALTER TABLE public.analysis_logs 
-ADD COLUMN partner_id UUID REFERENCES public.partners(id);
-
--- Добавим индекс для быстрой фильтрации
-CREATE INDEX idx_analysis_logs_partner_id ON public.analysis_logs(partner_id);
-```
-
-**1.4. Обновление таблицы `visits`**
-```sql
-ALTER TABLE public.visits 
-ADD COLUMN partner_id UUID REFERENCES public.partners(id);
-
-CREATE INDEX idx_visits_partner_id ON public.visits(partner_id);
-```
-
----
-
-### Шаг 2: RLS-политики безопасности
-
-```sql
--- Политики для таблицы partners
-ALTER TABLE public.partners ENABLE ROW LEVEL SECURITY;
-
--- Партнёр видит только свои данные
-CREATE POLICY "Partners can view own data" ON public.partners
-  FOR SELECT USING (user_id = auth.uid());
-
--- Партнёр может обновлять только свои данные
-CREATE POLICY "Partners can update own data" ON public.partners
-  FOR UPDATE USING (user_id = auth.uid());
-
--- Админы видят всех партнёров
-CREATE POLICY "Admins can view all partners" ON public.partners
-  FOR SELECT USING (has_role(auth.uid(), 'admin'));
-
--- Публичный доступ к активным партнёрам по slug (для публичных страниц)
-CREATE POLICY "Anyone can view active partners by slug" ON public.partners
-  FOR SELECT USING (is_active = true);
-```
-
----
-
-### Шаг 3: Новые страницы
-
-**3.1. Регистрация партнёра: `/partner/register`**
-- Форма регистрации: email, пароль, название клиники
-- Автогенерация slug из названия
-- Отправка на подтверждение email
-- После регистрации → личный кабинет
-
-**3.2. Вход партнёра: `/partner/login`**
-- Email + пароль
-- Проверка роли "partner"
-- Редирект в личный кабинет
-
-**3.3. Личный кабинет: `/partner/dashboard`**
-- Статистика только по своим пациентам:
-  - Всего визитов
-  - Всего анализов
-  - Распределение по полу
-  - Распределение по возрасту
-  - Типы анализов
-  - Статусы (норма/внимание/критично)
-- Уникальная ссылка на приложение: `https://analizpro.lovable.app/c/{slug}`
-- QR-код для печати (генерация на клиенте)
-- Настройки профиля
-
-**3.4. Брендированная страница клиники: `/c/{slug}`**
-- Показывает логотип клиники (если есть)
-- Название клиники
-- Все функции анализа работают как обычно
-- Статистика привязывается к partner_id
-
----
-
-### Шаг 4: Обновление существующих файлов
-
-**4.1. App.tsx - новые роуты**
+И использовать при отображении (строка 623):
 ```tsx
-<Route path="/partner/register" element={<PartnerRegister />} />
-<Route path="/partner/login" element={<PartnerLogin />} />
-<Route path="/partner/dashboard" element={<PartnerDashboard />} />
-<Route path="/c/:slug" element={<PartnerHome />} />
-<Route path="/c/:slug/analyze" element={<PartnerAnalyze />} />
-<Route path="/c/:slug/results" element={<PartnerResults />} />
-```
-
-**4.2. Edge-функции**
-- Обновить `analyze-medical-photo`: принимать `partner_id` и сохранять в `analysis_logs`
-- Обновить `track-visit`: принимать `partner_id` и сохранять в `visits`
-
-**4.3. Новые database functions**
-```sql
--- Статистика для конкретного партнёра
-CREATE FUNCTION get_partner_stats(p_partner_id UUID)
-RETURNS TABLE(...) AS $$
-  -- Аналогично get_analysis_stats, но с фильтром по partner_id
-$$;
+{translateCity(cityData.city)}
 ```
 
 ---
 
-### Шаг 5: Новые компоненты
+## Технические детали
 
-**5.1. `QRCodeGenerator.tsx`**
-- Генерация QR-кода из URL
-- Возможность скачать как PNG
-- Библиотека: `qrcode` или `qrcode.react`
+| Файл | Изменения |
+|------|-----------|
+| `supabase/functions/track-visit/index.ts` | Добавить `&lang=ru` в URL |
+| `supabase/functions/analyze-medical-photo/index.ts` | Добавить `&lang=ru` в URL |
+| `src/pages/Admin.tsx` | Добавить словарь и функцию перевода |
 
-**5.2. `PartnerHeader.tsx`**
-- Показывает логотип клиники (или логотип АнализПро если нет)
-- Название клиники
-- Надпись "Сервис от АнализПро"
-
----
-
-### Шаг 6: Структура файлов
-
-```text
-src/
-├── pages/
-│   ├── partner/
-│   │   ├── Register.tsx      -- Регистрация партнёра
-│   │   ├── Login.tsx         -- Вход партнёра
-│   │   └── Dashboard.tsx     -- Личный кабинет
-│   └── clinic/
-│       ├── Home.tsx          -- /c/{slug} - главная клиники
-│       ├── Analyze.tsx       -- /c/{slug}/analyze
-│       └── Results.tsx       -- /c/{slug}/results
-├── components/
-│   ├── QRCodeGenerator.tsx
-│   ├── PartnerHeader.tsx
-│   └── PartnerStats.tsx
-└── hooks/
-    └── usePartner.ts         -- Хук для работы с данными партнёра
-```
-
----
-
-### Технические детали
-
-**Генерация slug:**
-```typescript
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^а-яa-z0-9\s]/g, '')
-    .replace(/\s+/g, '-')
-    .substring(0, 50);
-}
-```
-
-**QR-код:**
-- Установить `qrcode.react`: `npm install qrcode.react`
-- Генерировать QR с URL клиники
-
-**Определение partner_id:**
-- На страницах `/c/{slug}` - по slug из URL
-- На обычных страницах - `null` (общие пользователи)
-
----
-
-### Последовательность реализации
-
-1. **Миграция базы данных** - создание таблиц и политик
-2. **Регистрация/вход партнёров** - страницы и логика
-3. **Личный кабинет партнёра** - статистика и настройки
-4. **Брендированные страницы** - `/c/{slug}/*`
-5. **QR-код генератор** - в личном кабинете
-6. **Обновление edge-функций** - привязка к partner_id
-7. **Обновление админ-панели** - просмотр всех партнёров
+## Результат
+- Новые визиты будут сохраняться сразу с русскими названиями городов
+- Старые данные будут отображаться на русском благодаря словарю перевода
+- Города, которых нет в словаре, отобразятся как есть (на английском)
