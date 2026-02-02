@@ -373,7 +373,7 @@ serve(async (req) => {
     let city = null;
     if (ipAddress) {
       try {
-        const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,city`);
+        const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,city&lang=ru`);
         const geoData = await geoResponse.json();
         if (geoData.status === 'success') {
           city = geoData.city || null;

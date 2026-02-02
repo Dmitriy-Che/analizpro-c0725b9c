@@ -59,6 +59,80 @@ interface Partner {
   created_at: string;
 }
 
+// Dictionary for translating English city names to Russian
+const cityTranslations: Record<string, string> = {
+  "Moscow": "Москва",
+  "Saint Petersburg": "Санкт-Петербург",
+  "Novosibirsk": "Новосибирск",
+  "Yekaterinburg": "Екатеринбург",
+  "Kazan": "Казань",
+  "Nizhny Novgorod": "Нижний Новгород",
+  "Chelyabinsk": "Челябинск",
+  "Samara": "Самара",
+  "Omsk": "Омск",
+  "Rostov-on-Don": "Ростов-на-Дону",
+  "Ufa": "Уфа",
+  "Krasnoyarsk": "Красноярск",
+  "Perm": "Пермь",
+  "Voronezh": "Воронеж",
+  "Volgograd": "Волгоград",
+  "Krasnodar": "Краснодар",
+  "Saratov": "Саратов",
+  "Tyumen": "Тюмень",
+  "Tolyatti": "Тольятти",
+  "Izhevsk": "Ижевск",
+  "Barnaul": "Барнаул",
+  "Ulyanovsk": "Ульяновск",
+  "Irkutsk": "Иркутск",
+  "Khabarovsk": "Хабаровск",
+  "Yaroslavl": "Ярославль",
+  "Vladivostok": "Владивосток",
+  "Makhachkala": "Махачкала",
+  "Tomsk": "Томск",
+  "Orenburg": "Оренбург",
+  "Kemerovo": "Кемерово",
+  "Novokuznetsk": "Новокузнецк",
+  "Ryazan": "Рязань",
+  "Astrakhan": "Астрахань",
+  "Naberezhnyye Chelny": "Набережные Челны",
+  "Penza": "Пенза",
+  "Kirov": "Киров",
+  "Lipetsk": "Липецк",
+  "Cheboksary": "Чебоксары",
+  "Balashikha": "Балашиха",
+  "Kaliningrad": "Калининград",
+  "Tula": "Тула",
+  "Kursk": "Курск",
+  "Sochi": "Сочи",
+  "Stavropol": "Ставрополь",
+  "Bryansk": "Брянск",
+  "Ivanovo": "Иваново",
+  "Belgorod": "Белгород",
+  "Surgut": "Сургут",
+  "Vladimir": "Владимир",
+  "Arkhangelsk": "Архангельск",
+  "Chita": "Чита",
+  "Kaluga": "Калуга",
+  "Smolensk": "Смоленск",
+  "Saransk": "Саранск",
+  "Vologda": "Вологда",
+  "Tver": "Тверь",
+  "Yoshkar-Ola": "Йошкар-Ола",
+  "Almaty": "Алматы",
+  "Nur-Sultan": "Нур-Султан",
+  "Astana": "Астана",
+  "Bishkek": "Бишкек",
+  "Tashkent": "Ташкент",
+  "Minsk": "Минск",
+  "Kyiv": "Киев",
+  "Kiev": "Киев"
+};
+
+const translateCity = (city: string | null): string => {
+  if (!city) return 'Неизвестно';
+  return cityTranslations[city] || city;
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -620,7 +694,7 @@ const Admin = () => {
                         {cityData.count}
                       </p>
                       <p className="text-sm text-muted-foreground truncate">
-                        {cityData.city || 'Неизвестно'}
+                        {translateCity(cityData.city)}
                       </p>
                     </div>
                   ))}
