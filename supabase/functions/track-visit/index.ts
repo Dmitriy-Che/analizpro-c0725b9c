@@ -36,7 +36,7 @@ serve(async (req) => {
     
     if (ipAddress && ipAddress !== 'unknown') {
       try {
-        const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,country,city`);
+        const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,country,city&lang=ru`);
         const geoData = await geoResponse.json();
         
         if (geoData.status === 'success') {
