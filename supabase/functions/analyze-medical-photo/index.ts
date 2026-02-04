@@ -105,6 +105,43 @@ serve(async (req) => {
 
     console.log(`Начат анализ медицинского исследования: ${studyType}, возраст: ${age}, пол: ${gender}`);
 
+    // Check partner subscription limit if partner_id is provided
+    if (partner_id) {
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      );
+
+      const { data: subscription, error: subError } = await supabaseClient
+        .from('partner_subscriptions')
+        .select('analyses_used, analyses_limit, is_active')
+        .eq('partner_id', partner_id)
+        .eq('is_active', true)
+        .single();
+
+      if (subError || !subscription) {
+        console.log('No active subscription found for partner:', partner_id);
+        return new Response(
+          JSON.stringify({ 
+            error: 'У клиники нет активной подписки. Обратитесь к администратору для активации тарифа.' 
+          }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (subscription.analyses_used >= subscription.analyses_limit) {
+        console.log('Partner limit reached:', subscription.analyses_used, '/', subscription.analyses_limit);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Лимит расшифровок вашей клиники исчерпан. Обратитесь к администратору для продления подписки.' 
+          }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      console.log('Partner limit check passed:', subscription.analyses_used, '/', subscription.analyses_limit);
+    }
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY не настроен');
@@ -399,6 +436,19 @@ serve(async (req) => {
       });
       
       console.log('Analysis logged successfully with city:', city);
+
+      // Increment partner usage counter
+      if (partner_id) {
+        const { error: incrementError } = await supabaseClient.rpc('increment_partner_usage', {
+          p_partner_id: partner_id
+        });
+        
+        if (incrementError) {
+          console.error('Failed to increment partner usage:', incrementError);
+        } else {
+          console.log('Partner usage incremented for:', partner_id);
+        }
+      }
     } catch (logError) {
       console.error('Failed to log analysis:', logError);
       // Don't fail the request if logging fails

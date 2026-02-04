@@ -76,6 +76,53 @@ export type Database = {
           },
         ]
       }
+      partner_subscriptions: {
+        Row: {
+          activated_at: string
+          activated_by: string | null
+          analyses_limit: number
+          analyses_used: number
+          created_at: string
+          id: string
+          is_active: boolean
+          partner_id: string
+          plan_type: string
+          price: number
+        }
+        Insert: {
+          activated_at?: string
+          activated_by?: string | null
+          analyses_limit?: number
+          analyses_used?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          partner_id: string
+          plan_type?: string
+          price?: number
+        }
+        Update: {
+          activated_at?: string
+          activated_by?: string | null
+          analyses_limit?: number
+          analyses_used?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          partner_id?: string
+          plan_type?: string
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_subscriptions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: true
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partners: {
         Row: {
           address: string | null
@@ -114,6 +161,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      subscription_history: {
+        Row: {
+          action: string
+          admin_id: string | null
+          analyses_limit: number
+          created_at: string
+          id: string
+          partner_id: string
+          plan_type: string
+          price: number
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          analyses_limit: number
+          created_at?: string
+          id?: string
+          partner_id: string
+          plan_type: string
+          price: number
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          analyses_limit?: number
+          created_at?: string
+          id?: string
+          partner_id?: string
+          plan_type?: string
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_history_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       telegram_users: {
         Row: {
@@ -250,6 +338,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_partner_limit: { Args: { p_partner_id: string }; Returns: boolean }
       get_analysis_stats: {
         Args: never
         Returns: {
@@ -282,6 +371,17 @@ export type Database = {
           warning_count: number
         }[]
       }
+      get_partner_subscription: {
+        Args: { p_partner_id: string }
+        Returns: {
+          activated_at: string
+          analyses_limit: number
+          analyses_used: number
+          is_active: boolean
+          plan_type: string
+          price: number
+        }[]
+      }
       get_partner_visits_by_day: {
         Args: { p_partner_id: string }
         Returns: {
@@ -304,6 +404,10 @@ export type Database = {
         Returns: boolean
       }
       increment_analysis_counter: { Args: never; Returns: number }
+      increment_partner_usage: {
+        Args: { p_partner_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "partner"

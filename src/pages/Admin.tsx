@@ -21,7 +21,8 @@ import {
   Link2,
   Copy,
   ArrowLeft,
-  Loader2
+  Loader2,
+  Crown
 } from "lucide-react";
 import {
   ChartContainer,
@@ -30,6 +31,8 @@ import {
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { PartnerStats } from "@/components/PartnerStats";
+import { SubscriptionManager } from "@/components/SubscriptionManager";
+import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 
 interface AnalysisStats {
   total_analyses: number;
@@ -57,6 +60,15 @@ interface Partner {
   contact_email: string | null;
   is_active: boolean;
   created_at: string;
+}
+
+interface PartnerSubscription {
+  plan_type: string;
+  analyses_limit: number;
+  analyses_used: number;
+  price: number;
+  is_active: boolean;
+  activated_at: string;
 }
 
 // Dictionary for translating English city names to Russian
@@ -144,6 +156,8 @@ const Admin = () => {
   const [partnerStats, setPartnerStats] = useState<AnalysisStats | null>(null);
   const [partnerVisitsByDay, setPartnerVisitsByDay] = useState<VisitsByDay[]>([]);
   const [partnerLoading, setPartnerLoading] = useState(false);
+  const [partnerSubscription, setPartnerSubscription] = useState<PartnerSubscription | null>(null);
+  const [partnersSubscriptions, setPartnersSubscriptions] = useState<Record<string, PartnerSubscription>>({});
 
   const partnerRegisterUrl = `${window.location.origin}/partner/register`;
 
@@ -175,7 +189,7 @@ const Admin = () => {
       }
 
       setIsAdmin(true);
-      await Promise.all([loadStats(), loadVisitsByDay(), loadPartners()]);
+      await Promise.all([loadStats(), loadVisitsByDay(), loadPartners(), loadAllSubscriptions()]);
     } catch (error) {
       console.error("Admin check error:", error);
       toast.error("Ошибка проверки доступа");
@@ -237,14 +251,34 @@ const Admin = () => {
     }
   };
 
+  const loadAllSubscriptions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('partner_subscriptions')
+        .select('*')
+        .eq('is_active', true);
+
+      if (error) throw error;
+
+      const subsMap: Record<string, PartnerSubscription> = {};
+      (data || []).forEach((sub: PartnerSubscription & { partner_id: string }) => {
+        subsMap[sub.partner_id] = sub;
+      });
+      setPartnersSubscriptions(subsMap);
+    } catch (error) {
+      console.error("Subscriptions loading error:", error);
+    }
+  };
+
   const handleSelectPartner = async (partner: Partner) => {
     setSelectedPartner(partner);
     setPartnerLoading(true);
 
     try {
-      const [statsResult, visitsResult] = await Promise.all([
+      const [statsResult, visitsResult, subscriptionResult] = await Promise.all([
         supabase.rpc('get_partner_stats', { p_partner_id: partner.id }),
-        supabase.rpc('get_partner_visits_by_day', { p_partner_id: partner.id })
+        supabase.rpc('get_partner_visits_by_day', { p_partner_id: partner.id }),
+        supabase.rpc('get_partner_subscription', { p_partner_id: partner.id })
       ]);
 
       if (statsResult.data && statsResult.data.length > 0) {
@@ -260,6 +294,12 @@ const Admin = () => {
       }
 
       setPartnerVisitsByDay(visitsResult.data || []);
+      
+      if (subscriptionResult.data && subscriptionResult.data.length > 0) {
+        setPartnerSubscription(subscriptionResult.data[0] as PartnerSubscription);
+      } else {
+        setPartnerSubscription(null);
+      }
     } catch (error) {
       console.error("Partner stats loading error:", error);
       toast.error("Ошибка загрузки статистики партнёра");
@@ -272,6 +312,19 @@ const Admin = () => {
     setSelectedPartner(null);
     setPartnerStats(null);
     setPartnerVisitsByDay([]);
+    setPartnerSubscription(null);
+  };
+
+  const handleSubscriptionUpdate = async () => {
+    if (selectedPartner) {
+      const { data } = await supabase.rpc('get_partner_subscription', { 
+        p_partner_id: selectedPartner.id 
+      });
+      if (data && data.length > 0) {
+        setPartnerSubscription(data[0] as PartnerSubscription);
+      }
+    }
+    await loadAllSubscriptions();
   };
 
   const copyPartnerLink = () => {
@@ -380,13 +433,10 @@ const Admin = () => {
                     partner.is_active ? 'border-green-200 bg-green-50/30' : 'border-red-200 bg-red-50/30'
                   }`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between mb-2">
                     <div>
                       <h4 className="font-semibold">{partner.name}</h4>
                       <p className="text-xs text-muted-foreground">/c/{partner.slug}</p>
-                      {partner.contact_email && (
-                        <p className="text-xs text-muted-foreground mt-1">{partner.contact_email}</p>
-                      )}
                     </div>
                     <span className={`text-xs px-2 py-1 rounded-full ${
                       partner.is_active 
@@ -396,7 +446,25 @@ const Admin = () => {
                       {partner.is_active ? 'Активен' : 'Неактивен'}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
+
+                  {/* Subscription badge */}
+                  {partnersSubscriptions[partner.id] ? (
+                    <div className="mb-2">
+                      <SubscriptionBadge 
+                        planType={partnersSubscriptions[partner.id].plan_type}
+                        analysesUsed={partnersSubscriptions[partner.id].analyses_used}
+                        analysesLimit={partnersSubscriptions[partner.id].analyses_limit}
+                        compact
+                      />
+                    </div>
+                  ) : (
+                    <div className="mb-2 flex items-center gap-1 text-xs text-yellow-600">
+                      <AlertTriangle className="w-3 h-3" />
+                      Нет подписки
+                    </div>
+                  )}
+
+                  <p className="text-xs text-muted-foreground">
                     Добавлен: {new Date(partner.created_at).toLocaleDateString('ru-RU')}
                   </p>
                 </Card>
@@ -440,7 +508,18 @@ const Admin = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <PartnerStats stats={partnerStats} visitsByDay={partnerVisitsByDay} />
+              <div className="space-y-6">
+                {/* Subscription Manager */}
+                <SubscriptionManager 
+                  partnerId={selectedPartner.id}
+                  partnerName={selectedPartner.name}
+                  subscription={partnerSubscription}
+                  onUpdate={handleSubscriptionUpdate}
+                />
+                
+                {/* Partner Stats */}
+                <PartnerStats stats={partnerStats} visitsByDay={partnerVisitsByDay} />
+              </div>
             )}
           </Card>
         )}
