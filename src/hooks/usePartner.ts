@@ -29,6 +29,15 @@ interface PartnerStats {
   top_cities: { city: string; count: number }[];
 }
 
+interface PartnerSubscription {
+  plan_type: string;
+  analyses_limit: number;
+  analyses_used: number;
+  price: number;
+  is_active: boolean;
+  activated_at: string;
+}
+
 interface VisitByDay {
   visit_date: string;
   visit_count: number;
@@ -120,6 +129,23 @@ export function usePartner() {
     return data || [];
   };
 
+  const fetchSubscription = async (): Promise<PartnerSubscription | null> => {
+    if (!partner) return null;
+
+    const { data, error } = await supabase.rpc('get_partner_subscription', {
+      p_partner_id: partner.id
+    });
+
+    if (error) {
+      console.error('Error fetching subscription:', error);
+      return null;
+    }
+
+    if (!data || data.length === 0) return null;
+    
+    return data[0] as PartnerSubscription;
+  };
+
   const updatePartner = async (updates: Partial<Partner>) => {
     if (!partner) return { error: 'No partner' };
 
@@ -147,6 +173,7 @@ export function usePartner() {
     error,
     fetchStats,
     fetchVisitsByDay,
+    fetchSubscription,
     updatePartner,
     signOut
   };

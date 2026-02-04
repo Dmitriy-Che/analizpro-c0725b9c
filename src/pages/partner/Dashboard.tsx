@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { usePartner } from '@/hooks/usePartner';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { PartnerStats } from '@/components/PartnerStats';
+import { PartnerSubscriptionCard } from '@/components/PartnerSubscriptionCard';
 import logo from '@/assets/new-logo.png';
 import { 
   BarChart3, 
@@ -23,11 +24,21 @@ import {
   Save
 } from 'lucide-react';
 
+interface SubscriptionData {
+  plan_type: string;
+  analyses_limit: number;
+  analyses_used: number;
+  price: number;
+  is_active: boolean;
+  activated_at: string;
+}
+
 export default function PartnerDashboard() {
   const navigate = useNavigate();
-  const { partner, loading, error, fetchStats, fetchVisitsByDay, updatePartner, signOut } = usePartner();
+  const { partner, loading, error, fetchStats, fetchVisitsByDay, fetchSubscription, updatePartner, signOut } = usePartner();
   const [stats, setStats] = useState<any>(null);
   const [visitsByDay, setVisitsByDay] = useState<any[]>([]);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editData, setEditData] = useState({
@@ -54,12 +65,14 @@ export default function PartnerDashboard() {
 
       const loadStats = async () => {
         setStatsLoading(true);
-        const [statsData, visitsData] = await Promise.all([
+        const [statsData, visitsData, subscriptionData] = await Promise.all([
           fetchStats(),
-          fetchVisitsByDay()
+          fetchVisitsByDay(),
+          fetchSubscription()
         ]);
         setStats(statsData);
         setVisitsByDay(visitsData);
+        setSubscription(subscriptionData);
         setStatsLoading(false);
       };
 
@@ -148,7 +161,13 @@ export default function PartnerDashboard() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <PartnerStats stats={stats} visitsByDay={visitsByDay} />
+              <div className="space-y-6">
+                {/* Subscription Card */}
+                <PartnerSubscriptionCard subscription={subscription} />
+                
+                {/* Stats */}
+                <PartnerStats stats={stats} visitsByDay={visitsByDay} />
+              </div>
             )}
           </TabsContent>
 
