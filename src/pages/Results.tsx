@@ -1,73 +1,89 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, Download, Share2, Copy, ArrowLeft } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Download, Share2, ArrowLeft, FileImage, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Header } from "@/components/Header";
+import { AnalysisReport } from "@/components/results/AnalysisReport";
+import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
+import { exportAsPNG, exportAsPDF, shareAsImage } from "@/utils/exportReport";
 import { toast } from "sonner";
 
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
   
-  // Получаем результат из state
   const result = location.state?.result || "";
   const age = location.state?.age || "";
   const gender = location.state?.gender || "";
 
-  // Если нет результата, перенаправляем на главную
   useEffect(() => {
     if (!result) {
       navigate("/");
     }
   }, [result, navigate]);
 
-  // Определяем статус результата на основе ключевых слов
-  const getResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
-    const lowerText = text.toLowerCase();
+  const parsedResult = parseAnalysisResult(result);
 
-    // Критический статус
-    if (lowerText.includes('срочно') || lowerText.includes('критично') || lowerText.includes('немедленно') || lowerText.includes('опасно') || lowerText.includes('серьезное отклонение') || lowerText.includes('значительное превышение') || lowerText.includes('угроза')) {
+  // Get status for text-based results
+  const getTextResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes('срочно') || lowerText.includes('критично') || lowerText.includes('немедленно') || lowerText.includes('опасно')) {
       return 'critical';
     }
-
-    // Статус предупреждения
-    if (lowerText.includes('обратить внимание') || lowerText.includes('повышен') || lowerText.includes('понижен') || lowerText.includes('отклонение') || lowerText.includes('рекомендуется') || lowerText.includes('следует')) {
+    if (lowerText.includes('обратить внимание') || lowerText.includes('повышен') || lowerText.includes('понижен') || lowerText.includes('отклонение')) {
       return 'warning';
     }
-
-    // Нормальный статус
     return 'normal';
   };
 
-  const resultStatus = getResultStatus(result);
-
-  const getStatusColors = (status: 'normal' | 'warning' | 'critical') => {
-    switch (status) {
-      case 'normal':
-        return {
-          header: 'bg-gradient-to-r from-green-500 to-green-600',
-          body: 'bg-green-50/80',
-          border: 'border-green-200'
-        };
-      case 'warning':
-        return {
-          header: 'bg-gradient-to-r from-yellow-500 to-yellow-600',
-          body: 'bg-yellow-50/80',
-          border: 'border-yellow-200'
-        };
-      case 'critical':
-        return {
-          header: 'bg-gradient-to-r from-red-400 to-red-500',
-          body: 'bg-red-50/80',
-          border: 'border-red-200'
-        };
+  const handleExportPNG = async () => {
+    setExporting(true);
+    try {
+      await exportAsPNG('analysis-report', `analiz-pro-${new Date().toISOString().split('T')[0]}`);
+      toast.success("Изображение скачано");
+    } catch (error) {
+      toast.error("Ошибка при экспорте");
+    } finally {
+      setExporting(false);
     }
   };
 
-  const statusColors = getStatusColors(resultStatus);
+  const handleExportPDF = async () => {
+    setExporting(true);
+    try {
+      await exportAsPDF(
+        'analysis-report', 
+        `analiz-pro-${new Date().toISOString().split('T')[0]}`,
+        { patientAge: age, patientGender: gender }
+      );
+      toast.success("PDF скачан");
+    } catch (error) {
+      toast.error("Ошибка при экспорте");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleShare = async () => {
+    setExporting(true);
+    try {
+      await shareAsImage('analysis-report');
+      toast.success("Готово к отправке");
+    } catch (error) {
+      toast.error("Ошибка при подготовке");
+    } finally {
+      setExporting(false);
+      setShareDialogOpen(false);
+    }
+  };
+
+  // Fallback for text results
+  const textStatus = parsedResult.text ? getTextResultStatus(parsedResult.text) : 'normal';
+  const textStatusColors = getOverallStatusColor(textStatus);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
@@ -93,66 +109,126 @@ const Results = () => {
         </Button>
 
         {/* Results */}
-        <Card className={`border-2 ${statusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
-          <div className={`${statusColors.header} p-4`}>
-            <h3 className="text-white font-bold text-lg flex items-center gap-2">
-              <CheckCircle2 className="w-6 h-6" />
-              Результаты анализа
-            </h3>
-          </div>
-          <div className={`p-5 ${statusColors.body}`}>
-            <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
-              {result}
-            </div>
+        {parsedResult.isStructured && parsedResult.structured ? (
+          <>
+            <AnalysisReport 
+              result={parsedResult.structured}
+              age={age}
+              gender={gender}
+            />
+            
+            {/* Export Buttons */}
             <div className="flex gap-3 mt-4">
               <Button 
                 variant="outline" 
                 className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" 
-                onClick={() => {
-                  const blob = new Blob([result], { type: 'text/plain' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'analiz-pro-result.txt';
-                  a.click();
-                  toast.success("Результат скачан");
-                }}
+                onClick={handleExportPDF}
+                disabled={exporting}
               >
-                <Download className="w-4 h-4" />
-                Скачать
+                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                Скачать PDF
               </Button>
               <Button 
                 variant="outline" 
                 className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
                 onClick={() => setShareDialogOpen(true)}
+                disabled={exporting}
               >
                 <Share2 className="w-4 h-4" />
-                Отправить
+                Поделиться
               </Button>
             </div>
-          </div>
-        </Card>
+          </>
+        ) : (
+          /* Fallback for text-only results */
+          <Card className={`border-2 ${textStatusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
+            <div className={`${textStatusColors.header} p-4`}>
+              <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6" />
+                Результаты анализа
+              </h3>
+            </div>
+            <div id="analysis-report" className={`p-5 ${textStatusColors.body}`}>
+              <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
+                {parsedResult.text}
+              </div>
+            </div>
+            <div className="p-4 pt-0">
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" 
+                  onClick={() => {
+                    const blob = new Blob([parsedResult.text || ''], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'analiz-pro-result.txt';
+                    a.click();
+                    toast.success("Результат скачан");
+                  }}
+                >
+                  <Download className="w-4 h-4" />
+                  Скачать
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
+                  onClick={() => setShareDialogOpen(true)}
+                >
+                  <Share2 className="w-4 h-4" />
+                  Отправить
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Share Dialog */}
         <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Скопировать результаты</DialogTitle>
+              <DialogTitle>Поделиться результатами</DialogTitle>
               <DialogDescription>
-                Скопируйте текст результатов анализа
+                Выберите формат для отправки
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 py-4">
+              {parsedResult.isStructured && (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 border-2 justify-start" 
+                    onClick={handleShare}
+                    disabled={exporting}
+                  >
+                    {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileImage className="w-4 h-4" />}
+                    Отправить как изображение
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 border-2 justify-start" 
+                    onClick={handleExportPNG}
+                    disabled={exporting}
+                  >
+                    {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    Скачать PNG
+                  </Button>
+                </>
+              )}
               <Button 
                 variant="outline" 
-                className="w-full gap-2 border-2" 
+                className="w-full gap-2 border-2 justify-start" 
                 onClick={() => {
-                  navigator.clipboard.writeText(result);
+                  const textToCopy = parsedResult.isStructured && parsedResult.structured
+                    ? `${parsedResult.structured.summary}\n\n${parsedResult.structured.general_recommendations}`
+                    : parsedResult.text || '';
+                  navigator.clipboard.writeText(textToCopy);
                   toast.success("Скопировано в буфер обмена");
                   setShareDialogOpen(false);
                 }}
               >
-                <Copy className="w-4 h-4" />
+                <FileText className="w-4 h-4" />
                 Скопировать текст
               </Button>
             </div>
@@ -186,7 +262,7 @@ const Results = () => {
 
         {/* Footer Info */}
         <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
-          <div className="font-medium">Версия 4.0.0</div>
+          <div className="font-medium">Версия 4.1.0</div>
           <div>© 2025 АнализПро. Все права защищены.</div>
           <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-accent underline transition-colors inline-block">
             Политика конфиденциальности
