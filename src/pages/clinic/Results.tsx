@@ -1,11 +1,14 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, Download, Share2, Copy, ArrowLeft, Loader2 } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Download, Share2, ArrowLeft, FileImage, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PartnerHeader } from "@/components/PartnerHeader";
+import { AnalysisReport } from "@/components/results/AnalysisReport";
 import { usePartnerBySlug } from "@/hooks/usePartner";
+import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
+import { exportAsPNG, exportAsPDF, shareAsImage } from "@/utils/exportReport";
 import { toast } from "sonner";
 
 export default function ClinicResults() {
@@ -13,6 +16,7 @@ export default function ClinicResults() {
   const location = useLocation();
   const navigate = useNavigate();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const { partner, loading: partnerLoading, error: partnerError } = usePartnerBySlug(slug);
   
   const result = location.state?.result || "";
@@ -25,7 +29,9 @@ export default function ClinicResults() {
     }
   }, [result, navigate, slug]);
 
-  const getResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
+  const parsedResult = parseAnalysisResult(result);
+
+  const getTextResultStatus = (text: string): 'normal' | 'warning' | 'critical' => {
     const lowerText = text.toLowerCase();
     if (lowerText.includes('срочно') || lowerText.includes('критично') || lowerText.includes('немедленно') || lowerText.includes('опасно')) {
       return 'critical';
@@ -36,20 +42,49 @@ export default function ClinicResults() {
     return 'normal';
   };
 
-  const resultStatus = getResultStatus(result);
-
-  const getStatusColors = (status: 'normal' | 'warning' | 'critical') => {
-    switch (status) {
-      case 'normal':
-        return { header: 'bg-gradient-to-r from-green-500 to-green-600', body: 'bg-green-50/80', border: 'border-green-200' };
-      case 'warning':
-        return { header: 'bg-gradient-to-r from-yellow-500 to-yellow-600', body: 'bg-yellow-50/80', border: 'border-yellow-200' };
-      case 'critical':
-        return { header: 'bg-gradient-to-r from-red-400 to-red-500', body: 'bg-red-50/80', border: 'border-red-200' };
+  const handleExportPNG = async () => {
+    setExporting(true);
+    try {
+      await exportAsPNG('analysis-report', `analiz-${partner?.name || 'pro'}-${new Date().toISOString().split('T')[0]}`);
+      toast.success("Изображение скачано");
+    } catch (error) {
+      toast.error("Ошибка при экспорте");
+    } finally {
+      setExporting(false);
     }
   };
 
-  const statusColors = getStatusColors(resultStatus);
+  const handleExportPDF = async () => {
+    setExporting(true);
+    try {
+      await exportAsPDF(
+        'analysis-report', 
+        `analiz-${partner?.name || 'pro'}-${new Date().toISOString().split('T')[0]}`,
+        { patientAge: age, patientGender: gender, clinicName: partner?.name }
+      );
+      toast.success("PDF скачан");
+    } catch (error) {
+      toast.error("Ошибка при экспорте");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleShare = async () => {
+    setExporting(true);
+    try {
+      await shareAsImage('analysis-report');
+      toast.success("Готово к отправке");
+    } catch (error) {
+      toast.error("Ошибка при подготовке");
+    } finally {
+      setExporting(false);
+      setShareDialogOpen(false);
+    }
+  };
+
+  const textStatus = parsedResult.text ? getTextResultStatus(parsedResult.text) : 'normal';
+  const textStatusColors = getOverallStatusColor(textStatus);
 
   if (partnerLoading) {
     return (
@@ -94,65 +129,129 @@ export default function ClinicResults() {
           Назад к загрузке
         </Button>
 
-        <Card className={`border-2 ${statusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
-          <div className={`${statusColors.header} p-4`}>
-            <h3 className="text-white font-bold text-lg flex items-center gap-2">
-              <CheckCircle2 className="w-6 h-6" />
-              Результаты анализа
-            </h3>
-          </div>
-          <div className={`p-5 ${statusColors.body}`}>
-            <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
-              {result}
-            </div>
+        {/* Results */}
+        {parsedResult.isStructured && parsedResult.structured ? (
+          <>
+            <AnalysisReport 
+              result={parsedResult.structured}
+              age={age}
+              gender={gender}
+              clinicName={partner.name}
+              clinicLogo={partner.logo_url}
+            />
+            
+            {/* Export Buttons */}
             <div className="flex gap-3 mt-4">
               <Button 
                 variant="outline" 
                 className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" 
-                onClick={() => {
-                  const blob = new Blob([result], { type: 'text/plain' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `analiz-${partner.name}.txt`;
-                  a.click();
-                  toast.success("Результат скачан");
-                }}
+                onClick={handleExportPDF}
+                disabled={exporting}
               >
-                <Download className="w-4 h-4" />
-                Скачать
+                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                Скачать PDF
               </Button>
               <Button 
                 variant="outline" 
                 className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
                 onClick={() => setShareDialogOpen(true)}
+                disabled={exporting}
               >
                 <Share2 className="w-4 h-4" />
-                Отправить
+                Поделиться
               </Button>
             </div>
-          </div>
-        </Card>
+          </>
+        ) : (
+          /* Fallback for text-only results */
+          <Card className={`border-2 ${textStatusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
+            <div className={`${textStatusColors.header} p-4`}>
+              <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6" />
+                Результаты анализа
+              </h3>
+            </div>
+            <div id="analysis-report" className={`p-5 ${textStatusColors.body}`}>
+              <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
+                {parsedResult.text}
+              </div>
+            </div>
+            <div className="p-4 pt-0">
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" 
+                  onClick={() => {
+                    const blob = new Blob([parsedResult.text || ''], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `analiz-${partner.name}.txt`;
+                    a.click();
+                    toast.success("Результат скачан");
+                  }}
+                >
+                  <Download className="w-4 h-4" />
+                  Скачать
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
+                  onClick={() => setShareDialogOpen(true)}
+                >
+                  <Share2 className="w-4 h-4" />
+                  Отправить
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
+        {/* Share Dialog */}
         <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Скопировать результаты</DialogTitle>
+              <DialogTitle>Поделиться результатами</DialogTitle>
               <DialogDescription>
-                Скопируйте текст результатов анализа
+                Выберите формат для отправки
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 py-4">
+              {parsedResult.isStructured && (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 border-2 justify-start" 
+                    onClick={handleShare}
+                    disabled={exporting}
+                  >
+                    {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileImage className="w-4 h-4" />}
+                    Отправить как изображение
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 border-2 justify-start" 
+                    onClick={handleExportPNG}
+                    disabled={exporting}
+                  >
+                    {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    Скачать PNG
+                  </Button>
+                </>
+              )}
               <Button 
                 variant="outline" 
-                className="w-full gap-2 border-2" 
+                className="w-full gap-2 border-2 justify-start" 
                 onClick={() => {
-                  navigator.clipboard.writeText(result);
+                  const textToCopy = parsedResult.isStructured && parsedResult.structured
+                    ? `${parsedResult.structured.summary}\n\n${parsedResult.structured.general_recommendations}`
+                    : parsedResult.text || '';
+                  navigator.clipboard.writeText(textToCopy);
                   toast.success("Скопировано в буфер обмена");
                   setShareDialogOpen(false);
                 }}
               >
-                <Copy className="w-4 h-4" />
+                <FileText className="w-4 h-4" />
                 Скопировать текст
               </Button>
             </div>
