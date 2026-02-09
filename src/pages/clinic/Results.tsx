@@ -8,7 +8,7 @@ import { PartnerHeader } from "@/components/PartnerHeader";
 import { AnalysisReport } from "@/components/results/AnalysisReport";
 import { usePartnerBySlug } from "@/hooks/usePartner";
 import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
-import { exportAsPNG, exportAsPDF, shareAsImage } from "@/utils/exportReport";
+import { exportAsPNG, exportAsPDF, shareAsImage, shareAsPDF } from "@/utils/exportReport";
 import { toast } from "sonner";
 
 export default function ClinicResults() {
@@ -218,6 +218,22 @@ export default function ClinicResults() {
             <div className="flex flex-col gap-3 py-4">
               {parsedResult.isStructured && (
                 <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 border-2 justify-start" 
+                    onClick={async () => {
+                      setExporting(true);
+                      try {
+                        await shareAsPDF('analysis-report', `analiz-${partner?.name || 'pro'}-${new Date().toISOString().split('T')[0]}`);
+                        toast.success("Готово");
+                      } catch { toast.error("Не удалось отправить PDF"); }
+                      finally { setExporting(false); setShareDialogOpen(false); }
+                    }}
+                    disabled={exporting}
+                  >
+                    {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                    Отправить PDF
+                  </Button>
                   <Button 
                     variant="outline" 
                     className="w-full gap-2 border-2 justify-start" 
