@@ -59,8 +59,7 @@ export default function ClinicResults() {
     try {
       await exportAsPDF(
         'analysis-report', 
-        `analiz-${partner?.name || 'pro'}-${new Date().toISOString().split('T')[0]}`,
-        { patientAge: age, patientGender: gender, clinicName: partner?.name }
+        `analiz-${partner?.name || 'pro'}-${new Date().toISOString().split('T')[0]}`
       );
       toast.success("PDF скачан");
     } catch (error) {

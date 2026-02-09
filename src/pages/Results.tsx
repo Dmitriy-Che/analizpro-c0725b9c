@@ -57,8 +57,7 @@ const Results = () => {
     try {
       await exportAsPDF(
         'analysis-report', 
-        `analiz-pro-${new Date().toISOString().split('T')[0]}`,
-        { patientAge: age, patientGender: gender }
+        `analiz-pro-${new Date().toISOString().split('T')[0]}`
       );
       toast.success("PDF скачан");
     } catch (error) {
