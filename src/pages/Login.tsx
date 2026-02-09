@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Lock, Mail, LogIn } from "lucide-react";
-import medicalLogo from "@/assets/logomedgid.png";
+import medicalLogo from "@/assets/new-logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
