@@ -32,6 +32,7 @@ export default function ClinicAnalyze() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const { partner, loading: partnerLoading, error: partnerError } = usePartnerBySlug(slug);
 
   const [currentStep, setCurrentStep] = useState<Step>('age');
@@ -283,6 +284,14 @@ export default function ClinicAnalyze() {
               onChange={handleFileSelect}
               className="hidden"
             />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
 
             {selectedFile ? (
               <Card className="p-4 border-2 border-primary/30 bg-primary/5">
@@ -318,13 +327,7 @@ export default function ClinicAnalyze() {
                 <Button
                   variant="outline"
                   className="h-24 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
-                  onClick={() => {
-                    if (fileInputRef.current) {
-                      fileInputRef.current.setAttribute('capture', 'environment');
-                      fileInputRef.current.click();
-                      fileInputRef.current.removeAttribute('capture');
-                    }
-                  }}
+                  onClick={() => cameraInputRef.current?.click()}
                 >
                   <Camera className="w-6 h-6" />
                   <span className="text-sm">Камера</span>
