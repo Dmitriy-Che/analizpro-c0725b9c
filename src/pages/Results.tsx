@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Header } from "@/components/Header";
 import { AnalysisReport } from "@/components/results/AnalysisReport";
 import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
-import { exportAsPNG, exportAsPDF, shareAsImage, shareAsPDF } from "@/utils/exportReport";
+import { shareAsImage, shareAsPDF } from "@/utils/exportReport";
 import { toast } from "sonner";
 
 const Results = () => {
@@ -38,33 +38,6 @@ const Results = () => {
       return 'warning';
     }
     return 'normal';
-  };
-
-  const handleExportPNG = async () => {
-    setExporting(true);
-    try {
-      await exportAsPNG('analysis-report', `analiz-pro-${new Date().toISOString().split('T')[0]}`);
-      toast.success("Изображение скачано");
-    } catch (error) {
-      toast.error("Ошибка при экспорте");
-    } finally {
-      setExporting(false);
-    }
-  };
-
-  const handleExportPDF = async () => {
-    setExporting(true);
-    try {
-      await exportAsPDF(
-        'analysis-report', 
-        `analiz-pro-${new Date().toISOString().split('T')[0]}`
-      );
-      toast.success("PDF скачан");
-    } catch (error) {
-      toast.error("Ошибка при экспорте");
-    } finally {
-      setExporting(false);
-    }
   };
 
   const handleShare = async () => {
@@ -116,27 +89,16 @@ const Results = () => {
               gender={gender}
             />
             
-            {/* Export Buttons */}
-            <div className="flex gap-3 mt-4">
-              <Button 
-                variant="outline" 
-                className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" 
-                onClick={handleExportPDF}
-                disabled={exporting}
-              >
-                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-                Скачать PDF
-              </Button>
-              <Button 
-                variant="outline" 
-                className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
-                onClick={() => setShareDialogOpen(true)}
-                disabled={exporting}
-              >
-                <Share2 className="w-4 h-4" />
-                Поделиться
-              </Button>
-            </div>
+            {/* Share Button */}
+            <Button 
+              variant="outline" 
+              className="w-full gap-2 mt-4 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
+              onClick={() => setShareDialogOpen(true)}
+              disabled={exporting}
+            >
+              <Share2 className="w-4 h-4" />
+              Поделиться
+            </Button>
           </>
         ) : (
           /* Fallback for text-only results */
@@ -219,15 +181,6 @@ const Results = () => {
                   >
                     {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileImage className="w-4 h-4" />}
                     Отправить как изображение
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full gap-2 border-2 justify-start" 
-                    onClick={handleExportPNG}
-                    disabled={exporting}
-                  >
-                    {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                    Скачать PNG
                   </Button>
                 </>
               )}
