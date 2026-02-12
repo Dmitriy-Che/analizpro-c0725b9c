@@ -278,7 +278,7 @@ const Results = () => {
         {/* Footer Info */}
         <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
           <div className="font-medium">Версия 4.1.0</div>
-          <div>© 2025 АнализПро. Все права защищены.</div>
+          <div>© 2026 АнализПро. Все права защищены.</div>
           <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-accent underline transition-colors inline-block">
             Политика конфиденциальности
           </a>

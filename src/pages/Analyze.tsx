@@ -30,6 +30,7 @@ type StudyType = 'lab' | 'ultrasound' | 'mri' | null;
 export default function Analyze() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const [currentStep, setCurrentStep] = useState<Step>('age');
   const [age, setAge] = useState('');
@@ -264,6 +265,14 @@ export default function Analyze() {
               onChange={handleFileSelect}
               className="hidden"
             />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
 
             {selectedFile ? (
               <Card className="p-4 border-2 border-primary/30 bg-primary/5">
@@ -299,13 +308,7 @@ export default function Analyze() {
                 <Button
                   variant="outline"
                   className="h-24 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
-                  onClick={() => {
-                    if (fileInputRef.current) {
-                      fileInputRef.current.setAttribute('capture', 'environment');
-                      fileInputRef.current.click();
-                      fileInputRef.current.removeAttribute('capture');
-                    }
-                  }}
+                  onClick={() => cameraInputRef.current?.click()}
                 >
                   <Camera className="w-6 h-6" />
                   <span className="text-sm">Камера</span>
