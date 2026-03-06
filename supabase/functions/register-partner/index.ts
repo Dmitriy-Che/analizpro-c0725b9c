@@ -124,6 +124,7 @@ serve(async (req) => {
     }
 
     const userId = authData.user.id;
+    let partnerId: string;
 
     // 2. Generate unique slug
     let slug = generateSlug(sanitizedClinicName);
