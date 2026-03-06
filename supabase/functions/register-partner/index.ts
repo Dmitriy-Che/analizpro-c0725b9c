@@ -159,6 +159,21 @@ serve(async (req) => {
       );
     }
 
+    // 3.5. Create trial subscription (10 free analyses)
+    const { error: subError } = await supabaseAdmin.from('partner_subscriptions').insert({
+      partner_id: partnerId,
+      plan_type: 'trial',
+      analyses_limit: 10,
+      analyses_used: 0,
+      price: 0,
+      is_active: true
+    });
+
+    if (subError) {
+      console.error('Trial subscription creation error:', subError);
+      // Don't fail registration, but log
+    }
+
     // 4. Assign partner role (server-side, secure)
     const { error: roleError } = await supabaseAdmin.from('user_roles').insert({
       user_id: userId,
