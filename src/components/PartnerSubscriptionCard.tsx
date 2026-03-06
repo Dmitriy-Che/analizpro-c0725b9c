@@ -18,12 +18,14 @@ interface PartnerSubscriptionCardProps {
 }
 
 const PLAN_NAMES: Record<string, string> = {
+  trial: 'Пробный период',
   standard: 'Стандарт',
   business: 'Бизнес',
   premium: 'Премиум',
 };
 
 const PLAN_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  trial: { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' },
   standard: { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-200' },
   business: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
   premium: { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200' },
