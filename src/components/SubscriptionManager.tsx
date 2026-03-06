@@ -32,6 +32,7 @@ interface SubscriptionManagerProps {
 }
 
 const PLANS = [
+  { type: 'trial', name: 'Пробный', limit: 10, price: 0 },
   { type: 'standard', name: 'Стандарт', limit: 500, price: 30000 },
   { type: 'business', name: 'Бизнес', limit: 1500, price: 52000 },
   { type: 'premium', name: 'Премиум', limit: 3000, price: 75000 },
