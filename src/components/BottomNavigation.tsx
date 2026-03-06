@@ -40,18 +40,18 @@ export function BottomNavigation() {
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border shadow-lg z-50">
-        <div className="max-w-[480px] mx-auto flex justify-around items-center h-16 px-4">
+        <div className="max-w-[480px] mx-auto flex justify-around items-center h-16 px-2">
           {/* Home */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/')}
-            className={`flex flex-col items-center gap-1 h-auto py-2 px-4 ${
+            className={`flex flex-col items-center gap-1 h-auto py-2 px-3 ${
               isHome ? 'text-primary' : 'text-muted-foreground'
             }`}
           >
             <Home className="w-5 h-5" />
-            <span className="text-xs font-medium">Домой</span>
+            <span className="text-[10px] font-medium">Домой</span>
           </Button>
 
           {/* Back */}
@@ -59,10 +59,23 @@ export function BottomNavigation() {
             variant="ghost"
             size="sm"
             onClick={() => window.history.back()}
-            className="flex flex-col items-center gap-1 h-auto py-2 px-4 text-muted-foreground"
+            className="flex flex-col items-center gap-1 h-auto py-2 px-3 text-muted-foreground"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="text-xs font-medium">Назад</span>
+            <span className="text-[10px] font-medium">Назад</span>
+          </Button>
+
+          {/* Partners */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/partner/login')}
+            className={`flex flex-col items-center gap-1 h-auto py-2 px-3 ${
+              location.pathname.startsWith('/partner') ? 'text-primary' : 'text-muted-foreground'
+            }`}
+          >
+            <Briefcase className="w-5 h-5" />
+            <span className="text-[10px] font-medium">Партнёрам</span>
           </Button>
 
           {/* Share */}
@@ -70,10 +83,10 @@ export function BottomNavigation() {
             variant="ghost"
             size="sm"
             onClick={() => setShareDialogOpen(true)}
-            className="flex flex-col items-center gap-1 h-auto py-2 px-4 text-muted-foreground"
+            className="flex flex-col items-center gap-1 h-auto py-2 px-3 text-muted-foreground"
           >
             <Share2 className="w-5 h-5" />
-            <span className="text-xs font-medium">Поделиться</span>
+            <span className="text-[10px] font-medium">Поделиться</span>
           </Button>
         </div>
       </nav>
