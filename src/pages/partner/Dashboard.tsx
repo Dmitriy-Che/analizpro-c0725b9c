@@ -10,6 +10,7 @@ import { usePartner } from '@/hooks/usePartner';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { PartnerStats } from '@/components/PartnerStats';
 import { PartnerSubscriptionCard } from '@/components/PartnerSubscriptionCard';
+import { PartnerPlanSelector } from '@/components/PartnerPlanSelector';
 import logo from '@/assets/new-logo.png';
 import { 
   BarChart3, 
@@ -21,7 +22,8 @@ import {
   Mail, 
   Phone, 
   MapPin,
-  Save
+  Save,
+  Crown
 } from 'lucide-react';
 
 interface SubscriptionData {
@@ -31,6 +33,7 @@ interface SubscriptionData {
   price: number;
   is_active: boolean;
   activated_at: string;
+  requested_plan?: string | null;
 }
 
 export default function PartnerDashboard() {
