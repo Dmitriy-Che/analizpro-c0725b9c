@@ -383,6 +383,7 @@ export type Database = {
           is_active: boolean
           plan_type: string
           price: number
+          requested_plan: string
         }[]
       }
       get_partner_visits_by_day: {
