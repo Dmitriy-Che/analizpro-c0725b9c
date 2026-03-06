@@ -9,6 +9,7 @@ interface SubscriptionData {
   price: number;
   is_active: boolean;
   activated_at: string;
+  requested_plan?: string | null;
 }
 
 interface PartnerSubscriptionCardProps {
