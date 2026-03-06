@@ -69,6 +69,7 @@ interface PartnerSubscription {
   price: number;
   is_active: boolean;
   activated_at: string;
+  requested_plan?: string | null;
 }
 
 // Dictionary for translating English city names to Russian
