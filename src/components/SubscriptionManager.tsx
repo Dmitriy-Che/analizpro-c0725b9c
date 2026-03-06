@@ -11,7 +11,9 @@ import {
   Loader2, 
   Save, 
   Package,
-  AlertTriangle
+  AlertTriangle,
+  Bell,
+  CheckCircle
 } from 'lucide-react';
 
 interface Subscription {
