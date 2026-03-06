@@ -160,6 +160,8 @@ serve(async (req) => {
       );
     }
 
+    partnerId = partnerData.id;
+
     // 3.5. Create trial subscription (10 free analyses)
     const { error: subError } = await supabaseAdmin.from('partner_subscriptions').insert({
       partner_id: partnerId,
