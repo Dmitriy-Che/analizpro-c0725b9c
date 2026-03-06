@@ -9,6 +9,7 @@ interface SubscriptionBadgeProps {
 }
 
 const PLAN_NAMES: Record<string, string> = {
+  trial: 'Пробный',
   standard: 'Стандарт',
   business: 'Бизнес',
   premium: 'Премиум',
