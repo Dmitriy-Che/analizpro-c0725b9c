@@ -33,6 +33,8 @@ export function SubscriptionBadge({
             ? 'bg-purple-100 text-purple-700' 
             : planType === 'business'
             ? 'bg-blue-100 text-blue-700'
+            : planType === 'trial'
+            ? 'bg-green-100 text-green-700'
             : 'bg-gray-100 text-gray-700'
         }`}>
           {PLAN_NAMES[planType] || planType}
