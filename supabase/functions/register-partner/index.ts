@@ -141,16 +141,16 @@ serve(async (req) => {
     }
 
     // 3. Create partner record
-    const { error: partnerError } = await supabaseAdmin.from('partners').insert({
+    const { data: partnerData, error: partnerError } = await supabaseAdmin.from('partners').insert({
       user_id: userId,
       name: sanitizedClinicName,
       slug: slug,
       contact_email: email,
       contact_phone: sanitizedPhone,
       address: sanitizedAddress
-    });
+    }).select('id').single();
 
-    if (partnerError) {
+    if (partnerError || !partnerData) {
       console.error('Partner creation error:', partnerError);
       // Rollback: delete the user
       await supabaseAdmin.auth.admin.deleteUser(userId);

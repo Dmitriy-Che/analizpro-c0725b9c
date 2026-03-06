@@ -61,6 +61,8 @@ export function SubscriptionBadge({
               ? 'text-purple-600' 
               : planType === 'business'
               ? 'text-blue-600'
+              : planType === 'trial'
+              ? 'text-green-600'
               : 'text-gray-600'
           }`} />
           <span className="font-medium text-sm">

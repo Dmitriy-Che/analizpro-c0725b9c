@@ -128,6 +128,28 @@ export function PartnerSubscriptionCard({ subscription, loading }: PartnerSubscr
           </span>
         </div>
 
+        {subscription.plan_type === 'trial' && !isExhausted && (
+          <div className="p-3 bg-green-100 rounded-lg border border-green-200">
+            <p className="text-sm font-medium text-green-800">
+              🎉 У вас сейчас пробный период, доступно {remaining} расшифровок.
+            </p>
+            <p className="text-xs text-green-600 mt-1">
+              Выберите тариф во вкладке «Тариф» для продолжения работы.
+            </p>
+          </div>
+        )}
+
+        {subscription.requested_plan && (
+          <div className="p-3 bg-blue-100 rounded-lg border border-blue-200">
+            <p className="text-sm font-medium text-blue-800">
+              📋 Вы подали заявку на тариф «{PLAN_NAMES[subscription.requested_plan] || subscription.requested_plan}»
+            </p>
+            <p className="text-xs text-blue-600 mt-1">
+              Ожидайте активации администратором после оплаты.
+            </p>
+          </div>
+        )}
+
         {isWarning && !isExhausted && (
           <div className="p-3 bg-yellow-100 rounded-lg border border-yellow-200">
             <div className="flex items-center gap-2 text-yellow-700">
@@ -137,7 +159,7 @@ export function PartnerSubscriptionCard({ subscription, loading }: PartnerSubscr
               </span>
             </div>
             <p className="text-xs text-yellow-600 mt-1">
-              Рекомендуем обратиться к администратору для продления
+              Рекомендуем выбрать тариф во вкладке «Тариф»
             </p>
           </div>
         )}
@@ -151,7 +173,7 @@ export function PartnerSubscriptionCard({ subscription, loading }: PartnerSubscr
               </span>
             </div>
             <p className="text-xs text-red-600 mt-1">
-              Новые расшифровки недоступны. Обратитесь к администратору для продления подписки.
+              Новые расшифровки недоступны. Выберите тариф для продолжения работы.
             </p>
           </div>
         )}
