@@ -11,7 +11,9 @@ import {
   Loader2, 
   Save, 
   Package,
-  AlertTriangle
+  AlertTriangle,
+  Bell,
+  CheckCircle
 } from 'lucide-react';
 
 interface Subscription {
@@ -21,6 +23,7 @@ interface Subscription {
   price: number;
   is_active: boolean;
   activated_at: string;
+  requested_plan?: string | null;
 }
 
 interface SubscriptionManagerProps {
@@ -31,6 +34,7 @@ interface SubscriptionManagerProps {
 }
 
 const PLANS = [
+  { type: 'trial', name: 'Пробный', limit: 10, price: 0 },
   { type: 'standard', name: 'Стандарт', limit: 500, price: 30000 },
   { type: 'business', name: 'Бизнес', limit: 1500, price: 52000 },
   { type: 'premium', name: 'Премиум', limit: 3000, price: 75000 },
@@ -154,12 +158,81 @@ export function SubscriptionManager({
     }
   };
 
+  const handleActivateRequestedPlan = async () => {
+    if (!subscription?.requested_plan) return;
+    const plan = PLANS.find(p => p.type === subscription.requested_plan);
+    if (!plan) return;
+    
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from('partner_subscriptions')
+        .update({
+          plan_type: plan.type,
+          analyses_limit: plan.limit,
+          analyses_used: 0,
+          price: plan.price,
+          requested_plan: null,
+          activated_at: new Date().toISOString(),
+          activated_by: user?.id
+        })
+        .eq('partner_id', partnerId);
+
+      if (error) throw error;
+
+      await supabase.from('subscription_history').insert({
+        partner_id: partnerId,
+        plan_type: plan.type,
+        analyses_limit: plan.limit,
+        price: plan.price,
+        action: 'activated_request',
+        admin_id: user?.id
+      });
+
+      toast.success(`Тариф "${plan.name}" активирован для ${partnerName}`);
+      onUpdate();
+    } catch (error) {
+      console.error('Error activating requested plan:', error);
+      toast.error('Ошибка активации');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <Card className="p-6 border-2 border-primary/20">
       <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
         <Crown className="w-5 h-5 text-primary" />
         Управление тарифом
       </h3>
+
+      {/* Requested plan notification */}
+      {subscription?.requested_plan && (
+        <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <Bell className="w-5 h-5 text-blue-600" />
+            <span className="font-bold text-blue-800">Новая заявка!</span>
+          </div>
+          <p className="text-sm text-blue-700 mb-3">
+            Партнёр запросил тариф «{PLANS.find(p => p.type === subscription.requested_plan)?.name || subscription.requested_plan}»
+          </p>
+          <Button 
+            onClick={handleActivateRequestedPlan}
+            disabled={saving}
+            className="gap-2"
+            size="sm"
+          >
+            {saving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <CheckCircle className="w-4 h-4" />
+            )}
+            Активировать запрошенный тариф
+          </Button>
+        </div>
+      )}
 
       {/* Current subscription status */}
       {subscription ? (

@@ -69,6 +69,7 @@ interface PartnerSubscription {
   price: number;
   is_active: boolean;
   activated_at: string;
+  requested_plan?: string | null;
 }
 
 // Dictionary for translating English city names to Russian
@@ -448,7 +449,7 @@ const Admin = () => {
                   </div>
 
                   {/* Subscription badge */}
-                  {partnersSubscriptions[partner.id] ? (
+                    {partnersSubscriptions[partner.id] ? (
                     <div className="mb-2">
                       <SubscriptionBadge 
                         planType={partnersSubscriptions[partner.id].plan_type}
@@ -456,6 +457,12 @@ const Admin = () => {
                         analysesLimit={partnersSubscriptions[partner.id].analyses_limit}
                         compact
                       />
+                      {partnersSubscriptions[partner.id].requested_plan && (
+                        <div className="flex items-center gap-1 text-xs text-blue-600 font-medium mt-1">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                          Заявка на тариф!
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="mb-2 flex items-center gap-1 text-xs text-yellow-600">

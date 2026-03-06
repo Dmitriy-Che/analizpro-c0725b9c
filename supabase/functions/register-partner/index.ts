@@ -124,6 +124,7 @@ serve(async (req) => {
     }
 
     const userId = authData.user.id;
+    let partnerId: string;
 
     // 2. Generate unique slug
     let slug = generateSlug(sanitizedClinicName);
@@ -140,16 +141,16 @@ serve(async (req) => {
     }
 
     // 3. Create partner record
-    const { error: partnerError } = await supabaseAdmin.from('partners').insert({
+    const { data: partnerData, error: partnerError } = await supabaseAdmin.from('partners').insert({
       user_id: userId,
       name: sanitizedClinicName,
       slug: slug,
       contact_email: email,
       contact_phone: sanitizedPhone,
       address: sanitizedAddress
-    });
+    }).select('id').single();
 
-    if (partnerError) {
+    if (partnerError || !partnerData) {
       console.error('Partner creation error:', partnerError);
       // Rollback: delete the user
       await supabaseAdmin.auth.admin.deleteUser(userId);
@@ -157,6 +158,23 @@ serve(async (req) => {
         JSON.stringify({ error: 'Ошибка создания профиля клиники' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    partnerId = partnerData.id;
+
+    // 3.5. Create trial subscription (10 free analyses)
+    const { error: subError } = await supabaseAdmin.from('partner_subscriptions').insert({
+      partner_id: partnerId,
+      plan_type: 'trial',
+      analyses_limit: 10,
+      analyses_used: 0,
+      price: 0,
+      is_active: true
+    });
+
+    if (subError) {
+      console.error('Trial subscription creation error:', subError);
+      // Don't fail registration, but log
     }
 
     // 4. Assign partner role (server-side, secure)

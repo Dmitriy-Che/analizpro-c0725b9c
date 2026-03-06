@@ -9,6 +9,7 @@ interface SubscriptionBadgeProps {
 }
 
 const PLAN_NAMES: Record<string, string> = {
+  trial: 'Пробный',
   standard: 'Стандарт',
   business: 'Бизнес',
   premium: 'Премиум',
@@ -32,6 +33,8 @@ export function SubscriptionBadge({
             ? 'bg-purple-100 text-purple-700' 
             : planType === 'business'
             ? 'bg-blue-100 text-blue-700'
+            : planType === 'trial'
+            ? 'bg-green-100 text-green-700'
             : 'bg-gray-100 text-gray-700'
         }`}>
           {PLAN_NAMES[planType] || planType}
@@ -58,6 +61,8 @@ export function SubscriptionBadge({
               ? 'text-purple-600' 
               : planType === 'business'
               ? 'text-blue-600'
+              : planType === 'trial'
+              ? 'text-green-600'
               : 'text-gray-600'
           }`} />
           <span className="font-medium text-sm">

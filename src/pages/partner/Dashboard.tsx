@@ -10,6 +10,7 @@ import { usePartner } from '@/hooks/usePartner';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { PartnerStats } from '@/components/PartnerStats';
 import { PartnerSubscriptionCard } from '@/components/PartnerSubscriptionCard';
+import { PartnerPlanSelector } from '@/components/PartnerPlanSelector';
 import logo from '@/assets/new-logo.png';
 import { 
   BarChart3, 
@@ -21,7 +22,8 @@ import {
   Mail, 
   Phone, 
   MapPin,
-  Save
+  Save,
+  Crown
 } from 'lucide-react';
 
 interface SubscriptionData {
@@ -31,6 +33,7 @@ interface SubscriptionData {
   price: number;
   is_active: boolean;
   activated_at: string;
+  requested_plan?: string | null;
 }
 
 export default function PartnerDashboard() {
@@ -139,10 +142,14 @@ export default function PartnerDashboard() {
 
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="stats" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
             <TabsTrigger value="stats" className="gap-2">
               <BarChart3 className="w-4 h-4" />
               <span className="hidden sm:inline">Статистика</span>
+            </TabsTrigger>
+            <TabsTrigger value="plan" className="gap-2">
+              <Crown className="w-4 h-4" />
+              <span className="hidden sm:inline">Тариф</span>
             </TabsTrigger>
             <TabsTrigger value="qr" className="gap-2">
               <QrCode className="w-4 h-4" />
@@ -168,6 +175,32 @@ export default function PartnerDashboard() {
                 {/* Stats */}
                 <PartnerStats stats={stats} visitsByDay={visitsByDay} />
               </div>
+            )}
+          </TabsContent>
+
+          {/* Plan Tab */}
+          <TabsContent value="plan">
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : subscription ? (
+              <div className="space-y-6">
+                <PartnerSubscriptionCard subscription={subscription} />
+                <PartnerPlanSelector 
+                  partnerId={partner.id}
+                  currentPlan={subscription.plan_type}
+                  requestedPlan={subscription.requested_plan || null}
+                  onPlanRequested={async () => {
+                    const sub = await fetchSubscription();
+                    setSubscription(sub);
+                  }}
+                />
+              </div>
+            ) : (
+              <Card className="p-6 text-center text-muted-foreground">
+                Нет данных о подписке. Обратитесь к администратору.
+              </Card>
             )}
           </TabsContent>
 

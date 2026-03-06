@@ -88,6 +88,7 @@ export type Database = {
           partner_id: string
           plan_type: string
           price: number
+          requested_plan: string | null
         }
         Insert: {
           activated_at?: string
@@ -100,6 +101,7 @@ export type Database = {
           partner_id: string
           plan_type?: string
           price?: number
+          requested_plan?: string | null
         }
         Update: {
           activated_at?: string
@@ -112,6 +114,7 @@ export type Database = {
           partner_id?: string
           plan_type?: string
           price?: number
+          requested_plan?: string | null
         }
         Relationships: [
           {
@@ -380,6 +383,7 @@ export type Database = {
           is_active: boolean
           plan_type: string
           price: number
+          requested_plan: string
         }[]
       }
       get_partner_visits_by_day: {
