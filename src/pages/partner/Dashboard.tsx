@@ -142,10 +142,14 @@ export default function PartnerDashboard() {
 
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Tabs defaultValue="stats" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
             <TabsTrigger value="stats" className="gap-2">
               <BarChart3 className="w-4 h-4" />
               <span className="hidden sm:inline">Статистика</span>
+            </TabsTrigger>
+            <TabsTrigger value="plan" className="gap-2">
+              <Crown className="w-4 h-4" />
+              <span className="hidden sm:inline">Тариф</span>
             </TabsTrigger>
             <TabsTrigger value="qr" className="gap-2">
               <QrCode className="w-4 h-4" />
