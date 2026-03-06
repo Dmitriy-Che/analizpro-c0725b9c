@@ -178,6 +178,32 @@ export default function PartnerDashboard() {
             )}
           </TabsContent>
 
+          {/* Plan Tab */}
+          <TabsContent value="plan">
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : subscription ? (
+              <div className="space-y-6">
+                <PartnerSubscriptionCard subscription={subscription} />
+                <PartnerPlanSelector 
+                  partnerId={partner.id}
+                  currentPlan={subscription.plan_type}
+                  requestedPlan={subscription.requested_plan || null}
+                  onPlanRequested={async () => {
+                    const sub = await fetchSubscription();
+                    setSubscription(sub);
+                  }}
+                />
+              </div>
+            ) : (
+              <Card className="p-6 text-center text-muted-foreground">
+                Нет данных о подписке. Обратитесь к администратору.
+              </Card>
+            )}
+          </TabsContent>
+
           {/* QR Code Tab */}
           <TabsContent value="qr">
             <div className="grid lg:grid-cols-2 gap-6">
