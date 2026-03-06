@@ -88,6 +88,7 @@ export type Database = {
           partner_id: string
           plan_type: string
           price: number
+          requested_plan: string | null
         }
         Insert: {
           activated_at?: string
@@ -100,6 +101,7 @@ export type Database = {
           partner_id: string
           plan_type?: string
           price?: number
+          requested_plan?: string | null
         }
         Update: {
           activated_at?: string
@@ -112,6 +114,7 @@ export type Database = {
           partner_id?: string
           plan_type?: string
           price?: number
+          requested_plan?: string | null
         }
         Relationships: [
           {
