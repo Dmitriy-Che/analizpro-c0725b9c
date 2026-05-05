@@ -194,7 +194,7 @@ export function usePartnerBySlug(slug: string | undefined) {
 
       try {
         const { data, error } = await supabase
-          .from('partners')
+          .from('partners_public' as any)
           .select('*')
           .eq('slug', slug)
           .eq('is_active', true)
