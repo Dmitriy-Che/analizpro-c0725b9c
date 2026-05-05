@@ -13,10 +13,14 @@ serve(async (req) => {
 
   try {
     // Get partner_id from request body if provided
-    let partner_id = null;
+    let partner_id: string | null = null;
     try {
       const body = await req.json();
-      partner_id = body?.partner_id || null;
+      const candidate = body?.partner_id;
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (typeof candidate === 'string' && uuidRegex.test(candidate)) {
+        partner_id = candidate;
+      }
     } catch {
       // No body or invalid JSON - that's fine, partner_id stays null
     }
