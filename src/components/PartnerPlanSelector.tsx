@@ -55,10 +55,9 @@ export function PartnerPlanSelector({
     
     setLoading(planType);
     try {
-      const { error } = await supabase
-        .from('partner_subscriptions')
-        .update({ requested_plan: planType })
-        .eq('partner_id', partnerId);
+      const { error } = await supabase.rpc('request_subscription_plan' as any, {
+        p_plan: planType,
+      });
 
       if (error) throw error;
 

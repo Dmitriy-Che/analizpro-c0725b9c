@@ -194,7 +194,7 @@ export function usePartnerBySlug(slug: string | undefined) {
 
       try {
         const { data, error } = await supabase
-          .from('partners')
+          .from('partners_public' as any)
           .select('*')
           .eq('slug', slug)
           .eq('is_active', true)
@@ -203,7 +203,7 @@ export function usePartnerBySlug(slug: string | undefined) {
         if (error) {
           setError('Клиника не найдена');
         } else {
-          setPartner(data);
+          setPartner(data as unknown as Partner);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки');
