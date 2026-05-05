@@ -203,7 +203,7 @@ export function usePartnerBySlug(slug: string | undefined) {
         if (error) {
           setError('Клиника не найдена');
         } else {
-          setPartner(data);
+          setPartner(data as unknown as Partner);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки');
