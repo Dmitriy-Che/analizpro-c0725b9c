@@ -13,10 +13,14 @@ serve(async (req) => {
 
   try {
     // Get partner_id from request body if provided
-    let partner_id = null;
+    let partner_id: string | null = null;
     try {
       const body = await req.json();
-      partner_id = body?.partner_id || null;
+      const candidate = body?.partner_id;
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (typeof candidate === 'string' && uuidRegex.test(candidate)) {
+        partner_id = candidate;
+      }
     } catch {
       // No body or invalid JSON - that's fine, partner_id stays null
     }
@@ -54,6 +58,19 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+
+    // Validate partner_id references an active partner
+    if (partner_id) {
+      const { data: partner } = await supabaseClient
+        .from('partners')
+        .select('id')
+        .eq('id', partner_id)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (!partner) {
+        partner_id = null;
+      }
+    }
 
     // Insert visit record with partner_id
     const { error } = await supabaseClient.from('visits').insert({

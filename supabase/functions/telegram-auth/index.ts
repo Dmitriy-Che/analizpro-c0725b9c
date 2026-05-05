@@ -105,7 +105,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Telegram auth error:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Authentication failed' }),
+      JSON.stringify({ error: 'Ошибка аутентификации' }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
