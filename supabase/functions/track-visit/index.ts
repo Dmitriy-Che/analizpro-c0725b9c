@@ -59,6 +59,19 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // Validate partner_id references an active partner
+    if (partner_id) {
+      const { data: partner } = await supabaseClient
+        .from('partners')
+        .select('id')
+        .eq('id', partner_id)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (!partner) {
+        partner_id = null;
+      }
+    }
+
     // Insert visit record with partner_id
     const { error } = await supabaseClient.from('visits').insert({
       ip_address: ipAddress,
