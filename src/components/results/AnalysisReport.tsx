@@ -33,27 +33,27 @@ export function AnalysisReport({
     <div id="analysis-report" className="space-y-4">
       {/* Header Card */}
       <Card className={`border-2 ${statusColors.border} rounded-2xl shadow-xl overflow-hidden`}>
-        <div className={`${statusColors.header} p-4`}>
-          <div className="flex items-center justify-between">
+        <div className={`${statusColors.header} p-4 sm:p-5 lg:p-6`}>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <img 
                 src={clinicLogo || logo} 
                 alt="Logo" 
-                className="w-10 h-10 rounded-full bg-white/20 object-contain"
+                className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/20 object-contain"
               />
               <div>
-                <h3 className="text-white font-bold text-lg flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5" />
+                <h3 className="text-white font-bold text-lg sm:text-xl lg:text-2xl flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6" />
                   Результаты анализа
                 </h3>
                 {clinicName && (
-                  <p className="text-white/80 text-xs">{clinicName}</p>
+                  <p className="text-white/80 text-xs sm:text-sm">{clinicName}</p>
                 )}
               </div>
             </div>
-            <div className="text-right text-white/80 text-xs">
+            <div className="text-right text-white/80 text-xs sm:text-sm">
               <div className="flex items-center gap-1 justify-end">
-                <Calendar className="w-3 h-3" />
+                <Calendar className="w-3 h-3 lg:w-4 lg:h-4" />
                 {new Date().toLocaleDateString('ru-RU')}
               </div>
               <div className="mt-1">
@@ -63,10 +63,10 @@ export function AnalysisReport({
           </div>
         </div>
         
-        <div className={`p-5 ${statusColors.body}`}>
+        <div className={`p-5 lg:p-6 ${statusColors.body}`}>
           {/* Summary */}
           <div className="text-center mb-4">
-            <p className="text-sm text-foreground font-medium">{result.summary}</p>
+            <p className="text-base sm:text-lg lg:text-xl text-foreground font-medium leading-relaxed">{result.summary}</p>
           </div>
           
           {/* Status Chart */}
@@ -84,8 +84,8 @@ export function AnalysisReport({
       {hasAbnormal && (
         <div className="space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <h4 className="font-bold text-foreground">
+            <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-primary" />
+            <h4 className="font-bold text-foreground text-base sm:text-lg lg:text-xl">
               Показатели, требующие внимания
             </h4>
           </div>
@@ -102,12 +102,12 @@ export function AnalysisReport({
 
       {/* All Normal Message */}
       {!hasAbnormal && (
-        <Card className="p-6 border-2 border-green-200 bg-green-50 text-center">
-          <CheckCircle2 className="w-12 h-12 mx-auto text-green-500 mb-3" />
-          <h4 className="font-bold text-lg text-green-700 mb-2">
+        <Card className="p-6 lg:p-8 border-2 border-green-200 bg-green-50 text-center">
+          <CheckCircle2 className="w-12 h-12 lg:w-16 lg:h-16 mx-auto text-green-500 mb-3" />
+          <h4 className="font-bold text-lg sm:text-xl lg:text-2xl text-green-700 mb-2">
             Отличные результаты!
           </h4>
-          <p className="text-sm text-green-600">
+          <p className="text-sm sm:text-base lg:text-lg text-green-600 leading-relaxed">
             Все показатели находятся в пределах нормы для вашего возраста и пола.
           </p>
         </Card>
@@ -115,16 +115,16 @@ export function AnalysisReport({
 
       {/* General Recommendations */}
       {result.general_recommendations && (
-        <Card className="p-4 border-2 border-primary/20 bg-primary/5">
+        <Card className="p-4 sm:p-5 lg:p-6 border-2 border-primary/20 bg-primary/5">
           <div className="flex items-start gap-3">
-            <FileText className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+            <FileText className="w-5 h-5 lg:w-6 lg:h-6 text-primary mt-0.5 flex-shrink-0" />
             <div>
-              <h4 className="font-semibold text-foreground mb-1">Общие рекомендации</h4>
-              <p className="text-sm text-muted-foreground">
+              <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl mb-1">Общие рекомендации</h4>
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed">
                 {result.general_recommendations}
               </p>
               {result.follow_up && (
-                <p className="text-sm text-primary font-medium mt-2">
+                <p className="text-sm sm:text-base lg:text-lg text-primary font-medium mt-2">
                   📅 Контроль: {result.follow_up}
                 </p>
               )}
