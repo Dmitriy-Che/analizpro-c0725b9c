@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -359,17 +360,26 @@ export default function Analyze() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20 lg:pb-12">
       {/* Desktop decorative background */}
       <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
       </div>
-      
-      <div className="relative max-w-[480px] lg:max-w-[520px] mx-auto px-4 py-6 lg:py-12">
-        {/* Header */}
-        <Header />
+
+      <DesktopNav />
+
+      <div className="relative max-w-[480px] lg:max-w-2xl mx-auto px-4 lg:px-8 py-6 lg:py-12">
+        {/* Header (mobile only — desktop has top nav) */}
+        <div className="lg:hidden">
+          <Header />
+        </div>
+
+        <div className="hidden lg:block text-center mb-8">
+          <h1 className="text-3xl font-black mb-2">Расшифровка анализа</h1>
+          <p className="text-muted-foreground">Заполните 4 шага — ИИ подготовит подробный отчёт</p>
+        </div>
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-6 lg:mb-8">

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Header } from "@/components/Header";
+import { DesktopNav } from "@/components/DesktopNav";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { AnalysisReport } from "@/components/results/AnalysisReport";
 import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
 import { shareAsImage, shareAsPDF } from "@/utils/exportReport";
