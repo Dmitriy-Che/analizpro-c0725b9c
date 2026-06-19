@@ -211,10 +211,10 @@ const Results = () => {
         </Dialog>
 
         {/* Disclaimer */}
-        <Card className="mt-6 mb-4 border-2 border-warning/30 p-4 rounded-2xl shadow-sm bg-warning/5 animate-fade-in">
+        <Card className="mt-6 mb-4 border-2 border-warning/30 p-4 sm:p-5 lg:p-6 rounded-2xl shadow-sm bg-warning/5 animate-fade-in">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
-            <div className="text-xs">
+            <AlertTriangle className="w-5 h-5 lg:w-6 lg:h-6 text-warning flex-shrink-0 mt-0.5" />
+            <div className="text-sm sm:text-base">
               <strong className="text-foreground block mb-1">Важное уведомление:</strong>
               <span className="text-foreground/80 leading-relaxed">
                 Данный сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией. 
@@ -225,9 +225,9 @@ const Results = () => {
         </Card>
 
         {/* Telegram Block */}
-        <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md animate-fade-in">
-          <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
-          <p className="text-sm text-muted-foreground mb-4">Обновления, советы по здоровью и новости медицины</p>
+        <div className="mt-8 p-6 lg:p-8 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md animate-fade-in">
+          <div className="text-lg sm:text-xl lg:text-2xl font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
+          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-4">Обновления, советы по здоровью и новости медицины</p>
           <Button asChild className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
               Перейти в Telegram-канал
@@ -236,7 +236,7 @@ const Results = () => {
         </div>
 
         {/* Footer Info */}
-        <div className="mt-6 space-y-2 text-center text-xs text-muted-foreground animate-fade-in">
+        <div className="mt-6 space-y-2 text-center text-xs sm:text-sm text-muted-foreground animate-fade-in">
           <div className="font-medium">Версия 4.1.0</div>
           <div>© 2026 АнализПро. Все права защищены.</div>
           <a href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-accent underline transition-colors inline-block">
