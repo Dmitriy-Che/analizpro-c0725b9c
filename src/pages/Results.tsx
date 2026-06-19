@@ -110,14 +110,14 @@ const Results = () => {
         ) : (
           /* Fallback for text-only results */
           <Card className={`border-2 ${textStatusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
-            <div className={`${textStatusColors.header} p-4`}>
-              <h3 className="text-white font-bold text-lg flex items-center gap-2">
-                <CheckCircle2 className="w-6 h-6" />
+            <div className={`${textStatusColors.header} p-4 sm:p-5 lg:p-6`}>
+              <h3 className="text-white font-bold text-lg sm:text-xl lg:text-2xl flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6 lg:w-7 lg:h-7" />
                 Результаты анализа
               </h3>
             </div>
-            <div id="analysis-report" className={`p-5 ${textStatusColors.body}`}>
-              <div className="whitespace-pre-line text-sm text-foreground leading-relaxed mb-4">
+            <div id="analysis-report" className={`p-5 lg:p-6 ${textStatusColors.body}`}>
+              <div className="whitespace-pre-line text-base sm:text-lg lg:text-xl text-foreground leading-relaxed mb-4">
                 {parsedResult.text}
               </div>
             </div>
