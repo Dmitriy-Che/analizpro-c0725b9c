@@ -39,7 +39,7 @@ export function BottomNavigation() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border shadow-lg z-50">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border shadow-lg z-50">
         <div className="max-w-[480px] mx-auto flex justify-around items-center h-16 px-2">
           {/* Home */}
           <Button

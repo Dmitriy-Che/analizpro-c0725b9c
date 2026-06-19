@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Header } from "@/components/Header";
+import { DesktopNav } from "@/components/DesktopNav";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { AnalysisReport } from "@/components/results/AnalysisReport";
 import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
 import { shareAsImage, shareAsPDF } from "@/utils/exportReport";
@@ -58,17 +60,22 @@ const Results = () => {
   const textStatusColors = getOverallStatusColor(textStatus);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-6 px-4 sm:py-10">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20 lg:pb-12">
       {/* Desktop decorative background */}
       <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
       </div>
-      
-      <Card className="relative max-w-[480px] lg:max-w-[560px] mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
-        {/* Header */}
-        <Header />
+
+      <DesktopNav />
+
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        <Card className="relative max-w-[480px] lg:max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
+          {/* Header (mobile only — desktop uses top nav) */}
+          <div className="lg:hidden">
+            <Header />
+          </div>
 
         {/* Back Button */}
         <Button 
@@ -236,7 +243,9 @@ const Results = () => {
             Политика конфиденциальности
           </a>
         </div>
-      </Card>
+        </Card>
+      </div>
+      <BottomNavigation />
     </div>
   );
 };
