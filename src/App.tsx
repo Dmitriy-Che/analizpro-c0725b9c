@@ -9,6 +9,9 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
+import Tariffs from "./pages/Tariffs";
+import Pay from "./pages/Pay";
+import MyReports from "./pages/MyReports";
 
 // Partner pages
 import PartnerRegister from "./pages/partner/Register";
@@ -35,8 +38,11 @@ const App = () => (
           <Route path="/results" element={<Results />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/tariffs" element={<Tariffs />} />
+          <Route path="/pay/:orderId" element={<Pay />} />
+          <Route path="/my-reports" element={<MyReports />} />
           
-          {/* Partner routes */}
+          {/* Partner routes (hidden from menu, accessible by direct URL) */}
           <Route path="/partner/register" element={<PartnerRegister />} />
           <Route path="/partner/login" element={<PartnerLogin />} />
           <Route path="/partner/dashboard" element={<PartnerDashboard />} />

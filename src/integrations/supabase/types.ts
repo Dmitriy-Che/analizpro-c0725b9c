@@ -179,6 +179,24 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string | null
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: string | null
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string | null
+        }
+        Relationships: []
+      }
       subscription_history: {
         Row: {
           action: string
@@ -227,6 +245,48 @@ export type Database = {
           },
         ]
       }
+      tariffs: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          period_days: number | null
+          price_usd: number
+          reports_limit: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          period_days?: number | null
+          price_usd?: number
+          reports_limit?: number
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          period_days?: number | null
+          price_usd?: number
+          reports_limit?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       telegram_users: {
         Row: {
           created_at: string | null
@@ -264,40 +324,169 @@ export type Database = {
         Row: {
           age: number | null
           created_at: string | null
+          device_id: string | null
+          entitlement_id: string | null
+          expires_at: string
           full_result: string | null
           gender: string | null
           id: string
+          language_detected: string | null
+          result_json: Json | null
           result_summary: string | null
           study_type: string | null
-          telegram_id: string
+          telegram_id: string | null
+          title: string | null
+          user_id: string | null
         }
         Insert: {
           age?: number | null
           created_at?: string | null
+          device_id?: string | null
+          entitlement_id?: string | null
+          expires_at?: string
           full_result?: string | null
           gender?: string | null
           id?: string
+          language_detected?: string | null
+          result_json?: Json | null
           result_summary?: string | null
           study_type?: string | null
-          telegram_id: string
+          telegram_id?: string | null
+          title?: string | null
+          user_id?: string | null
         }
         Update: {
           age?: number | null
           created_at?: string | null
+          device_id?: string | null
+          entitlement_id?: string | null
+          expires_at?: string
           full_result?: string | null
           gender?: string | null
           id?: string
+          language_detected?: string | null
+          result_json?: Json | null
           result_summary?: string | null
           study_type?: string | null
-          telegram_id?: string
+          telegram_id?: string | null
+          title?: string | null
+          user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "user_analyses_entitlement_id_fkey"
+            columns: ["entitlement_id"]
+            isOneToOne: false
+            referencedRelation: "user_entitlements"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_analyses_telegram_id_fkey"
             columns: ["telegram_id"]
             isOneToOne: false
             referencedRelation: "telegram_users"
             referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
+      user_entitlements: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          expires_at: string | null
+          id: string
+          order_id: string | null
+          reports_total: number
+          reports_used: number
+          source: string
+          tariff_code: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          expires_at?: string | null
+          id?: string
+          order_id?: string | null
+          reports_total: number
+          reports_used?: number
+          source: string
+          tariff_code?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          expires_at?: string | null
+          id?: string
+          order_id?: string | null
+          reports_total?: number
+          reports_used?: number
+          source?: string
+          tariff_code?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_entitlements_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "user_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_entitlements_tariff_code_fkey"
+            columns: ["tariff_code"]
+            isOneToOne: false
+            referencedRelation: "tariffs"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      user_orders: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          id: string
+          notes: string | null
+          paid_at: string | null
+          price_usd: number
+          processed_at: string | null
+          status: string
+          tariff_code: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          price_usd: number
+          processed_at?: string | null
+          status?: string
+          tariff_code: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          notes?: string | null
+          paid_at?: string | null
+          price_usd?: number
+          processed_at?: string | null
+          status?: string
+          tariff_code?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_orders_tariff_code_fkey"
+            columns: ["tariff_code"]
+            isOneToOne: false
+            referencedRelation: "tariffs"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -395,7 +584,32 @@ export type Database = {
       }
     }
     Functions: {
+      admin_list_orders: {
+        Args: never
+        Returns: {
+          created_at: string
+          device_id: string
+          id: string
+          paid_at: string
+          price_usd: number
+          processed_at: string
+          status: string
+          tariff_code: string
+          user_email: string
+          user_id: string
+        }[]
+      }
+      admin_process_order: { Args: { p_order_id: string }; Returns: string }
       check_partner_limit: { Args: { p_partner_id: string }; Returns: boolean }
+      claim_guest_data: { Args: { p_device_id: string }; Returns: undefined }
+      consume_entitlement: {
+        Args: { p_device_id: string; p_user_id: string }
+        Returns: string
+      }
+      create_order: {
+        Args: { p_device_id: string; p_tariff_code: string }
+        Returns: string
+      }
       get_analysis_stats: {
         Args: never
         Returns: {
@@ -410,6 +624,43 @@ export type Database = {
           total_visits: number
           visits_last_30_days: number
           warning_count: number
+        }[]
+      }
+      get_my_entitlements: {
+        Args: { p_device_id: string }
+        Returns: {
+          expires_at: string
+          id: string
+          reports_total: number
+          reports_used: number
+          source: string
+          tariff_code: string
+        }[]
+      }
+      get_my_order: {
+        Args: { p_device_id: string; p_order_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          paid_at: string
+          price_usd: number
+          status: string
+          tariff_code: string
+        }[]
+      }
+      get_my_reports: {
+        Args: { p_device_id: string }
+        Returns: {
+          age: number
+          created_at: string
+          expires_at: string
+          full_result: string
+          gender: string
+          id: string
+          language_detected: string
+          result_json: Json
+          study_type: string
+          title: string
         }[]
       }
       get_partner_stats: {
@@ -454,6 +705,10 @@ export type Database = {
           visit_date: string
         }[]
       }
+      grant_free_trial: {
+        Args: { p_device_id: string; p_user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -466,6 +721,11 @@ export type Database = {
         Args: { p_partner_id: string }
         Returns: undefined
       }
+      mark_order_paid_by_user: {
+        Args: { p_device_id: string; p_order_id: string }
+        Returns: undefined
+      }
+      purge_expired_reports: { Args: never; Returns: number }
       request_subscription_plan: {
         Args: { p_plan: string }
         Returns: undefined

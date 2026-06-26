@@ -54,7 +54,7 @@ serve(async (req) => {
       );
     }
 
-    const { imageBase64, age, gender, studyType, partner_id } = body;
+    const { imageBase64, age, gender, studyType, partner_id, user_id, device_id } = body;
     
     // Validate imageBase64
     if (!imageBase64) {
@@ -142,6 +142,39 @@ serve(async (req) => {
       console.log('Partner limit check passed:', subscription.analyses_used, '/', subscription.analyses_limit);
     }
 
+    // B2C entitlement consumption (when no partner)
+    let entitlementId: string | null = null;
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+    if (!partner_id) {
+      if (!user_id && !device_id) {
+        return new Response(
+          JSON.stringify({ error: 'Не указан идентификатор пользователя.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const { data: entData, error: entErr } = await supabaseAdmin.rpc('consume_entitlement', {
+        p_user_id: user_id || null,
+        p_device_id: device_id || null,
+      });
+      if (entErr) {
+        console.error('consume_entitlement error', entErr);
+        return new Response(
+          JSON.stringify({ error: 'Ошибка проверки прав. Попробуйте позже.' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (!entData) {
+        return new Response(
+          JSON.stringify({ error: 'Нет доступных расшифровок. Выберите тариф или активируйте бесплатную расшифровку.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      entitlementId = entData as string;
+    }
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY не настроен');
@@ -159,7 +192,13 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `Ты - медицинский помощник. Анализируй медицинские исследования и возвращай результат в формате JSON.
+            content: `Ты - медицинский помощник для русских экспатов. Анализируй медицинские исследования и возвращай результат в формате JSON.
+
+ВАЖНО ПО ЯЗЫКАМ:
+- Документ может быть на одном из 4 языков: английском (en), вьетнамском (vi), тайском (th) или русском (ru).
+- Автоматически определи язык документа.
+- Все названия показателей, объяснения, рекомендации и описания ВСЕГДА возвращай НА РУССКОМ ЯЗЫКЕ — независимо от языка исходного документа.
+- В поле "language_detected" верни код языка документа: "en", "vi", "th", "ru" или "other".
 
 ДАННЫЕ ПАЦИЕНТА:
 Возраст: ${age} лет
@@ -190,7 +229,8 @@ serve(async (req) => {
     }
   ],
   "general_recommendations": "Общие рекомендации по результатам",
-  "follow_up": "Когда повторить исследование"
+  "follow_up": "Когда повторить исследование",
+  "language_detected": "en" | "vi" | "th" | "ru" | "other"
 }
 
 ПРАВИЛА:
@@ -347,9 +387,32 @@ ${studyType === 'lab' ? `
           console.log('Partner usage incremented for:', partner_id);
         }
       }
+
+      // Save B2C analysis report to user_analyses
+      if (!partner_id && (user_id || device_id)) {
+        let parsed: any = null;
+        let langDetected: string | null = null;
+        try {
+          parsed = JSON.parse(analysisResult);
+          langDetected = parsed?.language_detected ?? null;
+        } catch {}
+
+        const { error: saveErr } = await supabaseClient.from('user_analyses').insert({
+          user_id: user_id || null,
+          device_id: device_id || null,
+          entitlement_id: entitlementId,
+          age: age,
+          gender: gender,
+          study_type: studyType,
+          language_detected: langDetected,
+          result_json: parsed,
+          full_result: analysisResult,
+          title: studyType === 'lab' ? 'Лабораторные анализы' : studyType === 'ultrasound' ? 'УЗИ' : 'МРТ',
+        });
+        if (saveErr) console.error('Failed to save user_analyses', saveErr);
+      }
     } catch (logError) {
       console.error('Failed to log analysis:', logError);
-      // Don't fail the request if logging fails
     }
 
     return new Response(

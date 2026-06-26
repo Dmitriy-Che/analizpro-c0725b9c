@@ -33,6 +33,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell }
 import { PartnerStats } from "@/components/PartnerStats";
 import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
+import { OrdersAdmin } from "@/components/OrdersAdmin";
 
 interface AnalysisStats {
   total_analyses: number;
@@ -399,7 +400,9 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Partner Registration Link */}
+        {/* B2C Orders */}
+        <OrdersAdmin />
+
         <Card className="p-6 border-2 border-primary/20 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
