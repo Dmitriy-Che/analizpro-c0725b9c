@@ -229,7 +229,8 @@ serve(async (req) => {
     }
   ],
   "general_recommendations": "Общие рекомендации по результатам",
-  "follow_up": "Когда повторить исследование"
+  "follow_up": "Когда повторить исследование",
+  "language_detected": "en" | "vi" | "th" | "ru" | "other"
 }
 
 ПРАВИЛА:
