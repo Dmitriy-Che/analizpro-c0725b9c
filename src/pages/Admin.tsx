@@ -400,7 +400,9 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Partner Registration Link */}
+        {/* B2C Orders */}
+        <OrdersAdmin />
+
         <Card className="p-6 border-2 border-primary/20 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
