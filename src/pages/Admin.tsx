@@ -33,6 +33,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell }
 import { PartnerStats } from "@/components/PartnerStats";
 import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
+import { OrdersAdmin } from "@/components/OrdersAdmin";
 
 interface AnalysisStats {
   total_analyses: number;
