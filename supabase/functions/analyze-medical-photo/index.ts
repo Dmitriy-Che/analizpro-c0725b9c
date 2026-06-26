@@ -54,7 +54,7 @@ serve(async (req) => {
       );
     }
 
-    const { imageBase64, age, gender, studyType, partner_id } = body;
+    const { imageBase64, age, gender, studyType, partner_id, user_id, device_id } = body;
     
     // Validate imageBase64
     if (!imageBase64) {
