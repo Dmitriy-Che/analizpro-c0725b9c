@@ -387,9 +387,32 @@ ${studyType === 'lab' ? `
           console.log('Partner usage incremented for:', partner_id);
         }
       }
+
+      // Save B2C analysis report to user_analyses
+      if (!partner_id && (user_id || device_id)) {
+        let parsed: any = null;
+        let langDetected: string | null = null;
+        try {
+          parsed = JSON.parse(analysisResult);
+          langDetected = parsed?.language_detected ?? null;
+        } catch {}
+
+        const { error: saveErr } = await supabaseClient.from('user_analyses').insert({
+          user_id: user_id || null,
+          device_id: device_id || null,
+          entitlement_id: entitlementId,
+          age: age,
+          gender: gender,
+          study_type: studyType,
+          language_detected: langDetected,
+          result_json: parsed,
+          full_result: analysisResult,
+          title: studyType === 'lab' ? 'Лабораторные анализы' : studyType === 'ultrasound' ? 'УЗИ' : 'МРТ',
+        });
+        if (saveErr) console.error('Failed to save user_analyses', saveErr);
+      }
     } catch (logError) {
       console.error('Failed to log analysis:', logError);
-      // Don't fail the request if logging fails
     }
 
     return new Response(
