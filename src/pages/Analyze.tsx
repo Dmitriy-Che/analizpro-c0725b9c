@@ -149,6 +149,7 @@ export default function Analyze() {
       setProgress(0);
     } finally {
       setIsAnalyzing(false);
+      refreshEnt();
     }
   };
 
