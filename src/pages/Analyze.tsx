@@ -34,6 +34,8 @@ export default function Analyze() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const { deviceId, user } = useCurrentUser();
+  const { hasAvailable, remaining, loading: entLoading, refresh: refreshEnt } = useEntitlements();
 
   const [currentStep, setCurrentStep] = useState<Step>('age');
   const [age, setAge] = useState('');
@@ -91,16 +93,20 @@ export default function Analyze() {
   const handleAnalyze = async () => {
     if (!selectedFile || !age || !gender || !studyType) return;
 
+    if (!hasAvailable) {
+      toast.error('Нет доступных расшифровок. Активируйте бесплатную или выберите тариф.');
+      navigate('/tariffs');
+      return;
+    }
+
     setIsAnalyzing(true);
     setProgress(0);
 
-    // Simulate progress
     const progressInterval = setInterval(() => {
       setProgress(prev => Math.min(prev + Math.random() * 15, 90));
     }, 500);
 
     try {
-      // Convert file to base64
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve) => {
         reader.onload = () => resolve(reader.result as string);
@@ -108,14 +114,14 @@ export default function Analyze() {
       });
       const imageBase64 = await base64Promise;
 
-      // Call analyze function
       const { data, error } = await supabase.functions.invoke('analyze-medical-photo', {
         body: {
           imageBase64,
           age: parseInt(age),
           gender,
           studyType,
-          telegramId: null,
+          user_id: user?.id ?? null,
+          device_id: deviceId,
           partner_id: null,
         },
       });
