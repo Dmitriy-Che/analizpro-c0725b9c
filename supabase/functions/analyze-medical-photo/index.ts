@@ -142,6 +142,39 @@ serve(async (req) => {
       console.log('Partner limit check passed:', subscription.analyses_used, '/', subscription.analyses_limit);
     }
 
+    // B2C entitlement consumption (when no partner)
+    let entitlementId: string | null = null;
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+    if (!partner_id) {
+      if (!user_id && !device_id) {
+        return new Response(
+          JSON.stringify({ error: 'Не указан идентификатор пользователя.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const { data: entData, error: entErr } = await supabaseAdmin.rpc('consume_entitlement', {
+        p_user_id: user_id || null,
+        p_device_id: device_id || null,
+      });
+      if (entErr) {
+        console.error('consume_entitlement error', entErr);
+        return new Response(
+          JSON.stringify({ error: 'Ошибка проверки прав. Попробуйте позже.' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (!entData) {
+        return new Response(
+          JSON.stringify({ error: 'Нет доступных расшифровок. Выберите тариф или активируйте бесплатную расшифровку.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      entitlementId = entData as string;
+    }
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY не настроен');
