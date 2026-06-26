@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useEntitlements } from '@/hooks/useEntitlements';
 import logo from '@/assets/new-logo.png';
 
 type Step = 'age' | 'gender' | 'studyType' | 'upload';
