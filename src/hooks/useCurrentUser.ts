@@ -24,7 +24,11 @@ export function useCurrentUser() {
       setUser(session?.user ?? null);
       if (session?.user) {
         // Привязываем гостевые данные при логине
-        supabase.rpc('claim_guest_data', { p_device_id: deviceId }).catch(() => {});
+        (async () => {
+          try {
+            await supabase.rpc('claim_guest_data', { p_device_id: deviceId });
+          } catch {}
+        })();
       }
     });
     supabase.auth.getSession().then(({ data }) => {
