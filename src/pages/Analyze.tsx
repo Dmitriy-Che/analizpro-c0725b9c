@@ -9,17 +9,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Upload, 
-  Camera, 
-  User, 
-  Calendar, 
-  Microscope, 
-  FileImage, 
+import {
+  Upload,
+  User,
+  Calendar,
+  Microscope,
+  FileImage,
   Loader2,
   Check,
   X
 } from 'lucide-react';
+
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -33,7 +33,7 @@ type StudyType = 'lab' | 'ultrasound' | 'mri' | null;
 export default function Analyze() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
+
   const { deviceId, user } = useCurrentUser();
   const { hasAvailable, remaining, loading: entLoading, refresh: refreshEnt } = useEntitlements();
 
@@ -265,21 +265,13 @@ export default function Analyze() {
                 <FileImage className="w-8 h-8 text-primary" />
               </div>
               <h2 className="text-xl font-bold mb-2">Загрузите фото</h2>
-              <p className="text-muted-foreground text-sm">Сфотографируйте или выберите файл из галереи</p>
+              <p className="text-muted-foreground text-sm">Выберите файл с анализом из галереи или с устройства</p>
             </div>
 
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-            <input
-              ref={cameraInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
               onChange={handleFileSelect}
               className="hidden"
             />
@@ -306,25 +298,16 @@ export default function Analyze() {
                 </div>
               </Card>
             ) : (
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant="outline"
-                  className="h-24 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload className="w-6 h-6" />
-                  <span className="text-sm">Загрузить</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-24 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
-                  onClick={() => cameraInputRef.current?.click()}
-                >
-                  <Camera className="w-6 h-6" />
-                  <span className="text-sm">Камера</span>
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                className="w-full h-28 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="w-7 h-7" />
+                <span className="text-sm font-semibold">Загрузить файл</span>
+              </Button>
             )}
+
 
             <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
               <Checkbox
