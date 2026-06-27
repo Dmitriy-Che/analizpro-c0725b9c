@@ -181,13 +181,15 @@ export default function Pay() {
                 )}
               </div>
 
-              <Button
-                onClick={handleMarkPaid}
-                disabled={marking}
-                className="w-full h-14 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90"
-              >
-                {marking ? 'Отправляем...' : 'Я оплатил'}
-              </Button>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-sm text-center">
+                <p className="font-semibold text-primary mb-1">
+                  Подтверждение оплаты — автоматически
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  Как только платёж поступит, расшифровки активируются сами, и мы пришлём уведомление. Закрывать страницу не обязательно.
+                </p>
+              </div>
+
             </>
           )}
         </Card>
