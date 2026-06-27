@@ -36,6 +36,9 @@ export function OrdersAdmin() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [qrUrl, setQrUrl] = useState('');
+  const [qrPath, setQrPath] = useState('');
+  const [qrPreview, setQrPreview] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
@@ -50,10 +53,20 @@ export function OrdersAdmin() {
     if (data) {
       const m = Object.fromEntries(data.map((d) => [d.key, d.value ?? '']));
       setQrUrl(m.qr_image_url || '');
+      setQrPath(m.qr_image_path || '');
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
+      if (m.qr_image_path) {
+        const { data: signed } = await supabase.storage
+          .from('payment-qr')
+          .createSignedUrl(m.qr_image_path, 60 * 60);
+        setQrPreview(signed?.signedUrl || '');
+      } else if (m.qr_image_url) {
+        setQrPreview(m.qr_image_url);
+      }
     }
   };
+
 
   useEffect(() => {
     Promise.all([refresh(), loadSettings()]).finally(() => setLoading(false));
@@ -75,6 +88,7 @@ export function OrdersAdmin() {
     try {
       await Promise.all([
         supabase.from('payment_settings').upsert({ key: 'qr_image_url', value: qrUrl, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'qr_image_path', value: qrPath, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'payment_instructions', value: instructions, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'support_contact', value: support, updated_at: new Date().toISOString() }),
       ]);
@@ -85,6 +99,45 @@ export function OrdersAdmin() {
       setSavingSettings(false);
     }
   };
+
+  const handleQrUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Файл слишком большой (макс 5 МБ)');
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = file.name.split('.').pop() || 'png';
+      const path = `qr-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage
+        .from('payment-qr')
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      // Удалим предыдущий файл, если был
+      if (qrPath && qrPath !== path) {
+        await supabase.storage.from('payment-qr').remove([qrPath]);
+      }
+      setQrPath(path);
+      setQrUrl('');
+      const { data: signed } = await supabase.storage
+        .from('payment-qr')
+        .createSignedUrl(path, 60 * 60);
+      setQrPreview(signed?.signedUrl || '');
+      // Сохраняем настройку сразу
+      await Promise.all([
+        supabase.from('payment_settings').upsert({ key: 'qr_image_path', value: path, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'qr_image_url', value: '', updated_at: new Date().toISOString() }),
+      ]);
+      toast.success('QR-код загружен');
+    } catch (err: any) {
+      toast.error(err.message || 'Ошибка загрузки');
+    } finally {
+      setUploading(false);
+    }
+  };
+
 
   if (loading) return null;
 
@@ -97,12 +150,30 @@ export function OrdersAdmin() {
         </h2>
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-semibold mb-1 block">URL QR-картинки</label>
-            <Input value={qrUrl} onChange={(e) => setQrUrl(e.target.value)} placeholder="https://..." />
+            <label className="text-sm font-semibold mb-1 block">QR-картинка</label>
+            {qrPreview && (
+              <div className="mb-2 p-3 bg-white rounded-lg border inline-block">
+                <img src={qrPreview} alt="QR" className="w-32 h-32 object-contain" />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleQrUpload}
+              disabled={uploading}
+              className="block w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground file:font-semibold hover:file:opacity-90"
+            />
             <p className="text-xs text-muted-foreground mt-1">
-              Если пусто — QR-код будет генерироваться автоматически из ID заказа.
+              {uploading ? 'Загрузка...' : 'Загрузите картинку QR-кода (PNG/JPG до 5 МБ). Или укажите URL ниже.'}
             </p>
+            <Input
+              value={qrUrl}
+              onChange={(e) => setQrUrl(e.target.value)}
+              placeholder="https://..."
+              className="mt-2"
+            />
           </div>
+
           <div>
             <label className="text-sm font-semibold mb-1 block">Инструкция</label>
             <textarea

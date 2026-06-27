@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
@@ -12,9 +12,11 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { toast } from 'sonner';
 
+
 export default function Tariffs() {
   const navigate = useNavigate();
-  const { deviceId } = useCurrentUser();
+  const [params, setParams] = useSearchParams();
+  const { deviceId, user, loading: userLoading } = useCurrentUser();
   const { remaining, hasAvailable, claimFreeTrial, entitlements } = useEntitlements();
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -37,6 +39,11 @@ export default function Tariffs() {
   };
 
   const handleFreeTrial = async () => {
+    // Сначала регистрация / вход
+    if (!user) {
+      navigate('/login?next=/tariffs?claim=free');
+      return;
+    }
     setBusy('free');
     try {
       await claimFreeTrial();
@@ -48,6 +55,18 @@ export default function Tariffs() {
       setBusy(null);
     }
   };
+
+  // Авто-активация после возврата с логина
+  useEffect(() => {
+    if (userLoading) return;
+    if (params.get('claim') === 'free' && user && !trialUsed) {
+      params.delete('claim');
+      setParams(params, { replace: true });
+      handleFreeTrial();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLoading, user?.id, trialUsed]);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20 lg:pb-12">
@@ -89,17 +108,21 @@ export default function Tariffs() {
               <div className="flex-1">
                 <h3 className="text-lg lg:text-xl font-bold mb-1">Пробная расшифровка</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {FREE_TRIAL_REPORTS} бесплатная расшифровка для новых пользователей. Без оплаты, без регистрации.
+                  Для новых пользователей — нужна быстрая регистрация, оплата не требуется.
                 </p>
                 <Button
                   onClick={handleFreeTrial}
                   disabled={busy === 'free'}
-                  className="bg-accent hover:bg-accent/90 text-white font-semibold"
+                  className="bg-accent hover:bg-accent/90 text-white font-semibold h-auto py-2.5 flex-col items-start gap-0.5"
                 >
-                  {busy === 'free' ? 'Активация...' : 'Активировать бесплатно'}
+                  <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно'}</span>
+                  <span className="text-[10px] font-normal opacity-80">
+                    {FREE_TRIAL_REPORTS} бесплатная расшифровка
+                  </span>
                 </Button>
               </div>
             </div>
+
           </Card>
         )}
 
@@ -152,8 +175,9 @@ export default function Tariffs() {
         </div>
 
         <p className="text-xs text-muted-foreground text-center mt-8 max-w-xl mx-auto">
-          Оплата выполняется по QR-коду через банковское приложение. После оплаты нажмите «Я оплатил» — мы проверим перевод и активируем расшифровки. Отчёты хранятся 30 дней.
+          Оплата выполняется в долларах США (USD) по QR-коду через банковское приложение. После подтверждения платежа расшифровки активируются автоматически и мы пришлём уведомление. Отчёты хранятся 30 дней.
         </p>
+
       </div>
 
       <BottomNavigation />

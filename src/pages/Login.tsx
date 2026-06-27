@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,10 @@ import medicalLogo from "@/assets/new-logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const next = params.get("next") || "/my-reports";
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
@@ -45,7 +48,7 @@ const Login = () => {
           .eq("user_id", userData.user.id)
           .eq("role", "admin")
           .maybeSingle();
-        navigate(roles ? "/admin" : "/my-reports");
+        navigate(roles ? "/admin" : next);
       }
     } catch (error: any) {
       toast.error(error.message || "Ошибка авторизации");
@@ -58,7 +61,7 @@ const Login = () => {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}${next.startsWith("/") ? next : "/" + next}`,
       });
       if (result.error) {
         toast.error(result.error.message || "Не удалось войти через Google");
@@ -66,7 +69,8 @@ const Login = () => {
         return;
       }
       if (result.redirected) return;
-      navigate("/my-reports");
+      navigate(next);
+
     } catch (e: any) {
       toast.error(e.message || "Ошибка Google-входа");
       setLoading(false);
