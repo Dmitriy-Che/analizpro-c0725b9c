@@ -38,7 +38,6 @@ export default function Pay() {
     support_contact: '',
   });
   const [loading, setLoading] = useState(true);
-  const [marking, setMarking] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -55,8 +54,16 @@ export default function Pay() {
           acc[r.key] = r.value ?? '';
           return acc;
         }, {} as Record<string, string>);
+        let qr = s.qr_image_url || '';
+        const qrPath = s.qr_image_path || '';
+        if (qrPath && !qr) {
+          const { data: signed } = await supabase.storage
+            .from('payment-qr')
+            .createSignedUrl(qrPath, 60 * 60 * 24 * 7);
+          qr = signed?.signedUrl || '';
+        }
         setSettings({
-          qr_image_url: s.qr_image_url || '',
+          qr_image_url: qr,
           payment_instructions: s.payment_instructions || '',
           support_contact: s.support_contact || '',
         });
@@ -65,23 +72,6 @@ export default function Pay() {
     })();
   }, [orderId, deviceId]);
 
-  const handleMarkPaid = async () => {
-    if (!orderId) return;
-    setMarking(true);
-    try {
-      const { error } = await supabase.rpc('mark_order_paid_by_user', {
-        p_order_id: orderId,
-        p_device_id: deviceId,
-      });
-      if (error) throw error;
-      setOrder((o) => (o ? { ...o, status: 'paid', paid_at: new Date().toISOString() } : o));
-      toast.success('Спасибо! Мы проверим оплату');
-    } catch (e: any) {
-      toast.error(e.message || 'Не удалось отметить оплату');
-    } finally {
-      setMarking(false);
-    }
-  };
 
   if (loading) {
     return (
