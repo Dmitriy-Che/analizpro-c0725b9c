@@ -36,6 +36,9 @@ export function OrdersAdmin() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [qrUrl, setQrUrl] = useState('');
+  const [qrPath, setQrPath] = useState('');
+  const [qrPreview, setQrPreview] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
@@ -50,10 +53,20 @@ export function OrdersAdmin() {
     if (data) {
       const m = Object.fromEntries(data.map((d) => [d.key, d.value ?? '']));
       setQrUrl(m.qr_image_url || '');
+      setQrPath(m.qr_image_path || '');
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
+      if (m.qr_image_path) {
+        const { data: signed } = await supabase.storage
+          .from('payment-qr')
+          .createSignedUrl(m.qr_image_path, 60 * 60);
+        setQrPreview(signed?.signedUrl || '');
+      } else if (m.qr_image_url) {
+        setQrPreview(m.qr_image_url);
+      }
     }
   };
+
 
   useEffect(() => {
     Promise.all([refresh(), loadSettings()]).finally(() => setLoading(false));
