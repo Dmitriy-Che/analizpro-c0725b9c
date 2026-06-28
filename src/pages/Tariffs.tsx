@@ -23,6 +23,10 @@ export default function Tariffs() {
   const trialUsed = entitlements.some((e) => e.source === 'free_trial');
 
   const handleBuy = async (code: string) => {
+    if (!user) {
+      navigate(`/register?next=${encodeURIComponent(`/tariffs?buy=${code}`)}`);
+      return;
+    }
     setBusy(code);
     try {
       const { data, error } = await supabase.rpc('create_order', {
@@ -39,9 +43,8 @@ export default function Tariffs() {
   };
 
   const handleFreeTrial = async () => {
-    // Сначала регистрация / вход
     if (!user) {
-      navigate('/login?next=/tariffs?claim=free');
+      navigate('/register?next=/tariffs?claim=free');
       return;
     }
     setBusy('free');
