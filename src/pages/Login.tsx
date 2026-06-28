@@ -125,14 +125,15 @@ const Login = () => {
             ) : (
               <span className="flex items-center gap-2">
                 <LogIn className="w-5 h-5" />
-                {isSignUp ? "Зарегистрироваться" : "Войти"}
+                Войти
               </span>
             )}
           </Button>
-          <div className="text-center">
-            <button type="button" onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-primary hover:underline">
-              {isSignUp ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться"}
-            </button>
+          <div className="text-center text-sm">
+            Нет аккаунта?{" "}
+            <Link to={`/register?next=${encodeURIComponent(next)}`} className="text-primary font-semibold hover:underline">
+              Зарегистрироваться
+            </Link>
           </div>
           <Button type="button" variant="outline" onClick={() => navigate("/")} className="w-full">
             Вернуться на главную
