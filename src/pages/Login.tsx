@@ -73,9 +73,7 @@ const Login = () => {
         </div>
 
         <div className="text-center mb-6">
-          <h1 className="text-2xl lg:text-3xl font-black text-primary mb-2">
-            {isSignUp ? "Регистрация" : "Вход в аккаунт"}
-          </h1>
+          <h1 className="text-2xl lg:text-3xl font-black text-primary mb-2">Вход в аккаунт</h1>
           <p className="text-sm text-muted-foreground">
             Сохраняйте отчёты и тарифы в личном кабинете
           </p>
