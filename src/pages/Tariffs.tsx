@@ -59,13 +59,20 @@ export default function Tariffs() {
     }
   };
 
-  // Авто-активация после возврата с логина
+  // Авто-обработка после возврата с регистрации/логина
   useEffect(() => {
-    if (userLoading) return;
-    if (params.get('claim') === 'free' && user && !trialUsed) {
+    if (userLoading || !user) return;
+    if (params.get('claim') === 'free' && !trialUsed) {
       params.delete('claim');
       setParams(params, { replace: true });
       handleFreeTrial();
+      return;
+    }
+    const buyCode = params.get('buy');
+    if (buyCode) {
+      params.delete('buy');
+      setParams(params, { replace: true });
+      handleBuy(buyCode);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoading, user?.id, trialUsed]);
