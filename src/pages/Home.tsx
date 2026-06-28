@@ -43,9 +43,9 @@ export default function Home() {
         </p>
 
         <Card className="p-4 mb-6 border-2 border-accent/30 bg-gradient-to-br from-accent/10 to-primary/10">
-          <div className="flex items-center gap-3 mb-2">
-            <Gift className="w-5 h-5 text-accent" />
-            <span className="font-bold">1 бесплатная расшифровка</span>
+          <div className="flex items-center gap-3 mb-1.5">
+            <Gift className="w-4 h-4 text-accent" />
+            <span className="text-sm font-bold">1 бесплатная расшифровка</span>
           </div>
           <p className="text-xs text-muted-foreground mb-3">
             Для новых пользователей — без регистрации и оплаты.
