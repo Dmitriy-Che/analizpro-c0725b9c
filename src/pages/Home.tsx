@@ -55,7 +55,7 @@ export default function Home() {
             size="sm"
             className="bg-accent hover:bg-accent/90 text-white"
           >
-            Активировать
+            Попробовать бесплатно!
           </Button>
         </Card>
 
