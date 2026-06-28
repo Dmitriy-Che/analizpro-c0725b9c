@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, FolderClock, CreditCard, LogIn, LogOut } from 'lucide-react';
+import { Home, FileText, FolderClock, CreditCard, LogIn, LogOut, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { supabase } from '@/integrations/supabase/client';
