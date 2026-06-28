@@ -73,15 +73,26 @@ export function DesktopNav() {
               Выйти
             </Button>
           ) : (
-            <Button
-              onClick={() => navigate('/login')}
-              variant="ghost"
-              size="sm"
-              className="gap-2"
-            >
-              <LogIn className="w-4 h-4" />
-              Войти
-            </Button>
+            <>
+              <Button
+                onClick={() => navigate('/login')}
+                variant="ghost"
+                size="sm"
+                className="gap-2"
+              >
+                <LogIn className="w-4 h-4" />
+                Войти
+              </Button>
+              <Button
+                onClick={() => navigate('/register')}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                Регистрация
+              </Button>
+            </>
           )}
           <Button
             onClick={() => navigate('/analyze')}
