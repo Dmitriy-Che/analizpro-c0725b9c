@@ -6,15 +6,14 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
-import { Lock, Mail, LogIn } from "lucide-react";
+import { Lock, Mail, UserPlus } from "lucide-react";
 import medicalLogo from "@/assets/new-logo.png";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get("next") || "/my-reports";
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,22 +23,22 @@ const Login = () => {
       toast.error("Заполните все поля");
       return;
     }
+    if (password.length < 6) {
+      toast.error("Пароль не короче 6 символов");
+      return;
+    }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}${next.startsWith("/") ? next : "/" + next}` },
+      });
       if (error) throw error;
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData.user) {
-        const { data: roles } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", userData.user.id)
-          .eq("role", "admin")
-          .maybeSingle();
-        navigate(roles ? "/admin" : next);
-      }
+      toast.success("Регистрация выполнена!");
+      navigate(next);
     } catch (error: any) {
-      toast.error(error.message || "Ошибка авторизации");
+      toast.error(error.message || "Ошибка регистрации");
     } finally {
       setLoading(false);
     }
@@ -58,9 +57,8 @@ const Login = () => {
       }
       if (result.redirected) return;
       navigate(next);
-
     } catch (e: any) {
-      toast.error(e.message || "Ошибка Google-входа");
+      toast.error(e.message || "Ошибка Google");
       setLoading(false);
     }
   };
@@ -71,12 +69,9 @@ const Login = () => {
         <div className="flex justify-center mb-6">
           <img src={medicalLogo} alt="Logo" className="w-16 h-16 rounded-full shadow-md object-contain" />
         </div>
-
         <div className="text-center mb-6">
-          <h1 className="text-2xl lg:text-3xl font-black text-primary mb-2">Вход в аккаунт</h1>
-          <p className="text-sm text-muted-foreground">
-            Сохраняйте отчёты и тарифы в личном кабинете
-          </p>
+          <h1 className="text-2xl lg:text-3xl font-black text-primary mb-2">Регистрация</h1>
+          <p className="text-sm text-muted-foreground">Создайте аккаунт за минуту</p>
         </div>
 
         <Button
@@ -92,7 +87,7 @@ const Login = () => {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/>
           </svg>
-          Войти через Google
+          Через Google
         </Button>
 
         <div className="flex items-center gap-3 mb-4">
@@ -113,7 +108,7 @@ const Login = () => {
             <label htmlFor="password" className="block text-sm font-bold mb-2">Пароль</label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="pl-12 py-6 text-base" disabled={loading}/>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="не менее 6 символов" className="pl-12 py-6 text-base" disabled={loading}/>
             </div>
           </div>
           <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-primary to-accent text-white font-bold text-base py-6 rounded-2xl shadow-lg">
@@ -124,15 +119,15 @@ const Login = () => {
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                <LogIn className="w-5 h-5" />
-                Войти
+                <UserPlus className="w-5 h-5" />
+                Зарегистрироваться
               </span>
             )}
           </Button>
           <div className="text-center text-sm">
-            Нет аккаунта?{" "}
-            <Link to={`/register?next=${encodeURIComponent(next)}`} className="text-primary font-semibold hover:underline">
-              Зарегистрироваться
+            Уже есть аккаунт?{" "}
+            <Link to={`/login?next=${encodeURIComponent(next)}`} className="text-primary font-semibold hover:underline">
+              Войти
             </Link>
           </div>
           <Button type="button" variant="outline" onClick={() => navigate("/")} className="w-full">
@@ -144,4 +139,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

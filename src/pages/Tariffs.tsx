@@ -23,6 +23,10 @@ export default function Tariffs() {
   const trialUsed = entitlements.some((e) => e.source === 'free_trial');
 
   const handleBuy = async (code: string) => {
+    if (!user) {
+      navigate(`/register?next=${encodeURIComponent(`/tariffs?buy=${code}`)}`);
+      return;
+    }
     setBusy(code);
     try {
       const { data, error } = await supabase.rpc('create_order', {
@@ -39,9 +43,8 @@ export default function Tariffs() {
   };
 
   const handleFreeTrial = async () => {
-    // Сначала регистрация / вход
     if (!user) {
-      navigate('/login?next=/tariffs?claim=free');
+      navigate('/register?next=/tariffs?claim=free');
       return;
     }
     setBusy('free');
@@ -56,20 +59,27 @@ export default function Tariffs() {
     }
   };
 
-  // Авто-активация после возврата с логина
+  // Авто-обработка после возврата с регистрации/логина
   useEffect(() => {
-    if (userLoading) return;
-    if (params.get('claim') === 'free' && user && !trialUsed) {
+    if (userLoading || !user) return;
+    if (params.get('claim') === 'free' && !trialUsed) {
       params.delete('claim');
       setParams(params, { replace: true });
       handleFreeTrial();
+      return;
+    }
+    const buyCode = params.get('buy');
+    if (buyCode) {
+      params.delete('buy');
+      setParams(params, { replace: true });
+      handleBuy(buyCode);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoading, user?.id, trialUsed]);
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20 lg:pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0 pb-6 lg:pb-12">
       <div className="hidden lg:block fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />

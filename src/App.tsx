@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Analyze from "./pages/Analyze";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
 import Tariffs from "./pages/Tariffs";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/results" element={<Results />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/tariffs" element={<Tariffs />} />
           <Route path="/pay/:orderId" element={<Pay />} />
           <Route path="/my-reports" element={<MyReports />} />
