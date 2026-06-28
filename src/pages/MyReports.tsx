@@ -63,7 +63,7 @@ export default function MyReports() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pb-20 lg:pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0 pb-6 lg:pb-12">
       <DesktopNav />
 
       <div className="relative max-w-[480px] lg:max-w-4xl mx-auto px-4 lg:px-8 py-6 lg:py-12">
