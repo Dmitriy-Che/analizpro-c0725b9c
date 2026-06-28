@@ -17,7 +17,6 @@ const Login = () => {
 
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,19 +26,8 @@ const Login = () => {
     }
     setLoading(true);
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/` },
-        });
-        if (error) throw error;
-        toast.success("Регистрация выполнена!");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      }
-      // Если админ — перенаправляем в админку
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
       const { data: userData } = await supabase.auth.getUser();
       if (userData.user) {
         const { data: roles } = await supabase
