@@ -41,6 +41,7 @@ export function OrdersAdmin() {
   const [uploading, setUploading] = useState(false);
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
+  const [paymentLink, setPaymentLink] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
   const refresh = async () => {
