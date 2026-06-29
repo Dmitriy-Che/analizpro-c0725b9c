@@ -544,7 +544,9 @@ const Admin = () => {
             )}
           </Card>
         )}
+          </TabsContent>
 
+          <TabsContent value="stats" className="mt-6">
         {/* Stats Grid */}
         {stats && (
           <>
