@@ -51,7 +51,7 @@ export default function Home() {
             Для новых пользователей — без регистрации и оплаты.
           </p>
           <Button
-            onClick={() => navigate('/tariffs')}
+            onClick={() => navigate('/tariffs?claim=free')}
             size="sm"
             className="bg-accent hover:bg-accent/90 text-white"
           >
