@@ -57,6 +57,7 @@ export function OrdersAdmin() {
       setQrPath(m.qr_image_path || '');
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
+      setPaymentLink(m.payment_link || '');
       if (m.qr_image_path) {
         const { data: signed } = await supabase.storage
           .from('payment-qr')
