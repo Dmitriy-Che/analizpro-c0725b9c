@@ -411,7 +411,9 @@ const Admin = () => {
           <TabsContent value="orders" className="mt-6">
             {/* B2C Orders */}
             <OrdersAdmin />
+          </TabsContent>
 
+          <TabsContent value="partners" className="mt-6">
         <Card className="p-6 border-2 border-primary/20 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
