@@ -25,6 +25,7 @@ interface PaymentSettings {
   qr_image_url: string;
   payment_instructions: string;
   support_contact: string;
+  payment_link: string;
 }
 
 export default function Pay() {
@@ -36,6 +37,7 @@ export default function Pay() {
     qr_image_url: '',
     payment_instructions: '',
     support_contact: '',
+    payment_link: '',
   });
   const [loading, setLoading] = useState(true);
 
@@ -66,6 +68,7 @@ export default function Pay() {
           qr_image_url: qr,
           payment_instructions: s.payment_instructions || '',
           support_contact: s.support_contact || '',
+          payment_link: s.payment_link || '',
         });
       }
       setLoading(false);
@@ -161,6 +164,17 @@ export default function Pay() {
                   № заказа: <code>{order.id.slice(0, 8)}</code>
                 </p>
               </div>
+
+              {settings.payment_link && (
+                <Button
+                  asChild
+                  className="w-full mb-4 h-12 bg-gradient-to-r from-primary to-accent font-bold"
+                >
+                  <a href={settings.payment_link} target="_blank" rel="noopener noreferrer">
+                    Перейти к оплате по ссылке
+                  </a>
+                </Button>
+              )}
 
               <div className="p-4 bg-muted/50 rounded-xl mb-6 text-sm text-muted-foreground leading-relaxed">
                 {settings.payment_instructions ||

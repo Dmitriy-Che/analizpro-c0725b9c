@@ -41,6 +41,7 @@ export function OrdersAdmin() {
   const [uploading, setUploading] = useState(false);
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
+  const [paymentLink, setPaymentLink] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
   const refresh = async () => {
@@ -56,6 +57,7 @@ export function OrdersAdmin() {
       setQrPath(m.qr_image_path || '');
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
+      setPaymentLink(m.payment_link || '');
       if (m.qr_image_path) {
         const { data: signed } = await supabase.storage
           .from('payment-qr')
@@ -91,6 +93,7 @@ export function OrdersAdmin() {
         supabase.from('payment_settings').upsert({ key: 'qr_image_path', value: qrPath, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'payment_instructions', value: instructions, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'support_contact', value: support, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'payment_link', value: paymentLink, updated_at: new Date().toISOString() }),
       ]);
       toast.success('Настройки сохранены');
     } catch (e: any) {
@@ -185,6 +188,17 @@ export function OrdersAdmin() {
           <div>
             <label className="text-sm font-semibold mb-1 block">Поддержка (контакт)</label>
             <Input value={support} onChange={(e) => setSupport(e.target.value)} placeholder="@telegram_handle" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Ссылка на оплату</label>
+            <Input
+              value={paymentLink}
+              onChange={(e) => setPaymentLink(e.target.value)}
+              placeholder="https://... (необязательно, отображается рядом с QR)"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Например, ссылка на платёжный кошелёк или Telegram-бот для оплаты.
+            </p>
           </div>
           <Button onClick={handleSaveSettings} disabled={savingSettings} className="gap-2">
             <Upload className="w-4 h-4" />

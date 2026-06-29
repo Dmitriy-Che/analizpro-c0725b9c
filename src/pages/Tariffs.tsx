@@ -125,7 +125,7 @@ export default function Tariffs() {
                   disabled={busy === 'free'}
                   className="bg-accent hover:bg-accent/90 text-white font-semibold h-auto py-2.5 flex-col items-start gap-0.5"
                 >
-                  <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно'}</span>
+                  <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно!'}</span>
                   <span className="text-[10px] font-normal opacity-80">
                     {FREE_TRIAL_REPORTS} бесплатная расшифровка
                   </span>

@@ -34,6 +34,7 @@ import { PartnerStats } from "@/components/PartnerStats";
 import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { OrdersAdmin } from "@/components/OrdersAdmin";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface AnalysisStats {
   total_analyses: number;
@@ -400,9 +401,19 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* B2C Orders */}
-        <OrdersAdmin />
+        <Tabs defaultValue="orders" className="mb-6">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="orders" className="py-2.5">Заказы</TabsTrigger>
+            <TabsTrigger value="stats" className="py-2.5">Статистика</TabsTrigger>
+            <TabsTrigger value="partners" className="py-2.5">Для партнёров</TabsTrigger>
+          </TabsList>
 
+          <TabsContent value="orders" className="mt-6">
+            {/* B2C Orders */}
+            <OrdersAdmin />
+          </TabsContent>
+
+          <TabsContent value="partners" className="mt-6">
         <Card className="p-6 border-2 border-primary/20 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -533,7 +544,9 @@ const Admin = () => {
             )}
           </Card>
         )}
+          </TabsContent>
 
+          <TabsContent value="stats" className="mt-6">
         {/* Stats Grid */}
         {stats && (
           <>
@@ -796,42 +809,8 @@ const Admin = () => {
             </Card>
           </>
         )}
-
-        {/* Partner Stats Modal/Section */}
-        {selectedPartner && (
-          <Card className="p-6 border-2 border-primary/30 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  onClick={handleBackFromPartner}
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-                <div>
-                  <h2 className="text-xl font-bold">{selectedPartner.name}</h2>
-                  <p className="text-sm text-muted-foreground">/c/{selectedPartner.slug}</p>
-                </div>
-              </div>
-              <span className={`text-sm px-3 py-1 rounded-full ${
-                selectedPartner.is_active 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-red-100 text-red-700'
-              }`}>
-                {selectedPartner.is_active ? 'Активен' : 'Неактивен'}
-              </span>
-            </div>
-            
-            {partnerLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              </div>
-            ) : (
-              <PartnerStats stats={partnerStats} visitsByDay={partnerVisitsByDay} />
-            )}
-          </Card>
-        )}
+          </TabsContent>
+        </Tabs>
 
         {/* Info Card */}
         <Card className="p-6 border-2 border-border">
