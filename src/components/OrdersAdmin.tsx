@@ -189,6 +189,17 @@ export function OrdersAdmin() {
             <label className="text-sm font-semibold mb-1 block">Поддержка (контакт)</label>
             <Input value={support} onChange={(e) => setSupport(e.target.value)} placeholder="@telegram_handle" />
           </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Ссылка на оплату</label>
+            <Input
+              value={paymentLink}
+              onChange={(e) => setPaymentLink(e.target.value)}
+              placeholder="https://... (необязательно, отображается рядом с QR)"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Например, ссылка на платёжный кошелёк или Telegram-бот для оплаты.
+            </p>
+          </div>
           <Button onClick={handleSaveSettings} disabled={savingSettings} className="gap-2">
             <Upload className="w-4 h-4" />
             {savingSettings ? 'Сохранение...' : 'Сохранить настройки'}
