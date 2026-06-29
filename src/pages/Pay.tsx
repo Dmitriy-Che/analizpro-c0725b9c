@@ -25,6 +25,7 @@ interface PaymentSettings {
   qr_image_url: string;
   payment_instructions: string;
   support_contact: string;
+  payment_link: string;
 }
 
 export default function Pay() {
