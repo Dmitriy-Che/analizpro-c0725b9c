@@ -165,6 +165,17 @@ export default function Pay() {
                 </p>
               </div>
 
+              {settings.payment_link && (
+                <Button
+                  asChild
+                  className="w-full mb-4 h-12 bg-gradient-to-r from-primary to-accent font-bold"
+                >
+                  <a href={settings.payment_link} target="_blank" rel="noopener noreferrer">
+                    Перейти к оплате по ссылке
+                  </a>
+                </Button>
+              )}
+
               <div className="p-4 bg-muted/50 rounded-xl mb-6 text-sm text-muted-foreground leading-relaxed">
                 {settings.payment_instructions ||
                   'Отсканируйте QR-код своим банковским приложением и переведите указанную сумму.'}
