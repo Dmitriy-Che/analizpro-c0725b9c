@@ -68,6 +68,7 @@ export default function Pay() {
           qr_image_url: qr,
           payment_instructions: s.payment_instructions || '',
           support_contact: s.support_contact || '',
+          payment_link: s.payment_link || '',
         });
       }
       setLoading(false);
