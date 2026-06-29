@@ -216,8 +216,65 @@ export default function Home() {
           </Button>
         </section>
 
-        <footer className="text-center text-sm text-muted-foreground space-y-2 pt-8 border-t border-border">
+        {/* Telegram Bot Section */}
+        <section className="rounded-3xl border-2 border-primary/20 bg-card/80 p-10 mb-12 grid grid-cols-2 gap-8 items-center shadow-md">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-4">
+              <Sparkles className="w-4 h-4" />
+              Также в Telegram
+            </div>
+            <h2 className="text-3xl xl:text-4xl font-black mb-3 leading-tight">
+              Пользуйтесь сервисом{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                прямо в Telegram
+              </span>
+            </h2>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              Отправьте фото анализа нашему боту — получите расшифровку на русском
+              за несколько секунд. Никаких приложений устанавливать не нужно.
+            </p>
+            <Button
+              asChild
+              className="h-12 px-6 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
+            >
+              <a href="https://t.me/med_gid_bot" target="_blank" rel="noopener noreferrer">
+                Открыть @med_gid_bot
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </a>
+            </Button>
+          </div>
+          <div className="flex justify-center">
+            <div className="px-8 py-6 rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-primary/20 shadow-inner text-center">
+              <div className="text-5xl mb-3">🤖</div>
+              <div className="text-2xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1">
+                @med_gid_bot
+              </div>
+              <p className="text-sm text-muted-foreground">Telegram-бот АнализПро</p>
+            </div>
+          </div>
+        </section>
+
+        <footer className="text-center text-sm text-muted-foreground space-y-3 pt-8 border-t border-border">
           <div>Версия 5.0.0 · © 2026 АнализПро. Все права защищены.</div>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <a
+              href="https://t.me/medgid_mo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:underline inline-flex items-center gap-1 font-semibold"
+            >
+              💬 Telegram-канал: @medgid_mo
+            </a>
+            <span className="text-border">·</span>
+            <a
+              href="https://t.me/med_gid_bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline inline-flex items-center gap-1 font-semibold"
+            >
+              🤖 Бот: @med_gid_bot
+            </a>
+          </div>
           <a
             href="https://docs.google.com/document/d/1F4EAz8NiKYt6rmi3SrVG7M99fOhqMXjC0gXsQiGMyUY/edit?usp=sharing"
             target="_blank"
