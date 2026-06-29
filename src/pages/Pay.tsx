@@ -37,6 +37,7 @@ export default function Pay() {
     qr_image_url: '',
     payment_instructions: '',
     support_contact: '',
+    payment_link: '',
   });
   const [loading, setLoading] = useState(true);
 
