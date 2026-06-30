@@ -8,14 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
   ArrowRight,
-  Shield,
-  Zap,
-  Heart,
-  Sparkles,
+  Brain,
   FileText,
-  Stethoscope,
   Gift,
   Globe2,
+  Heart,
+  MessageCircle,
+  Shield,
+  ShieldCheck,
+  Sparkles,
+  Stethoscope,
+  Zap,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { ReferralCard } from '@/components/ReferralCard';
