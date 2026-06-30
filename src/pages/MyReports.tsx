@@ -76,6 +76,12 @@ export default function MyReports() {
           <p className="t-lead">История ваших расшифровок</p>
         </div>
 
+        <ReferralGiftBanner />
+
+        <div className="mb-6">
+          <ReferralCard />
+        </div>
+
 
         <Card className="p-4 mb-6 border-2 border-accent/30 bg-accent/5 flex items-start gap-3">
           <Clock className="w-5 h-5 text-accent mt-0.5 shrink-0" />
