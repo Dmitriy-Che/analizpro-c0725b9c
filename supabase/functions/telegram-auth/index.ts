@@ -6,6 +6,82 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Max allowed age of Telegram auth_date (seconds)
+const AUTH_DATE_MAX_AGE = 60 * 60 * 24; // 24h — Mini App sessions can be long-lived
+
+async function hmacSha256Hex(keyData: Uint8Array | ArrayBuffer, message: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(message));
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function sha256(message: string): Promise<ArrayBuffer> {
+  return await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+}
+
+function timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+/** Verify Telegram Mini App initData per https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app */
+async function verifyInitData(initData: string, botToken: string): Promise<URLSearchParams | null> {
+  const params = new URLSearchParams(initData);
+  const providedHash = params.get('hash');
+  if (!providedHash) return null;
+  params.delete('hash');
+
+  const dataCheckArr: string[] = [];
+  const keys = Array.from(params.keys()).sort();
+  for (const k of keys) dataCheckArr.push(`${k}=${params.get(k)}`);
+  const dataCheckString = dataCheckArr.join('\n');
+
+  // secret_key = HMAC_SHA256(key="WebAppData", message=bot_token)
+  const secretKey = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode('WebAppData'),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const secretSig = await crypto.subtle.sign('HMAC', secretKey, new TextEncoder().encode(botToken));
+  const computedHash = await hmacSha256Hex(secretSig, dataCheckString);
+
+  if (!timingSafeEqualHex(computedHash, providedHash)) return null;
+
+  const authDate = parseInt(params.get('auth_date') || '0', 10);
+  if (!authDate || Math.floor(Date.now() / 1000) - authDate > AUTH_DATE_MAX_AGE) return null;
+
+  // restore hash for completeness
+  params.set('hash', providedHash);
+  return params;
+}
+
+/** Verify Telegram Login Widget payload per https://core.telegram.org/widgets/login#checking-authorization */
+async function verifyWidgetData(widgetData: Record<string, unknown>, botToken: string): Promise<boolean> {
+  const providedHash = typeof widgetData.hash === 'string' ? widgetData.hash : null;
+  if (!providedHash) return false;
+
+  const entries = Object.entries(widgetData).filter(([k, v]) => k !== 'hash' && v !== undefined && v !== null);
+  entries.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  const dataCheckString = entries.map(([k, v]) => `${k}=${v}`).join('\n');
+
+  // secret_key = SHA256(bot_token)
+  const secretKey = await sha256(botToken);
+  const computedHash = await hmacSha256Hex(secretKey, dataCheckString);
+
+  if (!timingSafeEqualHex(computedHash, providedHash)) return false;
+
+  const authDate = Number(widgetData.auth_date || 0);
+  if (!authDate || Math.floor(Date.now() / 1000) - authDate > AUTH_DATE_MAX_AGE) return false;
+  return true;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -13,7 +89,7 @@ serve(async (req) => {
 
   try {
     const { initData, widgetData, isMiniApp } = await req.json();
-    
+
     const botToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
     if (!botToken) {
       throw new Error('TELEGRAM_BOT_TOKEN not configured');
@@ -28,12 +104,20 @@ serve(async (req) => {
     };
 
     if (isMiniApp && initData) {
-      const urlParams = new URLSearchParams(initData);
-      const userDataStr = urlParams.get('user');
-      if (!userDataStr) {
-        throw new Error('No user data in initData');
+      const verified = await verifyInitData(String(initData), botToken);
+      if (!verified) {
+        return new Response(
+          JSON.stringify({ error: 'Неверная или устаревшая подпись Telegram' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
-      
+      const userDataStr = verified.get('user');
+      if (!userDataStr) {
+        return new Response(
+          JSON.stringify({ error: 'Нет данных пользователя' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       const parsedUser = JSON.parse(userDataStr);
       userData = {
         id: String(parsedUser.id),
@@ -42,16 +126,26 @@ serve(async (req) => {
         last_name: parsedUser.last_name,
         photo_url: parsedUser.photo_url,
       };
-    } else if (widgetData) {
+    } else if (widgetData && typeof widgetData === 'object') {
+      const ok = await verifyWidgetData(widgetData as Record<string, unknown>, botToken);
+      if (!ok) {
+        return new Response(
+          JSON.stringify({ error: 'Неверная или устаревшая подпись Telegram' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       userData = {
-        id: String(widgetData.id),
-        username: widgetData.username,
-        first_name: widgetData.first_name,
-        last_name: widgetData.last_name,
-        photo_url: widgetData.photo_url,
+        id: String((widgetData as any).id),
+        username: (widgetData as any).username,
+        first_name: (widgetData as any).first_name,
+        last_name: (widgetData as any).last_name,
+        photo_url: (widgetData as any).photo_url,
       };
     } else {
-      throw new Error('No authentication data provided');
+      return new Response(
+        JSON.stringify({ error: 'No authentication data provided' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log('Authenticated user:', userData.id, userData.username);

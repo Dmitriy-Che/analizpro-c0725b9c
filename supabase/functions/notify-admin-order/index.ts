@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const { order_id } = await req.json();
+    const { order_id, device_id } = await req.json();
     if (!order_id || typeof order_id !== 'string') {
       return new Response(JSON.stringify({ error: 'order_id required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -24,6 +24,20 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
+    // --- AuthZ: caller must own the order (JWT user_id match) or pass matching device_id,
+    //     OR be a server-to-server call with the service role key. Prevents anonymous
+    //     attackers from flooding admin Telegram with fake order events.
+    const authHeader = req.headers.get('Authorization') || '';
+    const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+    const isServiceCall = bearer && serviceKey && bearer === serviceKey;
+
+    let callerUserId: string | null = null;
+    if (!isServiceCall && bearer) {
+      const { data: userRes } = await supabase.auth.getUser(bearer);
+      callerUserId = userRes?.user?.id ?? null;
+    }
+
     const [{ data: orderRows }, { data: settings }] = await Promise.all([
       supabase.from('user_orders').select('id, order_number, tariff_code, price_usd, status, created_at, user_id, device_id').eq('id', order_id).maybeSingle(),
       supabase.from('payment_settings').select('key,value'),
@@ -35,6 +49,17 @@ Deno.serve(async (req) => {
         status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    if (!isServiceCall) {
+      const ownsByUser = callerUserId && order.user_id && callerUserId === order.user_id;
+      const ownsByDevice = !order.user_id && order.device_id && typeof device_id === 'string' && device_id === order.device_id;
+      if (!ownsByUser && !ownsByDevice) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
 
     const settingsMap = Object.fromEntries((settings || []).map((r: any) => [r.key, r.value ?? '']));
     const chatId = settingsMap.admin_telegram_chat_id;

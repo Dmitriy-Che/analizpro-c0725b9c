@@ -35,7 +35,7 @@ export default function Tariffs() {
       });
       if (error) throw error;
       // Уведомляем админа в Telegram (fire-and-forget — не блокируем UI)
-      supabase.functions.invoke('notify-admin-order', { body: { order_id: data } }).catch(() => {});
+      supabase.functions.invoke('notify-admin-order', { body: { order_id: data, device_id: deviceId } }).catch(() => {});
       navigate(`/pay/${data}`);
     } catch (e: any) {
       toast.error(e.message || 'Не удалось создать заказ');
