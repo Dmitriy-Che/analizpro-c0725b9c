@@ -93,11 +93,13 @@ export function DesktopNav() {
           )}
           <Button
             onClick={() => navigate('/analyze')}
+            variant="hero"
             size="sm"
-            className="h-9 ml-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-sm"
+            className="ml-1"
           >
             Расшифровать
           </Button>
+
         </div>
       </div>
     </header>

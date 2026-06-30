@@ -102,11 +102,14 @@ export default function ClinicHome() {
         {/* Start Button */}
         <Button
           onClick={() => navigate(`/c/${slug}/analyze`)}
-          className="w-full h-14 lg:h-16 text-lg lg:text-xl font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+          variant="hero"
+          size="xl"
+          className="w-full"
         >
           Загрузить анализ
-          <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
+          <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
+
 
         {/* Disclaimer */}
         <p className="text-xs text-muted-foreground text-center mt-6">

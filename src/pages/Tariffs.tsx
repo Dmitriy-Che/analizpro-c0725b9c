@@ -125,13 +125,13 @@ export default function Tariffs() {
                 <Button
                   onClick={handleFreeTrial}
                   disabled={busy === 'free'}
-                  className="w-full h-14 text-lg font-bold bg-warning hover:bg-warning/90 text-white shadow-lg lg:w-auto lg:h-auto lg:py-2.5 lg:font-semibold lg:shadow-none lg:flex-col lg:items-start lg:gap-0.5 mx-auto"
+                  variant="cta"
+                  size="xl"
+                  className="w-full mx-auto lg:w-auto lg:h-11 lg:px-6 lg:text-sm"
                 >
                   <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно!'}</span>
-                  <span className="hidden lg:block text-[10px] font-normal opacity-80">
-                    {FREE_TRIAL_REPORTS} бесплатная расшифровка
-                  </span>
                 </Button>
+
               </div>
             </div>
 
@@ -174,15 +174,13 @@ export default function Tariffs() {
               <Button
                 onClick={() => handleBuy(t.code)}
                 disabled={busy === t.code}
-                className={`w-full h-12 font-bold ${
-                  t.highlight
-                    ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90'
-                    : ''
-                }`}
-                variant={t.highlight ? 'default' : 'outline'}
+                variant={t.highlight ? 'hero' : 'brand-outline'}
+                size="lg"
+                className="w-full"
               >
                 {busy === t.code ? 'Создание заказа...' : 'Выбрать'}
               </Button>
+
             </Card>
           ))}
         </div>

@@ -53,10 +53,13 @@ export default function Home() {
           </p>
           <Button
             onClick={() => navigate('/tariffs?claim=free')}
-            className="w-full h-14 text-lg font-bold bg-warning hover:bg-warning/90 text-white shadow-lg"
+            variant="cta"
+            size="xl"
+            className="w-full"
           >
             Попробовать бесплатно!
           </Button>
+
         </Card>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -94,11 +97,14 @@ export default function Home() {
 
         <Button
           onClick={() => navigate('/analyze')}
-          className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
+          variant="hero"
+          size="xl"
+          className="w-full"
         >
           Загрузить анализ
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
+
 
         <p className="text-xs text-muted-foreground text-center mt-6">
           Сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией.
@@ -149,19 +155,21 @@ export default function Home() {
             <div className="flex gap-4">
               <Button
                 onClick={() => navigate('/analyze')}
-                className="h-14 px-8 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all"
+                variant="hero"
+                size="xl"
               >
                 Загрузить анализ
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                variant="outline"
+                variant="brand-outline"
+                size="xl"
                 onClick={() => navigate('/tariffs')}
-                className="h-14 px-8 text-base font-semibold border-2"
               >
                 Тарифы и оплата
               </Button>
             </div>
+
           </div>
 
           <div className="relative">
@@ -233,15 +241,13 @@ export default function Home() {
               Отправьте фото анализа нашему боту — получите расшифровку на русском
               за несколько секунд. Никаких приложений устанавливать не нужно.
             </p>
-            <Button
-              asChild
-              className="h-12 px-6 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
-            >
+            <Button asChild variant="hero" size="lg">
               <a href="https://t.me/med_gid_bot" target="_blank" rel="noopener noreferrer">
                 Открыть @med_gid_bot
                 <ArrowRight className="w-5 h-5 ml-2" />
               </a>
             </Button>
+
           </div>
           <div className="flex justify-center">
             <img

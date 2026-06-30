@@ -76,16 +76,13 @@ export function AdPlaceholder({ page }: Props) {
             />
           )}
           {ad.link && (
-            <Button
-              asChild
-              size="sm"
-              className="bg-warning hover:bg-warning/90 text-warning-foreground gap-1.5"
-            >
+            <Button asChild variant="cta" size="sm" className="gap-1.5">
               <a href={ad.link} target="_blank" rel="noopener noreferrer">
                 Подробнее
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </Button>
+
           )}
         </div>
       ) : (

@@ -191,12 +191,13 @@ export default function Pay() {
                 Мы проверяем оплату. Как только расшифровки будут активированы, вы сможете воспользоваться ими — а готовые отчёты появятся в разделе «Мои отчёты».
               </p>
               <div className="flex flex-col gap-2">
-                <Button onClick={() => navigate('/my-reports')} className="bg-gradient-to-r from-primary to-accent">
+                <Button onClick={() => navigate('/my-reports')} variant="hero">
                   Перейти в «Мои отчёты»
                 </Button>
-                <Button variant="outline" onClick={() => navigate('/')}>
+                <Button variant="brand-outline" onClick={() => navigate('/')}>
                   На главную
                 </Button>
+
               </div>
             </div>
           ) : (
@@ -307,7 +308,10 @@ export default function Pay() {
                   }
                 }}
                 disabled={marking}
-                className="w-full h-12 mb-3 bg-gradient-to-r from-primary to-accent font-bold text-base"
+                variant="hero"
+                size="lg"
+                className="w-full mb-3"
+
               >
                 <CheckCircle2 className="w-5 h-5 mr-2" />
                 {marking ? 'Отправка...' : 'Я оплатил'}
