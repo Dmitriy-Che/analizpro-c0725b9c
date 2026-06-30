@@ -76,6 +76,7 @@ export function OrdersAdmin() {
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
   const [paymentLink, setPaymentLink] = useState('');
+  const [tgChatId, setTgChatId] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
   const [range, setRange] = useState('7');
@@ -100,6 +101,7 @@ export function OrdersAdmin() {
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
       setPaymentLink(m.payment_link || '');
+      setTgChatId(m.admin_telegram_chat_id || '');
       if (m.qr_image_path) {
         const { data: signed } = await supabase.storage.from('payment-qr').createSignedUrl(m.qr_image_path, 3600);
         setQrPreview(signed?.signedUrl || '');
@@ -149,6 +151,7 @@ export function OrdersAdmin() {
         supabase.from('payment_settings').upsert({ key: 'payment_instructions', value: instructions, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'support_contact', value: support, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'payment_link', value: paymentLink, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'admin_telegram_chat_id', value: tgChatId, updated_at: new Date().toISOString() }),
       ]);
       toast.success('Настройки сохранены');
     } catch (e: any) { toast.error(e.message || 'Ошибка'); }
@@ -242,6 +245,13 @@ export function OrdersAdmin() {
           <div>
             <label className="text-sm font-semibold mb-1 block">Ссылка на оплату</label>
             <Input value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="https://..." />
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Telegram chat_id админа (для уведомлений о заказах)</label>
+            <Input value={tgChatId} onChange={(e) => setTgChatId(e.target.value)} placeholder="например, 123456789" />
+            <p className="text-xs text-muted-foreground mt-1">
+              Узнать свой chat_id: напишите в Telegram боту <b>@userinfobot</b> — он пришлёт ваш ID. Также напишите хотя бы одно сообщение нашему боту <b>@med_gid_bot</b>, чтобы он мог вам писать.
+            </p>
           </div>
           <Button onClick={handleSaveSettings} disabled={savingSettings} className="gap-2">
             <Upload className="w-4 h-4" />

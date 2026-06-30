@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.register-partner]
 verify_jwt = false
+
+[functions.notify-admin-order]
+verify_jwt = false
