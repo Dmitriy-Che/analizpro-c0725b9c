@@ -6,7 +6,7 @@ import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Loader2, CheckCircle2, ArrowLeft, Copy } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowLeft, Copy, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { getTariff } from '@/config/tariffs';
@@ -26,6 +26,9 @@ interface PaymentSettings {
   payment_instructions: string;
   support_contact: string;
   payment_link: string;
+  wallet_address: string;
+  wallet_network: string;
+  support_telegram_url: string;
 }
 
 export default function Pay() {
@@ -38,7 +41,11 @@ export default function Pay() {
     payment_instructions: '',
     support_contact: '',
     payment_link: '',
+    wallet_address: '',
+    wallet_network: '',
+    support_telegram_url: '',
   });
+  const [marking, setMarking] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -72,6 +79,9 @@ export default function Pay() {
             payment_instructions: s.payment_instructions || '',
             support_contact: s.support_contact || '',
             payment_link: s.payment_link || '',
+            wallet_address: s.wallet_address || '',
+            wallet_network: s.wallet_network || '',
+            support_telegram_url: s.support_telegram_url || 'https://t.me/D_METRIUS',
           });
         }
       }
@@ -192,45 +202,100 @@ export default function Pay() {
                 </p>
               </div>
 
+              {settings.wallet_address && (
+                <div className="mb-4 p-4 rounded-xl border-2 border-primary/20 bg-primary/5">
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">
+                    Адрес кошелька {settings.wallet_network && `· ${settings.wallet_network}`}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-xs lg:text-sm font-mono break-all">
+                      {settings.wallet_address}
+                    </code>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        navigator.clipboard.writeText(settings.wallet_address);
+                        toast.success('Адрес скопирован');
+                      }}
+                      className="shrink-0"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {settings.payment_link && (
                 <Button
                   asChild
-                  className="w-full mb-4 h-12 bg-gradient-to-r from-primary to-accent font-bold"
+                  variant="outline"
+                  className="w-full mb-4 h-11"
                 >
                   <a href={settings.payment_link} target="_blank" rel="noopener noreferrer">
-                    Перейти к оплате по ссылке
+                    Альтернативная ссылка на оплату
                   </a>
                 </Button>
               )}
 
-              <div className="p-4 bg-muted/50 rounded-xl mb-6 text-sm text-muted-foreground leading-relaxed">
-                {settings.payment_instructions ||
-                  'Отсканируйте QR-код своим банковским приложением и переведите указанную сумму.'}
-                {settings.support_contact && (
-                  <div className="mt-3 flex items-center gap-2">
-                    Поддержка:{' '}
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(settings.support_contact);
-                        toast.success('Скопировано');
-                      }}
-                      className="text-primary font-semibold inline-flex items-center gap-1"
-                    >
-                      {settings.support_contact} <Copy className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
+              <div className="p-4 bg-muted/50 rounded-xl mb-4 text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                {(settings.payment_instructions ||
+                  'Отсканируйте QR-код и переведите сумму [price_usd] USDT на указанные реквизиты или свяжитесь с поддержкой для альтернативы.')
+                  .split('[price_usd]').join(String(order.price_usd))
+                  .split('[wallet]').join(settings.wallet_address)
+                  .split('[network]').join(settings.wallet_network)}
               </div>
 
-              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-sm text-center">
-                <p className="font-semibold text-primary mb-1">
-                  Подтверждение оплаты — автоматически
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  Как только платёж поступит, расшифровки активируются сами, и мы пришлём уведомление. Закрывать страницу не обязательно.
-                </p>
-              </div>
+              <Button
+                onClick={async () => {
+                  setMarking(true);
+                  try {
+                    const { error } = await supabase.rpc('mark_order_paid_by_user', {
+                      p_order_id: order.id,
+                      p_device_id: deviceId,
+                    });
+                    if (error) throw error;
+                    toast.success('Спасибо! Заказ передан администратору на активацию.');
+                    const { data } = await supabase.rpc('get_my_order', {
+                      p_order_id: order.id,
+                      p_device_id: deviceId,
+                    });
+                    if (data && data.length > 0) setOrder(data[0] as OrderRow);
+                    // Уведомление админу в Telegram (best-effort)
+                    supabase.functions.invoke('notify-admin-order', {
+                      body: { order_id: order.id },
+                    }).catch(() => {});
+                  } catch (e: any) {
+                    toast.error(e.message || 'Не удалось отправить');
+                  } finally {
+                    setMarking(false);
+                  }
+                }}
+                disabled={marking}
+                className="w-full h-12 mb-3 bg-gradient-to-r from-primary to-accent font-bold text-base"
+              >
+                <CheckCircle2 className="w-5 h-5 mr-2" />
+                {marking ? 'Отправка...' : 'Я оплатил'}
+              </Button>
 
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-11 mb-4 gap-2"
+              >
+                <a
+                  href={settings.support_telegram_url || 'https://t.me/D_METRIUS'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Написать в поддержку
+                </a>
+              </Button>
+
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-xs text-center text-muted-foreground">
+                После оплаты нажмите «Я оплатил» — администратор проверит платёж и активирует расшифровки. Уведомление придёт автоматически.
+              </div>
             </>
           )}
         </Card>

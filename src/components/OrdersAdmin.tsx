@@ -76,6 +76,9 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
   const [paymentLink, setPaymentLink] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
+  const [walletNetwork, setWalletNetwork] = useState('');
+  const [supportTelegram, setSupportTelegram] = useState('');
   const [tgChatId, setTgChatId] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
@@ -101,6 +104,9 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
       setPaymentLink(m.payment_link || '');
+      setWalletAddress(m.wallet_address || '');
+      setWalletNetwork(m.wallet_network || '');
+      setSupportTelegram(m.support_telegram_url || '');
       setTgChatId(m.admin_telegram_chat_id || '');
       if (m.qr_image_path) {
         const { data: signed } = await supabase.storage.from('payment-qr').createSignedUrl(m.qr_image_path, 3600);
@@ -151,6 +157,9 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
         supabase.from('payment_settings').upsert({ key: 'payment_instructions', value: instructions, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'support_contact', value: support, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'payment_link', value: paymentLink, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'wallet_address', value: walletAddress, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'wallet_network', value: walletNetwork, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'support_telegram_url', value: supportTelegram, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'admin_telegram_chat_id', value: tgChatId, updated_at: new Date().toISOString() }),
       ]);
       toast.success('Настройки сохранены');
@@ -235,16 +244,32 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
             <Input value={qrUrl} onChange={(e) => setQrUrl(e.target.value)} placeholder="https://..." className="mt-2" />
           </div>
           <div>
-            <label className="text-sm font-semibold mb-1 block">Инструкция</label>
-            <textarea className="w-full min-h-[100px] border border-input rounded-md p-3 text-sm"
-              value={instructions} onChange={(e) => setInstructions(e.target.value)} />
+            <label className="text-sm font-semibold mb-1 block">Адрес криптокошелька</label>
+            <Input value={walletAddress} onChange={(e) => setWalletAddress(e.target.value)} placeholder="TTtRD36Fa3nsaFPNLpyeYcDA2BYUv5q1Dk" />
           </div>
           <div>
-            <label className="text-sm font-semibold mb-1 block">Поддержка</label>
-            <Input value={support} onChange={(e) => setSupport(e.target.value)} placeholder="@telegram_handle" />
+            <label className="text-sm font-semibold mb-1 block">Сеть кошелька</label>
+            <Input value={walletNetwork} onChange={(e) => setWalletNetwork(e.target.value)} placeholder="TRON (TRC20) · USDT" />
           </div>
           <div>
-            <label className="text-sm font-semibold mb-1 block">Ссылка на оплату</label>
+            <label className="text-sm font-semibold mb-1 block">Инструкция для пользователя</label>
+            <textarea className="w-full min-h-[140px] border border-input rounded-md p-3 text-sm font-mono"
+              value={instructions} onChange={(e) => setInstructions(e.target.value)}
+              placeholder={'Отсканируйте QR-код и переведите сумму [price_usd] USDT (TRC20).\nЭмодзи и переносы строк сохраняются 💳✅'} />
+            <p className="text-xs text-muted-foreground mt-1">
+              Подстановка: <code>[price_usd]</code> — сумма заказа, <code>[wallet]</code> — адрес кошелька, <code>[network]</code> — сеть. Переносы строк и эмодзи сохраняются.
+            </p>
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Поддержка (текст / @handle)</label>
+            <Input value={support} onChange={(e) => setSupport(e.target.value)} placeholder="@D_METRIUS" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Ссылка «Написать в поддержку» (Telegram)</label>
+            <Input value={supportTelegram} onChange={(e) => setSupportTelegram(e.target.value)} placeholder="https://t.me/D_METRIUS" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Резервная ссылка на оплату (необязательно)</label>
             <Input value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="https://..." />
           </div>
           <div>
