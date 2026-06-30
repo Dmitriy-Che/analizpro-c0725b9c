@@ -416,7 +416,7 @@ ${studyType === 'lab' ? `
       }
 
       // Save B2C analysis report to user_analyses
-      if (!partner_id && (user_id || device_id)) {
+      if (!partner_id && (effectiveUserId || device_id)) {
         let parsed: any = null;
         let langDetected: string | null = null;
         try {
@@ -425,8 +425,8 @@ ${studyType === 'lab' ? `
         } catch {}
 
         const { error: saveErr } = await supabaseClient.from('user_analyses').insert({
-          user_id: user_id || null,
-          device_id: device_id || null,
+          user_id: effectiveUserId,
+          device_id: effectiveUserId ? null : (device_id || null),
           entitlement_id: entitlementId,
           age: age,
           gender: gender,
