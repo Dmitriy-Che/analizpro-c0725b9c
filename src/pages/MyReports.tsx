@@ -5,7 +5,8 @@ import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Clock, Sparkles, AlertCircle, Calendar, User, CreditCard, Hash, ArrowRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { FileText, Clock, Sparkles, AlertCircle, Calendar, User, CreditCard, Hash, ArrowRight, CheckCircle2, AlertTriangle, XCircle, Timer } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { REPORTS_RETENTION_DAYS } from '@/config/tariffs';
@@ -122,6 +123,17 @@ export default function MyReports() {
               });
               const studyLabel = STUDY_LABELS[r.study_type || ''] || r.title || 'Расшифровка';
               const genderLabel = r.gender === 'male' ? 'муж.' : r.gender === 'female' ? 'жен.' : null;
+              const status: string | undefined = r.result_json?.overall_status;
+              const statusMeta = status === 'critical'
+                ? { label: 'Критично', cls: 'bg-destructive/10 text-destructive border-destructive/30', Icon: XCircle }
+                : status === 'warning'
+                ? { label: 'Внимание', cls: 'bg-warning/10 text-warning border-warning/40', Icon: AlertTriangle }
+                : status === 'normal'
+                ? { label: 'Норма', cls: 'bg-success/10 text-success border-success/30', Icon: CheckCircle2 }
+                : null;
+              const daysLeft = Math.ceil((new Date(r.expires_at).getTime() - Date.now()) / 86400000);
+              const expiringSoon = daysLeft >= 0 && daysLeft <= 7;
+              const orderLabel = r.order_number ? `Заказ №${r.order_number}` : `Отчёт №${r.id.slice(0, 8).toUpperCase()}`;
               return (
                 <Card
                   key={r.id}
@@ -133,6 +145,20 @@ export default function MyReports() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold leading-tight">{studyLabel}</h3>
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                        {statusMeta && (
+                          <Badge variant="outline" className={`gap-1 ${statusMeta.cls}`}>
+                            <statusMeta.Icon className="w-3 h-3" />
+                            {statusMeta.label}
+                          </Badge>
+                        )}
+                        {expiringSoon && (
+                          <Badge variant="outline" className="gap-1 bg-accent/10 text-accent border-accent/40">
+                            <Timer className="w-3 h-3" />
+                            {daysLeft === 0 ? 'Истекает сегодня' : `Истекает через ${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}`}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -157,12 +183,10 @@ export default function MyReports() {
                         <span className="truncate">{r.tariff_title || r.tariff_code}</span>
                       </div>
                     )}
-                    {r.order_number && (
-                      <div className="flex items-center gap-2">
-                        <Hash className="w-4 h-4 text-primary/60 shrink-0" />
-                        <span>Заказ №{r.order_number}</span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-primary/60 shrink-0" />
+                      <span>{orderLabel}</span>
+                    </div>
                   </div>
 
                   <Button
