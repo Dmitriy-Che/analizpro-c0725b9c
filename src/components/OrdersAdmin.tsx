@@ -151,6 +151,7 @@ export function OrdersAdmin() {
         supabase.from('payment_settings').upsert({ key: 'payment_instructions', value: instructions, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'support_contact', value: support, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'payment_link', value: paymentLink, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'admin_telegram_chat_id', value: tgChatId, updated_at: new Date().toISOString() }),
       ]);
       toast.success('Настройки сохранены');
     } catch (e: any) { toast.error(e.message || 'Ошибка'); }
