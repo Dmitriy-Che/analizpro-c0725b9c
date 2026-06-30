@@ -4,6 +4,8 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { AdPlaceholder } from '@/components/AdPlaceholder';
+import { ReferralCard } from '@/components/ReferralCard';
+import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -72,6 +74,12 @@ export default function MyReports() {
         <div className="stack-section">
           <h1 className="h-page">Мои отчёты</h1>
           <p className="t-lead">История ваших расшифровок</p>
+        </div>
+
+        <ReferralGiftBanner />
+
+        <div className="mb-6">
+          <ReferralCard />
         </div>
 
 

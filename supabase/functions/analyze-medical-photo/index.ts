@@ -437,6 +437,23 @@ ${studyType === 'lab' ? `
           title: studyType === 'lab' ? 'Лабораторные анализы' : studyType === 'ultrasound' ? 'УЗИ' : 'МРТ',
         });
         if (saveErr) console.error('Failed to save user_analyses', saveErr);
+
+        // Реферальная программа: первая расшифровка приглашённого → квалифицирует invite
+        if (device_id) {
+          try {
+            const { data: qData, error: qErr } = await supabaseClient.rpc('qualify_referral', {
+              p_device_id: device_id,
+              p_user_id: effectiveUserId,
+            });
+            if (qErr) {
+              console.error('qualify_referral error', qErr);
+            } else {
+              console.log('qualify_referral result', qData);
+            }
+          } catch (e) {
+            console.error('qualify_referral exception', e);
+          }
+        }
       }
     } catch (logError) {
       console.error('Failed to log analysis:', logError);

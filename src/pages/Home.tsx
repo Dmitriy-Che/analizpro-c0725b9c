@@ -18,6 +18,8 @@ import {
   Globe2,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { ReferralCard } from '@/components/ReferralCard';
+import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -42,6 +44,8 @@ export default function Home() {
         <p className="text-muted-foreground text-center mb-6">
           Расшифровка анализов на русском, английском, вьетнамском и тайском
         </p>
+
+        <ReferralGiftBanner />
 
         <Card className="p-4 mb-6 border-2 border-accent/30 bg-gradient-to-br from-accent/10 to-primary/10">
           <div className="flex items-center gap-3 mb-1.5">
@@ -104,6 +108,12 @@ export default function Home() {
           Загрузить анализ
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
+
+        <div className="mt-6">
+          <ReferralCard />
+        </div>
+
+
 
 
         <p className="text-xs text-muted-foreground text-center mt-6">
@@ -223,6 +233,13 @@ export default function Home() {
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </section>
+
+        {/* Реферальная программа */}
+        <section className="mb-12 max-w-2xl mx-auto">
+          <ReferralCard />
+        </section>
+
+
 
         {/* Telegram Bot Section */}
         <section className="rounded-3xl border-2 border-primary/20 bg-card/80 p-10 mb-12 grid grid-cols-2 gap-8 items-center shadow-md">

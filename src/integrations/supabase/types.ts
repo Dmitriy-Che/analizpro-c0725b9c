@@ -233,6 +233,66 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          device_id: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          invitee_device_id: string
+          invitee_ip: string | null
+          invitee_user_id: string | null
+          qualified_at: string | null
+          referrer_code: string
+          rewarded_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invitee_device_id: string
+          invitee_ip?: string | null
+          invitee_user_id?: string | null
+          qualified_at?: string | null
+          referrer_code: string
+          rewarded_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invitee_device_id?: string
+          invitee_ip?: string | null
+          invitee_user_id?: string | null
+          qualified_at?: string | null
+          referrer_code?: string
+          rewarded_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       subscription_history: {
         Row: {
           action: string
@@ -654,6 +714,17 @@ export type Database = {
         }[]
       }
       admin_process_order: { Args: { p_order_id: string }; Returns: string }
+      admin_referral_stats: {
+        Args: never
+        Returns: {
+          conversion_pct: number
+          flagged: number
+          qualified: number
+          rewarded: number
+          top_referrers: Json
+          total_invites: number
+        }[]
+      }
       check_partner_limit: { Args: { p_partner_id: string }; Returns: boolean }
       claim_guest_data: { Args: { p_device_id: string }; Returns: undefined }
       consume_entitlement: {
@@ -702,6 +773,7 @@ export type Database = {
           tariff_code: string
         }[]
       }
+      get_my_referral_stats: { Args: { p_device_id: string }; Returns: Json }
       get_my_reports: {
         Args: { p_device_id: string }
         Returns: {
@@ -719,6 +791,10 @@ export type Database = {
           tariff_title: string
           title: string
         }[]
+      }
+      get_or_create_referral_code: {
+        Args: { p_device_id: string }
+        Returns: string
       }
       get_partner_stats: {
         Args: { p_partner_id: string }
@@ -794,6 +870,14 @@ export type Database = {
         Returns: undefined
       }
       purge_expired_reports: { Args: never; Returns: number }
+      qualify_referral: {
+        Args: { p_device_id: string; p_user_id?: string }
+        Returns: Json
+      }
+      register_referral: {
+        Args: { p_device_id: string; p_ip?: string; p_ref_code: string }
+        Returns: Json
+      }
       request_subscription_plan: {
         Args: { p_plan: string }
         Returns: undefined
