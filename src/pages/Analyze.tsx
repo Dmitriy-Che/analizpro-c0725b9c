@@ -368,10 +368,11 @@ export default function Analyze() {
           <Header />
         </div>
 
-        <div className="hidden lg:block text-center mb-8">
-          <h1 className="text-3xl font-black mb-2">Расшифровка анализа</h1>
-          <p className="text-muted-foreground">Заполните 4 шага — ИИ подготовит подробный отчёт</p>
+        <div className="hidden lg:block text-center stack-section">
+          <h1 className="h-page">Расшифровка анализа</h1>
+          <p className="t-lead">Заполните 4 шага — ИИ подготовит подробный отчёт</p>
         </div>
+
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-6 lg:mb-8">
