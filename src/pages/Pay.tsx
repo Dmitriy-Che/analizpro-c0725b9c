@@ -201,7 +201,12 @@ export default function Pay() {
             </div>
           ) : (
             <>
-              <div className="bg-white rounded-2xl p-6 flex justify-center mb-6 shadow-sm">
+              <button
+                type="button"
+                onClick={copyAll}
+                title="Нажмите, чтобы скопировать адрес"
+                className="bg-white rounded-2xl p-6 flex justify-center mb-4 shadow-sm w-full hover:shadow-md transition-shadow"
+              >
                 {settings.qr_image_url ? (
                   <img
                     src={settings.qr_image_url}
@@ -209,15 +214,24 @@ export default function Pay() {
                     className="w-64 h-64 object-contain"
                   />
                 ) : (
-                  <QRCodeSVG value={qrUrl} size={256} level="H" includeMargin />
+                  <QRCodeSVG value={tronUri} size={256} level="H" includeMargin />
                 )}
-              </div>
+              </button>
+              <p className="text-center text-xs text-muted-foreground mb-4">
+                Нажмите на QR — адрес кошелька скопируется.
+              </p>
 
               <div className="text-center mb-6">
                 <p className="text-sm text-muted-foreground mb-1">Сумма к оплате</p>
                 <p className="text-4xl lg:text-5xl font-black text-primary">
-                  ${order.price_usd}
+                  ${order.price_usd} <span className="text-2xl lg:text-3xl">USDT</span>
                 </p>
+                {rubRate && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    ≈ {Math.round(order.price_usd * rubRate).toLocaleString('ru-RU')} ₽
+                    <span className="text-xs"> (курс {rubRate.toFixed(2)} ₽/USDT)</span>
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground mt-2">
                   № заказа: <code>{order.id.slice(0, 8)}</code>
                 </p>
