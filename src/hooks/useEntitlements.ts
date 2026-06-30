@@ -27,12 +27,16 @@ export function useEntitlements() {
     if (!userLoading) refresh();
   }, [refresh, userLoading, user?.id]);
 
-  const remaining = entitlements.reduce((sum, e) => {
+  const validEntitlements = entitlements.filter((e) => {
     const now = Date.now();
-    const valid = !e.expires_at || new Date(e.expires_at).getTime() > now;
-    if (!valid) return sum;
-    return sum + Math.max(0, e.reports_total - e.reports_used);
-  }, 0);
+    return !e.expires_at || new Date(e.expires_at).getTime() > now;
+  });
+
+  const remaining = validEntitlements.reduce(
+    (sum, e) => sum + Math.max(0, e.reports_total - e.reports_used),
+    0,
+  );
+  const total = validEntitlements.reduce((sum, e) => sum + e.reports_total, 0);
 
   const hasAvailable = remaining > 0;
 
@@ -44,5 +48,6 @@ export function useEntitlements() {
     await refresh();
   }, [user?.id, deviceId, refresh]);
 
-  return { entitlements, remaining, hasAvailable, loading, refresh, claimFreeTrial };
+  return { entitlements, remaining, total, hasAvailable, loading, refresh, claimFreeTrial };
 }
+

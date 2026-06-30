@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
+import { EntitlementsBadge } from '@/components/EntitlementsBadge';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Check, Sparkles, Gift } from 'lucide-react';
@@ -94,18 +96,17 @@ export default function Tariffs() {
           <Header />
         </div>
 
-        <div className="text-center mb-8 lg:mb-12">
+        <div className="text-center mb-6 lg:mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
             <Sparkles className="w-4 h-4" />
             Тарифы и оплата
           </div>
           <h1 className="h-page">Выберите тариф</h1>
-          <p className="text-muted-foreground lg:text-lg">
-            {hasAvailable
-              ? `У вас осталось расшифровок: ${remaining}`
-              : 'Оплата по QR-коду · отчёты хранятся 30 дней'}
-          </p>
+          <p className="t-lead">Оплата по QR-коду · отчёты хранятся 30 дней</p>
         </div>
+
+        <EntitlementsBadge variant="full" className="mb-6 lg:mb-8" />
+
 
         {/* Бесплатная пробная */}
         {!trialUsed && (
