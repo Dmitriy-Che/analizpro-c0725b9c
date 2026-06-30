@@ -6,7 +6,7 @@ import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Loader2, CheckCircle2, ArrowLeft, Copy } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowLeft, Copy, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { getTariff } from '@/config/tariffs';
