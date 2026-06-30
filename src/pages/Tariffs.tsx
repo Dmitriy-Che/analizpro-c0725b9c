@@ -174,15 +174,13 @@ export default function Tariffs() {
               <Button
                 onClick={() => handleBuy(t.code)}
                 disabled={busy === t.code}
-                className={`w-full h-12 font-bold ${
-                  t.highlight
-                    ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90'
-                    : ''
-                }`}
-                variant={t.highlight ? 'default' : 'outline'}
+                variant={t.highlight ? 'hero' : 'brand-outline'}
+                size="lg"
+                className="w-full"
               >
                 {busy === t.code ? 'Создание заказа...' : 'Выбрать'}
               </Button>
+
             </Card>
           ))}
         </div>
