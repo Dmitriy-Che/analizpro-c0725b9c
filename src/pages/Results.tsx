@@ -18,12 +18,12 @@ const Results = () => {
   const navigate = useNavigate();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
-  
+  const isMobile = useIsMobile();
+
   const result = location.state?.result || "";
   const age = location.state?.age || "";
   const gender = location.state?.gender || "";
-
-  useEffect(() => {
+  const fromHistory = location.state?.fromHistory || false;
     if (!result) {
       navigate("/");
     }
