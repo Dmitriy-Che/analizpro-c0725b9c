@@ -145,9 +145,17 @@ export default function Pay() {
 
   const tariff = getTariff(order.tariff_code);
   const isPaid = order.status !== 'new';
-  const qrUrl =
-    settings.qr_image_url ||
-    `analizpro:order:${order.id}:amount:${order.price_usd}USD`;
+  // TRON URI: некоторые кошельки (TronLink, Trust) автозаполняют сумму
+  const tronUri = settings.wallet_address
+    ? `tron:${settings.wallet_address}?amount=${order.price_usd}&token=USDT`
+    : `analizpro:order:${order.id}:amount:${order.price_usd}USD`;
+
+  const copyAll = () => {
+    if (settings.wallet_address) {
+      navigator.clipboard.writeText(settings.wallet_address);
+      toast.success(`Адрес и сумма $${order.price_usd} USDT скопированы`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0 pb-6 lg:pb-12">
