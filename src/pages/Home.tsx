@@ -109,6 +109,12 @@ export default function Home() {
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
 
+        <div className="mt-6">
+          <ReferralCard />
+        </div>
+
+
+
 
         <p className="text-xs text-muted-foreground text-center mt-6">
           Сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией.
