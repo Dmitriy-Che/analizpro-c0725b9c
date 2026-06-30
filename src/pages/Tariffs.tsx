@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
+import { EntitlementsBadge } from '@/components/EntitlementsBadge';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Check, Sparkles, Gift } from 'lucide-react';
