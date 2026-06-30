@@ -109,10 +109,11 @@ export default function MyReports() {
             <p className="text-sm text-muted-foreground mb-4">
               Загрузите анализ — расшифровка появится здесь
             </p>
-            <Button onClick={() => navigate('/analyze')} className="bg-gradient-to-r from-primary to-accent">
+            <Button onClick={() => navigate('/analyze')} variant="hero">
               <Sparkles className="w-4 h-4 mr-2" />
               Расшифровать
             </Button>
+
           </Card>
         ) : (
           <div className="space-y-3">
