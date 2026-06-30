@@ -147,7 +147,7 @@ export default function Home() {
         </p>
 
         <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md">
-          <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
+          <h2 className="text-lg font-bold text-center mb-4">💬 Присоединяйтесь к нам!</h2>
           <p className="text-sm text-muted-foreground mb-4">Обновления и советы по здоровью</p>
           <Button asChild className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
