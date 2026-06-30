@@ -676,8 +676,11 @@ export type Database = {
           gender: string
           id: string
           language_detected: string
+          order_number: number
           result_json: Json
           study_type: string
+          tariff_code: string
+          tariff_title: string
           title: string
         }[]
       }
