@@ -148,16 +148,42 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+
+    // --- AuthZ: never trust user_id from the body. If a JWT is present, the
+    // caller's auth.uid() is the only acceptable user_id (prevents draining
+    // someone else's paid entitlements / injecting analyses into their history).
+    let effectiveUserId: string | null = null;
+    const authHeader = req.headers.get('Authorization') || '';
+    const jwt = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    if (jwt) {
+      const { data: callerRes } = await supabaseAdmin.auth.getUser(jwt);
+      effectiveUserId = callerRes?.user?.id ?? null;
+    }
+    // If body provides a user_id that doesn't match the JWT, reject.
+    if (user_id && effectiveUserId && user_id !== effectiveUserId) {
+      return new Response(
+        JSON.stringify({ error: 'Несоответствие идентификатора пользователя.' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    // If body provides a user_id but caller is anonymous, reject.
+    if (user_id && !effectiveUserId) {
+      return new Response(
+        JSON.stringify({ error: 'Требуется авторизация.' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (!partner_id) {
-      if (!user_id && !device_id) {
+      if (!effectiveUserId && !device_id) {
         return new Response(
           JSON.stringify({ error: 'Не указан идентификатор пользователя.' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       const { data: entData, error: entErr } = await supabaseAdmin.rpc('consume_entitlement', {
-        p_user_id: user_id || null,
-        p_device_id: device_id || null,
+        p_user_id: effectiveUserId,
+        p_device_id: effectiveUserId ? null : (device_id || null),
       });
       if (entErr) {
         console.error('consume_entitlement error', entErr);
@@ -174,6 +200,7 @@ serve(async (req) => {
       }
       entitlementId = entData as string;
     }
+
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
