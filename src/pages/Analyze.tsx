@@ -174,7 +174,7 @@ export default function Analyze() {
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
                 placeholder="Введите возраст"
-                className="text-center text-2xl h-14 font-bold"
+                className="text-center text-xl md:text-2xl h-14 font-bold"
               />
               <p className="text-xs text-muted-foreground text-center mt-2">полных лет</p>
             </div>
