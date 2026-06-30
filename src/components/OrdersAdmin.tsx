@@ -76,6 +76,7 @@ export function OrdersAdmin() {
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
   const [paymentLink, setPaymentLink] = useState('');
+  const [tgChatId, setTgChatId] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
   const [range, setRange] = useState('7');
