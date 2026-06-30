@@ -246,6 +246,13 @@ export function OrdersAdmin() {
             <label className="text-sm font-semibold mb-1 block">Ссылка на оплату</label>
             <Input value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="https://..." />
           </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Telegram chat_id админа (для уведомлений о заказах)</label>
+            <Input value={tgChatId} onChange={(e) => setTgChatId(e.target.value)} placeholder="например, 123456789" />
+            <p className="text-xs text-muted-foreground mt-1">
+              Узнать свой chat_id: напишите в Telegram боту <b>@userinfobot</b> — он пришлёт ваш ID. Также напишите хотя бы одно сообщение нашему боту <b>@med_gid_bot</b>, чтобы он мог вам писать.
+            </p>
+          </div>
           <Button onClick={handleSaveSettings} disabled={savingSettings} className="gap-2">
             <Upload className="w-4 h-4" />
             {savingSettings ? 'Сохранение...' : 'Сохранить настройки'}
