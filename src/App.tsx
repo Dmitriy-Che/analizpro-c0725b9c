@@ -24,7 +24,15 @@ import ClinicHome from "./pages/clinic/Home";
 import ClinicAnalyze from "./pages/clinic/Analyze";
 import ClinicResults from "./pages/clinic/Results";
 
+import { useReferralCapture } from "@/hooks/useReferral";
+
 const queryClient = new QueryClient();
+
+function ReferralCaptureMount() {
+  useReferralCapture();
+  return null;
+}
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -32,6 +40,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ReferralCaptureMount />
         <Routes>
           {/* Main app routes */}
           <Route path="/" element={<Home />} />
