@@ -93,7 +93,7 @@ export default function Tariffs() {
 
       <div className="relative max-w-[480px] lg:max-w-6xl mx-auto px-4 lg:px-8 py-6 lg:py-12">
         <div className="lg:hidden">
-          <Header />
+          <Header showBadge={false} />
         </div>
 
         <div className="text-center mb-6 lg:mb-8">
