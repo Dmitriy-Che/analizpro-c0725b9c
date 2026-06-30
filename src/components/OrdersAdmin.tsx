@@ -214,6 +214,7 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
   return (
     <div className="space-y-6 mb-8">
       {/* Настройки оплаты */}
+      {section !== 'orders' && (
       <Card className="p-6 border-2 border-border">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Settings className="w-5 h-5 text-primary" /> Настройки оплаты
@@ -259,8 +260,10 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
           </Button>
         </div>
       </Card>
+      )}
 
       {/* Заказы */}
+      {section !== 'settings' && (
       <Card className="p-6 border-2 border-border">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <ShoppingCart className="w-5 h-5 text-primary" /> Заказы B2C
