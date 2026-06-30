@@ -82,34 +82,21 @@ const Results = () => {
 
         {/* Back Button */}
         <Button 
-          onClick={() => navigate("/")} 
+          onClick={() => navigate(fromHistory ? "/my-reports" : "/")} 
           variant="outline"
           className="mb-6 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
-          Назад к загрузке
+          {fromHistory ? "Назад к отчётам" : "Назад к загрузке"}
         </Button>
 
         {/* Results */}
         {parsedResult.isStructured && parsedResult.structured ? (
-          <>
-            <AnalysisReport 
-              result={parsedResult.structured}
-              age={age}
-              gender={gender}
-            />
-            
-            {/* Share Button */}
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 mt-4 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
-              onClick={() => setShareDialogOpen(true)}
-              disabled={exporting}
-            >
-              <Share2 className="w-4 h-4" />
-              Поделиться
-            </Button>
-          </>
+          <AnalysisReport 
+            result={parsedResult.structured}
+            age={age}
+            gender={gender}
+          />
         ) : (
           /* Fallback for text-only results */
           <Card className={`border-2 ${textStatusColors.border} rounded-2xl shadow-xl overflow-hidden animate-fade-in`}>
@@ -124,36 +111,68 @@ const Results = () => {
                 {parsedResult.text}
               </div>
             </div>
-            <div className="p-4 pt-0">
-              <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
-                  className="flex-1 gap-2 border-2 hover:bg-primary hover:text-white hover:border-primary transition-all" 
-                  onClick={() => {
-                    const blob = new Blob([parsedResult.text || ''], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'analiz-pro-result.txt';
-                    a.click();
-                    toast.success("Результат скачан");
-                  }}
-                >
-                  <Download className="w-4 h-4" />
-                  Скачать
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1 gap-2 border-2 hover:bg-accent hover:text-white hover:border-accent transition-all" 
-                  onClick={() => setShareDialogOpen(true)}
-                >
-                  <Share2 className="w-4 h-4" />
-                  Отправить
-                </Button>
-              </div>
-            </div>
           </Card>
         )}
+
+        {/* What's next block */}
+        <Card className="mt-6 border-2 border-primary/20 p-5 lg:p-6 rounded-2xl shadow-sm bg-gradient-to-br from-primary/5 to-accent/5 animate-fade-in">
+          <h3 className="font-bold text-lg lg:text-xl mb-4 text-foreground">Что дальше</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              className="gap-2 border-2 bg-card hover:bg-primary hover:text-white hover:border-primary transition-all"
+              disabled={exporting}
+              onClick={async () => {
+                setExporting(true);
+                try {
+                  await exportAsPDF('analysis-report', `analiz-pro-${new Date().toISOString().split('T')[0]}`);
+                  toast.success("PDF сохранён");
+                } catch { toast.error("Не удалось сохранить PDF"); }
+                finally { setExporting(false); }
+              }}
+            >
+              {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              Сохранить отчёт в PDF
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-2 border-2 bg-card hover:bg-primary hover:text-white hover:border-primary transition-all"
+              onClick={() => {
+                const textToCopy = parsedResult.isStructured && parsedResult.structured
+                  ? `${parsedResult.structured.summary}\n\n${parsedResult.structured.general_recommendations}`
+                  : parsedResult.text || '';
+                navigator.clipboard.writeText(textToCopy);
+                toast.success("Скопировано в буфер обмена");
+              }}
+            >
+              <Copy className="w-4 h-4" />
+              Скопировать текст
+            </Button>
+            {isMobile && (
+              <Button
+                variant="outline"
+                className="gap-2 border-2 bg-card hover:bg-accent hover:text-white hover:border-accent transition-all sm:col-span-2"
+                disabled={exporting}
+                onClick={() => setShareDialogOpen(true)}
+              >
+                <Share2 className="w-4 h-4" />
+                Поделиться
+              </Button>
+            )}
+          </div>
+        </Card>
+
+        {/* Ad placeholder */}
+        <Card className="mt-4 border border-border/60 p-5 lg:p-6 rounded-2xl bg-muted/20">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-2">
+            <Megaphone className="w-3.5 h-3.5" />
+            Реклама
+          </div>
+          <div className="text-sm text-muted-foreground/70 text-center py-6">
+            Здесь скоро появится партнёрское предложение
+          </div>
+        </Card>
+
 
         {/* Share Dialog */}
         <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
