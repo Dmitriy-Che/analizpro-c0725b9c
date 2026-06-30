@@ -45,6 +45,8 @@ export default function Home() {
           Расшифровка анализов на русском, английском, вьетнамском и тайском
         </p>
 
+        <ReferralGiftBanner />
+
         <Card className="p-4 mb-6 border-2 border-accent/30 bg-gradient-to-br from-accent/10 to-primary/10">
           <div className="flex items-center gap-3 mb-1.5">
             <Gift className="w-4 h-4 text-accent" />
