@@ -59,9 +59,10 @@ export default function Pay() {
     };
 
     (async () => {
-      const settingsRes = await supabase.from('payment_settings').select('key,value');
+      const settingsRes = await supabase.rpc('get_public_payment_settings');
       if (!cancelled && settingsRes.data) {
-        const s = settingsRes.data.reduce((acc, r) => {
+        const rows = settingsRes.data as { key: string; value: string | null }[];
+        const s = rows.reduce((acc, r) => {
           acc[r.key] = r.value ?? '';
           return acc;
         }, {} as Record<string, string>);
@@ -89,17 +90,18 @@ export default function Pay() {
       if (!cancelled) setLoading(false);
     })();
 
-    // Поллинг статуса заказа каждые 5 секунд, пока он 'new'.
-    // Останавливаем, как только статус изменится (paid/processed/cancelled).
+    // Поллинг статуса + авто-сверка TRON каждые 15 секунд, пока заказ 'new'
     const interval = setInterval(() => {
       setOrder((current) => {
         if (!current || current.status !== 'new') return current;
         fetchOrder();
+        supabase.functions.invoke('verify-tron-payment', {
+          body: { order_id: current.id },
+        }).catch(() => {});
         return current;
       });
-    }, 5000);
+    }, 15000);
 
-    // Обновляем при возврате на вкладку
     const onVisible = () => {
       if (document.visibilityState === 'visible') fetchOrder();
     };
@@ -111,6 +113,17 @@ export default function Pay() {
       document.removeEventListener('visibilitychange', onVisible);
     };
   }, [orderId, deviceId]);
+
+  // Курс USDT → RUB (для удобства)
+  const [rubRate, setRubRate] = useState<number | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=rub')
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setRubRate(d?.tether?.rub ?? null); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
 
   if (loading) {
