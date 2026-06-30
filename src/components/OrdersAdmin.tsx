@@ -64,7 +64,7 @@ function fmtMoscow(iso: string) {
   }) + ' МСК';
 }
 
-export function OrdersAdmin() {
+export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 'settings' } = {}) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [tariffs, setTariffs] = useState<Tariff[]>([]);
   const [loading, setLoading] = useState(true);
