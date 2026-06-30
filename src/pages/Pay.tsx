@@ -191,12 +191,13 @@ export default function Pay() {
                 Мы проверяем оплату. Как только расшифровки будут активированы, вы сможете воспользоваться ими — а готовые отчёты появятся в разделе «Мои отчёты».
               </p>
               <div className="flex flex-col gap-2">
-                <Button onClick={() => navigate('/my-reports')} className="bg-gradient-to-r from-primary to-accent">
+                <Button onClick={() => navigate('/my-reports')} variant="hero">
                   Перейти в «Мои отчёты»
                 </Button>
-                <Button variant="outline" onClick={() => navigate('/')}>
+                <Button variant="brand-outline" onClick={() => navigate('/')}>
                   На главную
                 </Button>
+
               </div>
             </div>
           ) : (
