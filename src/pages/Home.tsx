@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import telegramBotQr from '@/assets/telegram-bot-qr.png.asset.json';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
@@ -244,13 +245,11 @@ export default function Home() {
             </Button>
           </div>
           <div className="flex justify-center">
-            <div className="px-8 py-6 rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-primary/20 shadow-inner text-center">
-              <div className="text-5xl mb-3">🤖</div>
-              <div className="text-2xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1">
-                @med_gid_bot
-              </div>
-              <p className="text-sm text-muted-foreground">Telegram-бот АнализПро</p>
-            </div>
+            <img
+              src={telegramBotQr.url}
+              alt="QR-код бота @med_gid_bot"
+              className="rounded-2xl max-h-[340px] w-auto shadow-lg border border-border"
+            />
           </div>
         </section>
 
