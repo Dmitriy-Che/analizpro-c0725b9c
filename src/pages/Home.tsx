@@ -48,7 +48,7 @@ export default function Home() {
             <span className="text-sm font-bold">1 бесплатная расшифровка</span>
           </div>
           <p className="text-xs text-muted-foreground mb-3">
-            Для новых пользователей — без регистрации и оплаты.
+            Для новых пользователей — быстрая регистрация, оплата не требуется.
           </p>
           <Button
             onClick={() => navigate('/tariffs?claim=free')}
