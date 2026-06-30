@@ -177,8 +177,8 @@ export default function Pay() {
 
         <Card className="p-6 lg:p-8 border-2 border-border/50 bg-card/95">
           <div className="text-center mb-6">
-            <h1 className="text-2xl lg:text-3xl font-black mb-2">Оплата заказа</h1>
-            <p className="text-muted-foreground">{tariff?.title ?? order.tariff_code}</p>
+            <h1 className="h-page">Оплата заказа</h1>
+            <p className="t-lead">{tariff?.title ?? order.tariff_code}</p>
           </div>
 
           {isPaid ? (
@@ -186,7 +186,8 @@ export default function Pay() {
               <div className="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-4">
                 <CheckCircle2 className="w-10 h-10 text-green-600" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Спасибо!</h2>
+              <h2 className="h-section">Спасибо!</h2>
+
               <p className="text-muted-foreground mb-6">
                 Мы проверяем оплату. Как только расшифровки будут активированы, вы сможете воспользоваться ими — а готовые отчёты появятся в разделе «Мои отчёты».
               </p>

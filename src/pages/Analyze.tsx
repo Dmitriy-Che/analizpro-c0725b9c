@@ -162,7 +162,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Укажите возраст</h2>
+              <h2 className="h-section">Укажите возраст</h2>
               <p className="text-muted-foreground text-sm">Для точной расшифровки с учётом возрастных норм</p>
             </div>
             <div className="max-w-[200px] mx-auto">
@@ -187,7 +187,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <User className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Укажите пол</h2>
+              <h2 className="h-section">Укажите пол</h2>
               <p className="text-muted-foreground text-sm">Нормы показателей различаются для мужчин и женщин</p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -224,7 +224,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Microscope className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Тип исследования</h2>
+              <h2 className="h-section">Тип исследования</h2>
               <p className="text-muted-foreground text-sm">Выберите, что вы хотите расшифровать</p>
             </div>
             <div className="space-y-3">
@@ -264,7 +264,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <FileImage className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Загрузите фото</h2>
+              <h2 className="h-section">Загрузите фото</h2>
               <p className="text-muted-foreground text-sm">Выберите файл с анализом из галереи или с устройства</p>
             </div>
 
@@ -340,7 +340,7 @@ export default function Analyze() {
             className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain rounded-full"
           />
           <Loader2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto mb-4 animate-spin text-primary" />
-          <h2 className="text-xl lg:text-2xl font-bold mb-2">Анализируем...</h2>
+          <h2 className="h-section">Анализируем...</h2>
           <p className="text-muted-foreground text-sm lg:text-base mb-6">
             ИИ изучает ваш анализ и готовит расшифровку
           </p>
@@ -368,10 +368,11 @@ export default function Analyze() {
           <Header />
         </div>
 
-        <div className="hidden lg:block text-center mb-8">
-          <h1 className="text-3xl font-black mb-2">Расшифровка анализа</h1>
-          <p className="text-muted-foreground">Заполните 4 шага — ИИ подготовит подробный отчёт</p>
+        <div className="hidden lg:block text-center stack-section">
+          <h1 className="h-page">Расшифровка анализа</h1>
+          <p className="t-lead">Заполните 4 шага — ИИ подготовит подробный отчёт</p>
         </div>
+
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-6 lg:mb-8">

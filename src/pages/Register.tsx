@@ -75,7 +75,7 @@ const Register = () => {
           <img src={medicalLogo} alt="Logo" className="w-16 h-16 rounded-full shadow-md object-contain" />
         </div>
         <div className="text-center mb-6">
-          <h1 className="text-2xl lg:text-3xl font-black text-primary mb-2">Регистрация</h1>
+          <h1 className="h-page text-primary">Регистрация</h1>
           <p className="text-sm text-muted-foreground">Создайте аккаунт за минуту</p>
         </div>
 

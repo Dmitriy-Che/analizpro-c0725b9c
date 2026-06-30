@@ -69,12 +69,11 @@ export default function MyReports() {
           <Header />
         </div>
 
-        <div className="mb-6 lg:mb-8">
-          <h1 className="text-3xl lg:text-4xl font-black mb-2">Мои отчёты</h1>
-          <p className="text-muted-foreground">
-            История ваших расшифровок
-          </p>
+        <div className="stack-section">
+          <h1 className="h-page">Мои отчёты</h1>
+          <p className="t-lead">История ваших расшифровок</p>
         </div>
+
 
         <Card className="p-4 mb-6 border-2 border-accent/30 bg-accent/5 flex items-start gap-3">
           <Clock className="w-5 h-5 text-accent mt-0.5 shrink-0" />
