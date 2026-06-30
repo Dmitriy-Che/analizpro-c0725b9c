@@ -62,3 +62,31 @@ All colors MUST be HSL.
     font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 }
+
+@layer components {
+  /* Unified typography scale */
+  .h-page {
+    @apply text-3xl lg:text-5xl font-black tracking-tight leading-[1.1] mb-3;
+  }
+  .h-section {
+    @apply text-2xl lg:text-3xl font-bold tracking-tight mb-3;
+  }
+  .h-card {
+    @apply text-lg lg:text-xl font-bold mb-2;
+  }
+  .h-subtle {
+    @apply text-base font-semibold mb-2;
+  }
+  .t-lead {
+    @apply text-sm lg:text-base text-muted-foreground leading-relaxed;
+  }
+
+  /* Vertical rhythm */
+  .stack-section {
+    @apply mb-8 lg:mb-12;
+  }
+  .stack-block {
+    @apply mb-5 lg:mb-6;
+  }
+}
+
