@@ -56,7 +56,22 @@ export function AdPlaceholder({ page }: Props) {
     );
   }
 
-  if (!ad) return null;
+  if (!ad) {
+    return (
+      <Card
+        className="relative mt-6 overflow-hidden border-2 border-dashed border-accent/40 rounded-2xl p-5 lg:p-6
+                   bg-gradient-to-br from-accent/5 via-primary/5 to-secondary/5"
+      >
+        <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-accent font-bold mb-2">
+          <Megaphone className="w-3.5 h-3.5" />
+          Место для рекламы
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Здесь скоро появится партнёрское предложение
+        </p>
+      </Card>
+    );
+  }
 
   return (
     <Card
