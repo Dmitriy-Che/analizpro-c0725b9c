@@ -691,6 +691,10 @@ export type Database = {
         Returns: undefined
       }
       admin_delete_order: { Args: { p_order_id: string }; Returns: undefined }
+      admin_delete_referral: {
+        Args: { p_referral_id: string }
+        Returns: undefined
+      }
       admin_list_orders: {
         Args: never
         Returns: {
@@ -713,6 +717,25 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_list_referrals: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          invitee_analyses_count: number
+          invitee_device_id: string
+          invitee_email: string
+          invitee_ip: string
+          invitee_user_id: string
+          qualified_at: string
+          referrer_code: string
+          referrer_device_id: string
+          referrer_email: string
+          referrer_user_id: string
+          rewarded_at: string
+          status: string
+        }[]
+      }
       admin_process_order: { Args: { p_order_id: string }; Returns: string }
       admin_referral_stats: {
         Args: never
@@ -724,6 +747,10 @@ export type Database = {
           top_referrers: Json
           total_invites: number
         }[]
+      }
+      admin_set_referral_status: {
+        Args: { p_referral_id: string; p_status: string }
+        Returns: undefined
       }
       check_partner_limit: { Args: { p_partner_id: string }; Returns: boolean }
       claim_guest_data: { Args: { p_device_id: string }; Returns: undefined }
