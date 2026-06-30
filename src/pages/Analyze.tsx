@@ -162,7 +162,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Укажите возраст</h2>
+              <h2 className="h-section">Укажите возраст</h2>
               <p className="text-muted-foreground text-sm">Для точной расшифровки с учётом возрастных норм</p>
             </div>
             <div className="max-w-[200px] mx-auto">
@@ -187,7 +187,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <User className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Укажите пол</h2>
+              <h2 className="h-section">Укажите пол</h2>
               <p className="text-muted-foreground text-sm">Нормы показателей различаются для мужчин и женщин</p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -224,7 +224,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Microscope className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Тип исследования</h2>
+              <h2 className="h-section">Тип исследования</h2>
               <p className="text-muted-foreground text-sm">Выберите, что вы хотите расшифровать</p>
             </div>
             <div className="space-y-3">
@@ -264,7 +264,7 @@ export default function Analyze() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <FileImage className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Загрузите фото</h2>
+              <h2 className="h-section">Загрузите фото</h2>
               <p className="text-muted-foreground text-sm">Выберите файл с анализом из галереи или с устройства</p>
             </div>
 
