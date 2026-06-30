@@ -66,7 +66,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 flex items-center justify-center py-6 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0">
+      <DesktopNav />
+      <BottomNavigation />
+      <div className="flex items-center justify-center py-6 px-4">
       <Card className="w-full max-w-md p-8 rounded-3xl shadow-xl border-border/50 backdrop-blur-sm bg-card/95">
         <div className="flex justify-center mb-6">
           <img src={medicalLogo} alt="Logo" className="w-16 h-16 rounded-full shadow-md object-contain" />
