@@ -157,6 +157,9 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
         supabase.from('payment_settings').upsert({ key: 'payment_instructions', value: instructions, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'support_contact', value: support, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'payment_link', value: paymentLink, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'wallet_address', value: walletAddress, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'wallet_network', value: walletNetwork, updated_at: new Date().toISOString() }),
+        supabase.from('payment_settings').upsert({ key: 'support_telegram_url', value: supportTelegram, updated_at: new Date().toISOString() }),
         supabase.from('payment_settings').upsert({ key: 'admin_telegram_chat_id', value: tgChatId, updated_at: new Date().toISOString() }),
       ]);
       toast.success('Настройки сохранены');
