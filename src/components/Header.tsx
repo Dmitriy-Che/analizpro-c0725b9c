@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo-optimized.webp';
-import { useEntitlements } from '@/hooks/useEntitlements';
-import { Sparkles } from 'lucide-react';
+import { EntitlementsBadge } from './EntitlementsBadge';
 
 export function Header() {
-  const { remaining, loading } = useEntitlements();
-
   return (
     <div className="mb-6 lg:mb-8">
       <Link to="/" className="text-center block">
@@ -21,23 +18,10 @@ export function Header() {
           АнализПро<span className="text-sm align-super">©</span>
         </h1>
       </Link>
-      {!loading && (
-        <div className="flex justify-center mt-3">
-          <Link
-            to="/tariffs"
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition ${
-              remaining > 0
-                ? 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/15'
-                : 'bg-muted text-muted-foreground border-border hover:bg-muted/80'
-            }`}
-          >
-            <Sparkles className="w-3 h-3" />
-            {remaining > 0
-              ? `Осталось расшифровок: ${remaining}`
-              : 'Нет доступных расшифровок'}
-          </Link>
-        </div>
-      )}
+      <div className="flex justify-center mt-3">
+        <EntitlementsBadge variant="compact" />
+      </div>
     </div>
   );
 }
+
