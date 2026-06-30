@@ -63,7 +63,9 @@ export function DesktopNav() {
           })}
         </nav>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
+          <EntitlementsBadge variant="compact" className="hidden xl:inline-flex" />
+
           {user ? (
             <Button
               onClick={handleSignOut}
