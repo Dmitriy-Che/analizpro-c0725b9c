@@ -24,6 +24,8 @@ const Results = () => {
   const age = location.state?.age || "";
   const gender = location.state?.gender || "";
   const fromHistory = location.state?.fromHistory || false;
+
+  useEffect(() => {
     if (!result) {
       navigate("/");
     }
