@@ -84,6 +84,25 @@ export default function Home() {
           </Card>
         </div>
 
+        <section className="mb-6">
+          <h2 className="text-lg font-bold text-center mb-4">Почему нам можно доверять</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { Icon: Brain, text: 'Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.', color: 'text-primary' },
+              { Icon: ShieldCheck, text: 'Не храним ваши документы дольше необходимого для обработки.', color: 'text-accent' },
+              { Icon: MessageCircle, text: 'Объясняем показатели простым языком без лишней медицинской терминологии.', color: 'text-secondary' },
+              { Icon: Stethoscope, text: 'Помогаем подготовиться к беседе с вашим врачом.', color: 'text-primary' },
+            ].map(({ Icon, text, color }, i) => (
+              <Card key={i} className="p-3 border border-border/50 bg-card/80">
+                <Icon className={`w-6 h-6 mb-2 ${color}`} />
+                <p className="text-xs text-muted-foreground leading-snug">{text}</p>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+
+
         <Card className="p-5 mb-6 border-2 border-border/50 bg-card/80">
           <h3 className="font-semibold mb-3 text-lg">Как это работает?</h3>
           <div className="space-y-3 text-sm text-muted-foreground">
@@ -207,6 +226,25 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <section className="mb-12">
+          <h2 className="text-3xl font-black text-center mb-8">Почему нам можно доверять</h2>
+          <div className="grid grid-cols-2 gap-6">
+            {[
+              { Icon: Brain, text: 'Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.', color: 'text-primary' },
+              { Icon: ShieldCheck, text: 'Не храним ваши документы дольше необходимого для обработки.', color: 'text-accent' },
+              { Icon: MessageCircle, text: 'Объясняем показатели простым языком без лишней медицинской терминологии.', color: 'text-secondary' },
+              { Icon: Stethoscope, text: 'Помогаем подготовиться к беседе с вашим врачом.', color: 'text-primary' },
+            ].map(({ Icon, text, color }, i) => (
+              <Card key={i} className="p-6 border-2 border-border/50 bg-card/80">
+                <Icon className={`w-10 h-10 mb-4 ${color}`} />
+                <p className="text-sm text-muted-foreground leading-relaxed">{text}</p>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+
 
         <section className="grid grid-cols-3 gap-6 mb-20">
           {[
