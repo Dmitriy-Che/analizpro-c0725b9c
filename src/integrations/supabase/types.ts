@@ -455,6 +455,7 @@ export type Database = {
           processed_at: string | null
           status: string
           tariff_code: string
+          tx_hash: string | null
           user_id: string | null
         }
         Insert: {
@@ -468,6 +469,7 @@ export type Database = {
           processed_at?: string | null
           status?: string
           tariff_code: string
+          tx_hash?: string | null
           user_id?: string | null
         }
         Update: {
@@ -481,6 +483,7 @@ export type Database = {
           processed_at?: string | null
           status?: string
           tariff_code?: string
+          tx_hash?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -713,6 +716,13 @@ export type Database = {
           visit_date: string
         }[]
       }
+      get_public_payment_settings: {
+        Args: never
+        Returns: {
+          key: string
+          value: string
+        }[]
+      }
       get_visits_by_day: {
         Args: never
         Returns: {
@@ -735,6 +745,10 @@ export type Database = {
       increment_partner_usage: {
         Args: { p_partner_id: string }
         Returns: undefined
+      }
+      mark_order_paid_by_tron: {
+        Args: { p_order_id: string; p_tx_hash: string }
+        Returns: boolean
       }
       mark_order_paid_by_user: {
         Args: { p_device_id: string; p_order_id: string }

@@ -59,9 +59,10 @@ export default function Pay() {
     };
 
     (async () => {
-      const settingsRes = await supabase.from('payment_settings').select('key,value');
+      const settingsRes = await supabase.rpc('get_public_payment_settings');
       if (!cancelled && settingsRes.data) {
-        const s = settingsRes.data.reduce((acc, r) => {
+        const rows = settingsRes.data as { key: string; value: string | null }[];
+        const s = rows.reduce((acc, r) => {
           acc[r.key] = r.value ?? '';
           return acc;
         }, {} as Record<string, string>);
@@ -89,17 +90,18 @@ export default function Pay() {
       if (!cancelled) setLoading(false);
     })();
 
-    // Поллинг статуса заказа каждые 5 секунд, пока он 'new'.
-    // Останавливаем, как только статус изменится (paid/processed/cancelled).
+    // Поллинг статуса + авто-сверка TRON каждые 15 секунд, пока заказ 'new'
     const interval = setInterval(() => {
       setOrder((current) => {
         if (!current || current.status !== 'new') return current;
         fetchOrder();
+        supabase.functions.invoke('verify-tron-payment', {
+          body: { order_id: current.id },
+        }).catch(() => {});
         return current;
       });
-    }, 5000);
+    }, 15000);
 
-    // Обновляем при возврате на вкладку
     const onVisible = () => {
       if (document.visibilityState === 'visible') fetchOrder();
     };
@@ -111,6 +113,17 @@ export default function Pay() {
       document.removeEventListener('visibilitychange', onVisible);
     };
   }, [orderId, deviceId]);
+
+  // Курс USDT → RUB (для удобства)
+  const [rubRate, setRubRate] = useState<number | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=rub')
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setRubRate(d?.tether?.rub ?? null); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
 
   if (loading) {
@@ -132,9 +145,17 @@ export default function Pay() {
 
   const tariff = getTariff(order.tariff_code);
   const isPaid = order.status !== 'new';
-  const qrUrl =
-    settings.qr_image_url ||
-    `analizpro:order:${order.id}:amount:${order.price_usd}USD`;
+  // TRON URI: некоторые кошельки (TronLink, Trust) автозаполняют сумму
+  const tronUri = settings.wallet_address
+    ? `tron:${settings.wallet_address}?amount=${order.price_usd}&token=USDT`
+    : `analizpro:order:${order.id}:amount:${order.price_usd}USD`;
+
+  const copyAll = () => {
+    if (settings.wallet_address) {
+      navigator.clipboard.writeText(settings.wallet_address);
+      toast.success(`Адрес и сумма $${order.price_usd} USDT скопированы`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0 pb-6 lg:pb-12">
@@ -180,7 +201,12 @@ export default function Pay() {
             </div>
           ) : (
             <>
-              <div className="bg-white rounded-2xl p-6 flex justify-center mb-6 shadow-sm">
+              <button
+                type="button"
+                onClick={copyAll}
+                title="Нажмите, чтобы скопировать адрес"
+                className="bg-white rounded-2xl p-6 flex justify-center mb-4 shadow-sm w-full hover:shadow-md transition-shadow"
+              >
                 {settings.qr_image_url ? (
                   <img
                     src={settings.qr_image_url}
@@ -188,15 +214,24 @@ export default function Pay() {
                     className="w-64 h-64 object-contain"
                   />
                 ) : (
-                  <QRCodeSVG value={qrUrl} size={256} level="H" includeMargin />
+                  <QRCodeSVG value={tronUri} size={256} level="H" includeMargin />
                 )}
-              </div>
+              </button>
+              <p className="text-center text-xs text-muted-foreground mb-4">
+                Нажмите на QR — адрес кошелька скопируется.
+              </p>
 
               <div className="text-center mb-6">
                 <p className="text-sm text-muted-foreground mb-1">Сумма к оплате</p>
                 <p className="text-4xl lg:text-5xl font-black text-primary">
-                  ${order.price_usd}
+                  ${order.price_usd} <span className="text-2xl lg:text-3xl">USDT</span>
                 </p>
+                {rubRate && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    ≈ {Math.round(order.price_usd * rubRate).toLocaleString('ru-RU')} ₽
+                    <span className="text-xs"> (курс {rubRate.toFixed(2)} ₽/USDT)</span>
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground mt-2">
                   № заказа: <code>{order.id.slice(0, 8)}</code>
                 </p>
