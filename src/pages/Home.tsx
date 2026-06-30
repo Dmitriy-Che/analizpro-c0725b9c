@@ -155,19 +155,21 @@ export default function Home() {
             <div className="flex gap-4">
               <Button
                 onClick={() => navigate('/analyze')}
-                className="h-14 px-8 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all"
+                variant="hero"
+                size="xl"
               >
                 Загрузить анализ
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                variant="outline"
+                variant="brand-outline"
+                size="xl"
                 onClick={() => navigate('/tariffs')}
-                className="h-14 px-8 text-base font-semibold border-2"
               >
                 Тарифы и оплата
               </Button>
             </div>
+
           </div>
 
           <div className="relative">
