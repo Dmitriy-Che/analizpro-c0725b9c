@@ -34,6 +34,7 @@ import { PartnerStats } from "@/components/PartnerStats";
 import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { OrdersAdmin } from "@/components/OrdersAdmin";
+import { AdsAdmin } from "@/components/AdsAdmin";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface AnalysisStats {
@@ -402,12 +403,17 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="orders" className="mb-6">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
+          <TabsList className="grid w-full grid-cols-5 h-auto">
             <TabsTrigger value="orders" className="py-2.5">Заказы</TabsTrigger>
             <TabsTrigger value="payment" className="py-2.5">Настройки оплаты</TabsTrigger>
+            <TabsTrigger value="ads" className="py-2.5">Реклама</TabsTrigger>
             <TabsTrigger value="stats" className="py-2.5">Статистика</TabsTrigger>
             <TabsTrigger value="partners" className="py-2.5">Для партнёров</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="ads" className="mt-6">
+            <AdsAdmin />
+          </TabsContent>
 
           <TabsContent value="orders" className="mt-6">
             {/* B2C Orders */}
