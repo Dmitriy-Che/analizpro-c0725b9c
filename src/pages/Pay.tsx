@@ -26,6 +26,9 @@ interface PaymentSettings {
   payment_instructions: string;
   support_contact: string;
   payment_link: string;
+  wallet_address: string;
+  wallet_network: string;
+  support_telegram_url: string;
 }
 
 export default function Pay() {
