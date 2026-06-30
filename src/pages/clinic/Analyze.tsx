@@ -421,7 +421,9 @@ export default function ClinicAnalyze() {
             <Button
               onClick={handleAnalyze}
               disabled={!canProceed()}
-              className="flex-1 h-12 lg:h-14 lg:text-lg bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              variant="hero"
+              size="lg"
+              className="flex-1"
             >
               Анализировать
             </Button>
@@ -429,11 +431,14 @@ export default function ClinicAnalyze() {
             <Button
               onClick={nextStep}
               disabled={!canProceed()}
-              className="flex-1 h-12 lg:h-14 lg:text-lg bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              variant="hero"
+              size="lg"
+              className="flex-1"
             >
               Продолжить
             </Button>
           )}
+
         </div>
       </div>
 
