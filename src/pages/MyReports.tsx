@@ -193,11 +193,13 @@ export default function MyReports() {
 
                   <Button
                     onClick={() => openReport(r)}
-                    className="w-full gap-2 bg-gradient-to-r from-primary to-accent"
+                    variant="hero"
+                    className="w-full gap-2"
                   >
                     Открыть отчёт
                     <ArrowRight className="w-4 h-4" />
                   </Button>
+
                 </Card>
               );
             })}
