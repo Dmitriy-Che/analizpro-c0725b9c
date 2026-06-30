@@ -235,7 +235,7 @@ export default function Home() {
         </section>
 
         {/* Реферальная программа */}
-        <section className="mb-12 max-w-2xl mx-auto">
+        <section className="mb-12">
           <ReferralCard />
         </section>
 
