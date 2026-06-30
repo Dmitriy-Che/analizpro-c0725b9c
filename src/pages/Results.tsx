@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, Download, Share2, ArrowLeft, FileImage, FileText, Loader2 } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Download, Share2, ArrowLeft, FileImage, FileText, Loader2, Copy, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,7 +9,8 @@ import { DesktopNav } from "@/components/DesktopNav";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { AnalysisReport } from "@/components/results/AnalysisReport";
 import { parseAnalysisResult, getOverallStatusColor } from "@/types/analysis";
-import { shareAsImage, shareAsPDF } from "@/utils/exportReport";
+import { shareAsImage, shareAsPDF, exportAsPDF } from "@/utils/exportReport";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 
 const Results = () => {

@@ -5,7 +5,7 @@ import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Clock, Sparkles, AlertCircle } from 'lucide-react';
+import { FileText, Clock, Sparkles, AlertCircle, Calendar, User, CreditCard, Hash, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { REPORTS_RETENTION_DAYS } from '@/config/tariffs';
@@ -21,19 +21,15 @@ interface Report {
   full_result: string | null;
   created_at: string;
   expires_at: string;
+  tariff_code: string | null;
+  tariff_title: string | null;
+  order_number: number | null;
 }
 
 const STUDY_LABELS: Record<string, string> = {
   lab: 'Лабораторные анализы',
   ultrasound: 'УЗИ',
   mri: 'МРТ',
-};
-
-const LANG_LABELS: Record<string, string> = {
-  en: '🇬🇧 Английский',
-  vi: '🇻🇳 Вьетнамский',
-  th: '🇹🇭 Тайский',
-  ru: '🇷🇺 Русский',
 };
 
 export default function MyReports() {
@@ -124,33 +120,58 @@ export default function MyReports() {
                 month: 'long',
                 year: 'numeric',
               });
-              const studyLabel = STUDY_LABELS[r.study_type || ''] || 'Расшифровка';
-              const langLabel = r.language_detected ? LANG_LABELS[r.language_detected] : null;
+              const studyLabel = STUDY_LABELS[r.study_type || ''] || r.title || 'Расшифровка';
+              const genderLabel = r.gender === 'male' ? 'муж.' : r.gender === 'female' ? 'жен.' : null;
               return (
                 <Card
                   key={r.id}
-                  onClick={() => openReport(r)}
-                  className="p-4 lg:p-5 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all border-2"
+                  className="p-4 lg:p-5 border-2 hover:border-primary/50 hover:shadow-md transition-all"
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <FileText className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 className="font-bold">{studyLabel}</h3>
-                        {langLabel && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                            {langLabel}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {date}
-                        {r.age && r.gender ? ` · ${r.age} лет · ${r.gender === 'male' ? 'муж.' : 'жен.'}` : ''}
-                      </p>
+                      <h3 className="font-bold leading-tight">{studyLabel}</h3>
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted-foreground mb-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-primary/60 shrink-0" />
+                      <span>{date}</span>
+                    </div>
+                    {(r.age || genderLabel) && (
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-primary/60 shrink-0" />
+                        <span>
+                          {r.age ? `${r.age} лет` : ''}
+                          {r.age && genderLabel ? ' · ' : ''}
+                          {genderLabel ?? ''}
+                        </span>
+                      </div>
+                    )}
+                    {(r.tariff_title || r.tariff_code) && (
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-primary/60 shrink-0" />
+                        <span className="truncate">{r.tariff_title || r.tariff_code}</span>
+                      </div>
+                    )}
+                    {r.order_number && (
+                      <div className="flex items-center gap-2">
+                        <Hash className="w-4 h-4 text-primary/60 shrink-0" />
+                        <span>Заказ №{r.order_number}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <Button
+                    onClick={() => openReport(r)}
+                    className="w-full gap-2 bg-gradient-to-r from-primary to-accent"
+                  >
+                    Открыть отчёт
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
                 </Card>
               );
             })}
