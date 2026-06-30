@@ -101,6 +101,7 @@ export function OrdersAdmin() {
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
       setPaymentLink(m.payment_link || '');
+      setTgChatId(m.admin_telegram_chat_id || '');
       if (m.qr_image_path) {
         const { data: signed } = await supabase.storage.from('payment-qr').createSignedUrl(m.qr_image_path, 3600);
         setQrPreview(signed?.signedUrl || '');
