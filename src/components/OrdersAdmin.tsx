@@ -368,6 +368,7 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
           </div>
         )}
       </Card>
+      )}
     </div>
   );
 }
