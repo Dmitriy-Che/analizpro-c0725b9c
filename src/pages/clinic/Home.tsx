@@ -104,7 +104,7 @@ export default function ClinicHome() {
           onClick={() => navigate(`/c/${slug}/analyze`)}
           className="w-full h-14 lg:h-16 text-lg lg:text-xl font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
         >
-          Начать расшифровку
+          Загрузить анализ
           <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
         </Button>
 
