@@ -18,6 +18,8 @@ import {
   Globe2,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { ReferralCard } from '@/components/ReferralCard';
+import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 
 export default function Home() {
   const navigate = useNavigate();
