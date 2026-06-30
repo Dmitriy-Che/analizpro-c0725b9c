@@ -125,10 +125,10 @@ export default function Tariffs() {
                 <Button
                   onClick={handleFreeTrial}
                   disabled={busy === 'free'}
-                  className="bg-accent hover:bg-accent/90 text-white font-semibold h-auto py-2.5 flex-col items-start gap-0.5"
+                  className="w-full h-14 text-lg font-bold bg-warning hover:bg-warning/90 text-white shadow-lg lg:w-auto lg:h-auto lg:py-2.5 lg:font-semibold lg:shadow-none lg:flex-col lg:items-start lg:gap-0.5"
                 >
                   <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно!'}</span>
-                  <span className="text-[10px] font-normal opacity-80">
+                  <span className="hidden lg:block text-[10px] font-normal opacity-80">
                     {FREE_TRIAL_REPORTS} бесплатная расшифровка
                   </span>
                 </Button>
