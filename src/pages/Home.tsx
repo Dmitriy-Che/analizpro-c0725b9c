@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import telegramBotQr from '@/assets/telegram-bot-qr.png.asset.json';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
+import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -12,17 +13,11 @@ import {
   Heart,
   Sparkles,
   FileText,
+  Stethoscope,
   Gift,
   Globe2,
-  Upload,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-
-const subtitleText = `Загрузите фото анализа на английском, вьетнамском или тайском языке и получите простое объяснение на русском.
-
-(ОАК, биохимия, моча, гормоны, онкомаркеры)
-
-Помогаем понять результаты с учётом возраста и пола.`;
 
 export default function Home() {
   const navigate = useNavigate();
@@ -42,35 +37,28 @@ export default function Home() {
       <DesktopNav />
 
       {/* MOBILE */}
-      <div className="lg:hidden relative max-w-[480px] mx-auto px-4 py-8">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-black tracking-tight text-foreground mb-4 leading-tight">
-            Понятная расшифровка медицинских анализов по фото
-          </h1>
-          <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed max-w-sm mx-auto mb-6">
-            {subtitleText}
-          </p>
-          <div className="flex flex-col gap-3 items-center">
-            <Button
-              onClick={() => navigate('/analyze')}
-              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
-            >
-              <Upload className="w-5 h-5 mr-2" />
-              Загрузить анализ
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/tariffs?claim=free')}
-              className="w-full h-14 text-lg font-semibold border-2"
-            >
-              <Gift className="w-5 h-5 mr-2" />
-              Попробовать бесплатно
-            </Button>
+      <div className="lg:hidden relative max-w-[480px] mx-auto px-4 py-6">
+        <Header />
+        <p className="text-muted-foreground text-center mb-6">
+          Расшифровка анализов на русском, английском, вьетнамском и тайском
+        </p>
+
+        <Card className="p-4 mb-6 border-2 border-accent/30 bg-gradient-to-br from-accent/10 to-primary/10">
+          <div className="flex items-center gap-3 mb-1.5">
+            <Gift className="w-4 h-4 text-accent" />
+            <span className="text-sm font-bold">1 бесплатная расшифровка</span>
           </div>
-          <p className="text-xs text-muted-foreground text-center max-w-xs mx-auto mt-4">
-            Сервис не заменяет консультацию врача. Для постановки диагноза обратитесь к специалисту.
+          <p className="text-xs text-muted-foreground mb-3">
+            Для новых пользователей — быстрая регистрация, оплата не требуется.
           </p>
-        </div>
+          <Button
+            onClick={() => navigate('/tariffs?claim=free')}
+            size="sm"
+            className="bg-accent hover:bg-accent/90 text-white"
+          >
+            Попробовать бесплатно!
+          </Button>
+        </Card>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
           <Card className="p-3 text-center border-2 border-primary/20 bg-card/80">
@@ -105,6 +93,18 @@ export default function Home() {
           </div>
         </Card>
 
+        <Button
+          onClick={() => navigate('/analyze')}
+          className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
+        >
+          Начать расшифровку
+          <ArrowRight className="w-5 h-5 ml-2" />
+        </Button>
+
+        <p className="text-xs text-muted-foreground text-center mt-6">
+          Сервис предоставляет информацию только в ознакомительных целях и не является медицинской консультацией.
+        </p>
+
         <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md">
           <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
           <p className="text-sm text-muted-foreground mb-4">Обновления и советы по здоровью</p>
@@ -126,33 +126,66 @@ export default function Home() {
 
       {/* DESKTOP */}
       <div className="hidden lg:block relative max-w-6xl mx-auto px-8 py-16">
-        <section className="text-center mb-20 max-w-4xl mx-auto pt-8">
-          <h1 className="text-5xl xl:text-6xl font-black tracking-tight leading-[1.05] mb-6 text-foreground">
-            Понятная расшифровка медицинских анализов по фото
-          </h1>
-          <p className="text-lg text-muted-foreground whitespace-pre-line leading-relaxed max-w-2xl mx-auto mb-8">
-            {subtitleText}
-          </p>
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <Button
-              onClick={() => navigate('/analyze')}
-              className="h-14 px-8 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all"
-            >
-              <Upload className="w-5 h-5 mr-2" />
-              Загрузить анализ
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/tariffs?claim=free')}
-              className="h-14 px-8 text-base font-semibold border-2"
-            >
-              <Gift className="w-5 h-5 mr-2" />
-              Попробовать бесплатно
-            </Button>
+        <section className="grid grid-cols-2 gap-12 items-center mb-20">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6">
+              <Sparkles className="w-4 h-4" />
+              ИИ-расшифровка для русских экспатов
+            </div>
+            <h1 className="text-5xl xl:text-6xl font-black tracking-tight leading-[1.05] mb-6">
+              Понятная расшифровка{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                анализов, УЗИ и МРТ
+              </span>{' '}
+              на русском
+            </h1>
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              Загрузите фото исследования на английском, вьетнамском или тайском — ИИ автоматически
+              переведёт и объяснит результаты на русском с учётом возраста и пола.
+            </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent/10 text-accent text-sm font-semibold mb-6">
+              <Gift className="w-4 h-4" />
+              1 бесплатная расшифровка для новых пользователей
+            </div>
+            <div className="flex gap-4">
+              <Button
+                onClick={() => navigate('/analyze')}
+                className="h-14 px-8 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all"
+              >
+                Начать расшифровку
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/tariffs')}
+                className="h-14 px-8 text-base font-semibold border-2"
+              >
+                Тарифы и оплата
+              </Button>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-            Сервис не заменяет консультацию врача. Для постановки диагноза обратитесь к специалисту.
-          </p>
+
+          <div className="relative">
+            <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/20 p-1 shadow-2xl">
+              <div className="w-full h-full rounded-[22px] bg-card/90 backdrop-blur p-8 flex flex-col items-center justify-center text-center">
+                <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6">
+                  <Stethoscope className="w-12 h-12 text-white" />
+                </div>
+                <h3 className="text-2xl font-black mb-2">АнализПро©</h3>
+                <p className="text-sm text-muted-foreground max-w-xs">
+                  Поддержка анализов на 🇬🇧 английском, 🇻🇳 вьетнамском, 🇹🇭 тайском и 🇷🇺 русском.
+                </p>
+              </div>
+            </div>
+            <div className="absolute -top-4 -right-4 px-4 py-2 rounded-2xl bg-card border-2 border-primary/20 shadow-lg flex items-center gap-2">
+              <Zap className="w-4 h-4 text-accent" />
+              <span className="text-sm font-bold">5 секунд</span>
+            </div>
+            <div className="absolute -bottom-4 -left-4 px-4 py-2 rounded-2xl bg-card border-2 border-accent/20 shadow-lg flex items-center gap-2">
+              <Globe2 className="w-4 h-4 text-primary" />
+              <span className="text-sm font-bold">4 языка</span>
+            </div>
+          </div>
         </section>
 
         <section className="grid grid-cols-3 gap-6 mb-20">

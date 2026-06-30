@@ -1,1 +1,0 @@
-DROP POLICY IF EXISTS "Partners can insert own data" ON public.partners;
