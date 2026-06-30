@@ -1,8 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, Download, Share2, ArrowLeft, FileImage, FileText, Loader2, Copy, Megaphone } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Download, Share2, ArrowLeft, FileImage, FileText, Loader2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Header } from "@/components/Header";
 import { DesktopNav } from "@/components/DesktopNav";
@@ -162,16 +163,7 @@ const Results = () => {
           </div>
         </Card>
 
-        {/* Ad placeholder */}
-        <Card className="mt-4 border border-border/60 p-5 lg:p-6 rounded-2xl bg-muted/20">
-          <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-2">
-            <Megaphone className="w-3.5 h-3.5" />
-            Реклама
-          </div>
-          <div className="text-sm text-muted-foreground/70 text-center py-6">
-            Здесь скоро появится партнёрское предложение
-          </div>
-        </Card>
+        <AdPlaceholder />
 
 
         {/* Share Dialog */}
