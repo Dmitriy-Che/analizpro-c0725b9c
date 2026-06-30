@@ -166,7 +166,7 @@ export default function Analyze() {
               <h2 className="h-section">Укажите возраст</h2>
               <p className="text-muted-foreground text-sm">Для точной расшифровки с учётом возрастных норм</p>
             </div>
-            <div className="max-w-[200px] mx-auto">
+            <div className="max-w-[240px] mx-auto">
               <Input
                 type="number"
                 min="0"
@@ -174,7 +174,7 @@ export default function Analyze() {
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
                 placeholder="Введите возраст"
-                className="text-center text-xl md:text-2xl h-14 font-bold"
+                className="text-center text-xl h-14 font-bold"
               />
               <p className="text-xs text-muted-foreground text-center mt-2">полных лет</p>
             </div>
