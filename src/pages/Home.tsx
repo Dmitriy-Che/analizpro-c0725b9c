@@ -86,40 +86,44 @@ export default function Home() {
 
         <section className="mb-6">
           <h2 className="text-lg font-bold text-center mb-4">Почему нам можно доверять</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { Icon: Brain, text: 'Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.', color: 'text-primary' },
-              { Icon: ShieldCheck, text: 'Не храним ваши документы дольше необходимого для обработки.', color: 'text-accent' },
-              { Icon: MessageCircle, text: 'Объясняем показатели простым языком без лишней медицинской терминологии.', color: 'text-secondary' },
-              { Icon: Stethoscope, text: 'Помогаем подготовиться к беседе с вашим врачом.', color: 'text-primary' },
-            ].map(({ Icon, text, color }, i) => (
-              <Card key={i} className="p-3 border border-border/50 bg-card/80">
-                <Icon className={`w-6 h-6 mb-2 ${color}`} />
-                <p className="text-xs text-muted-foreground leading-snug">{text}</p>
-              </Card>
-            ))}
-          </div>
+          <Card className="p-4 border border-border/50 bg-card/80">
+            <div className="space-y-4">
+              {[
+                { Icon: Brain, text: 'Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.', color: 'text-primary' },
+                { Icon: ShieldCheck, text: 'Не храним ваши документы дольше необходимого для обработки.', color: 'text-accent' },
+                { Icon: MessageCircle, text: 'Объясняем показатели простым языком без лишней медицинской терминологии.', color: 'text-secondary' },
+                { Icon: Stethoscope, text: 'Помогаем подготовиться к беседе с вашим врачом.', color: 'text-primary' },
+              ].map(({ Icon, text, color }, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <Icon className={`w-6 h-6 flex-shrink-0 ${color}`} />
+                  <p className="text-sm text-muted-foreground leading-snug">{text}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
         </section>
 
 
 
-        <Card className="p-5 mb-6 border-2 border-border/50 bg-card/80">
-          <h3 className="font-semibold mb-3 text-lg">Как это работает?</h3>
-          <div className="space-y-3 text-sm text-muted-foreground">
-            <div className="flex gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
-              <span>Загрузите фото анализа на любом из 4 языков</span>
+        <section className="mb-6">
+          <h2 className="text-lg font-bold text-center mb-4">Как это работает?</h2>
+          <Card className="p-5 border-2 border-border/50 bg-card/80">
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                <span>Загрузите фото анализа на любом из 4 языков</span>
+              </div>
+              <div className="flex gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                <span>Укажите возраст и пол</span>
+              </div>
+              <div className="flex gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                <span>Получите расшифровку на русском</span>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-              <span>Укажите возраст и пол</span>
-            </div>
-            <div className="flex gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
-              <span>Получите расшифровку на русском</span>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </section>
 
         <Button
           onClick={() => navigate('/analyze')}
@@ -143,7 +147,7 @@ export default function Home() {
         </p>
 
         <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 text-center rounded-2xl border-2 border-primary/20 shadow-md">
-          <div className="text-base font-semibold mb-1 text-foreground">💬 Присоединяйтесь к нам!</div>
+          <h2 className="text-lg font-bold text-center mb-4">💬 Присоединяйтесь к нам!</h2>
           <p className="text-sm text-muted-foreground mb-4">Обновления и советы по здоровью</p>
           <Button asChild className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg">
             <a href="https://t.me/medgid_mo" target="_blank" rel="noopener noreferrer">
