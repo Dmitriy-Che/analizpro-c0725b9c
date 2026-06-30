@@ -427,6 +427,7 @@ export default function Analyze() {
           )}
 
         </div>
+        <AdPlaceholder page="analyze" />
       </div>
 
       <BottomNavigation />
