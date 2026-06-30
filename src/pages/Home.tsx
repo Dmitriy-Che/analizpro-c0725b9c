@@ -105,23 +105,25 @@ export default function Home() {
 
 
 
-        <Card className="p-5 mb-6 border-2 border-border/50 bg-card/80">
-          <h3 className="font-semibold mb-3 text-lg">Как это работает?</h3>
-          <div className="space-y-3 text-sm text-muted-foreground">
-            <div className="flex gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
-              <span>Загрузите фото анализа на любом из 4 языков</span>
+        <section className="mb-6">
+          <h2 className="text-lg font-bold text-center mb-4">Как это работает?</h2>
+          <Card className="p-5 border-2 border-border/50 bg-card/80">
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                <span>Загрузите фото анализа на любом из 4 языков</span>
+              </div>
+              <div className="flex gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                <span>Укажите возраст и пол</span>
+              </div>
+              <div className="flex gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                <span>Получите расшифровку на русском</span>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-              <span>Укажите возраст и пол</span>
-            </div>
-            <div className="flex gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
-              <span>Получите расшифровку на русском</span>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </section>
 
         <Button
           onClick={() => navigate('/analyze')}
