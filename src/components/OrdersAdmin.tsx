@@ -244,16 +244,32 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
             <Input value={qrUrl} onChange={(e) => setQrUrl(e.target.value)} placeholder="https://..." className="mt-2" />
           </div>
           <div>
-            <label className="text-sm font-semibold mb-1 block">Инструкция</label>
-            <textarea className="w-full min-h-[100px] border border-input rounded-md p-3 text-sm"
-              value={instructions} onChange={(e) => setInstructions(e.target.value)} />
+            <label className="text-sm font-semibold mb-1 block">Адрес криптокошелька</label>
+            <Input value={walletAddress} onChange={(e) => setWalletAddress(e.target.value)} placeholder="TTtRD36Fa3nsaFPNLpyeYcDA2BYUv5q1Dk" />
           </div>
           <div>
-            <label className="text-sm font-semibold mb-1 block">Поддержка</label>
-            <Input value={support} onChange={(e) => setSupport(e.target.value)} placeholder="@telegram_handle" />
+            <label className="text-sm font-semibold mb-1 block">Сеть кошелька</label>
+            <Input value={walletNetwork} onChange={(e) => setWalletNetwork(e.target.value)} placeholder="TRON (TRC20) · USDT" />
           </div>
           <div>
-            <label className="text-sm font-semibold mb-1 block">Ссылка на оплату</label>
+            <label className="text-sm font-semibold mb-1 block">Инструкция для пользователя</label>
+            <textarea className="w-full min-h-[140px] border border-input rounded-md p-3 text-sm font-mono"
+              value={instructions} onChange={(e) => setInstructions(e.target.value)}
+              placeholder={'Отсканируйте QR-код и переведите сумму [price_usd] USDT (TRC20).\nЭмодзи и переносы строк сохраняются 💳✅'} />
+            <p className="text-xs text-muted-foreground mt-1">
+              Подстановка: <code>[price_usd]</code> — сумма заказа, <code>[wallet]</code> — адрес кошелька, <code>[network]</code> — сеть. Переносы строк и эмодзи сохраняются.
+            </p>
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Поддержка (текст / @handle)</label>
+            <Input value={support} onChange={(e) => setSupport(e.target.value)} placeholder="@D_METRIUS" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Ссылка «Написать в поддержку» (Telegram)</label>
+            <Input value={supportTelegram} onChange={(e) => setSupportTelegram(e.target.value)} placeholder="https://t.me/D_METRIUS" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold mb-1 block">Резервная ссылка на оплату (необязательно)</label>
             <Input value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="https://..." />
           </div>
           <div>
