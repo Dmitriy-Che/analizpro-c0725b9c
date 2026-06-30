@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Megaphone, ExternalLink } from "lucide-react";
+import { Megaphone, ExternalLink, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AdPage =
@@ -48,48 +48,59 @@ export function AdPlaceholder({ page }: Props) {
     };
   }, [page]);
 
+  if (loading) {
+    return (
+      <Card className="mt-6 border-2 border-dashed border-primary/20 p-5 rounded-2xl">
+        <div className="h-20 animate-pulse bg-muted/40 rounded-lg" />
+      </Card>
+    );
+  }
+
+  if (!ad) return null;
+
   return (
-    <Card className="mt-4 border border-border/60 p-5 lg:p-6 rounded-2xl bg-muted/20">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-3">
-        <Megaphone className="w-3.5 h-3.5" />
-        Реклама
+    <Card
+      className="relative mt-6 overflow-hidden border-2 border-accent/40 rounded-2xl p-5 lg:p-6
+                 bg-gradient-to-br from-accent/10 via-primary/5 to-secondary/10
+                 shadow-[0_8px_30px_-8px_hsl(var(--accent)/0.45)]
+                 hover:shadow-[0_12px_40px_-8px_hsl(var(--accent)/0.6)] hover:-translate-y-0.5
+                 transition-all duration-300"
+    >
+      {/* Accent corner glow */}
+      <div className="pointer-events-none absolute -top-16 -right-16 w-44 h-44 rounded-full bg-accent/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -left-16 w-44 h-44 rounded-full bg-primary/20 blur-3xl" />
+
+      <div className="relative">
+        <div className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 rounded-full bg-accent text-accent-foreground text-[11px] font-bold uppercase tracking-wider shadow-sm">
+          <Sparkles className="w-3 h-3" />
+          Спецпредложение
+        </div>
+
+        {ad.title && (
+          <h4 className="font-extrabold text-lg lg:text-xl text-foreground leading-tight mb-2">
+            {ad.title}
+          </h4>
+        )}
+        {ad.content && (
+          <p className="text-sm lg:text-base text-foreground/80 whitespace-pre-wrap leading-relaxed mb-3">
+            {ad.content}
+          </p>
+        )}
+        {ad.html_code && (
+          <div
+            className="ad-html-content mb-3"
+            dangerouslySetInnerHTML={{ __html: ad.html_code }}
+          />
+        )}
+        {ad.link && (
+          <Button asChild variant="cta" size="lg" className="gap-2 w-full sm:w-auto">
+            <a href={ad.link} target="_blank" rel="noopener noreferrer">
+              Узнать подробнее
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </Button>
+        )}
       </div>
-
-      {loading ? (
-        <div className="h-16 animate-pulse bg-muted/40 rounded-md" />
-      ) : ad ? (
-        <div className="space-y-3">
-          {ad.title && (
-            <h4 className="font-semibold text-base text-foreground">
-              {ad.title}
-            </h4>
-          )}
-          {ad.content && (
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-              {ad.content}
-            </p>
-          )}
-          {ad.html_code && (
-            <div
-              className="ad-html-content"
-              dangerouslySetInnerHTML={{ __html: ad.html_code }}
-            />
-          )}
-          {ad.link && (
-            <Button asChild variant="cta" size="sm" className="gap-1.5">
-              <a href={ad.link} target="_blank" rel="noopener noreferrer">
-                Подробнее
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </Button>
-
-          )}
-        </div>
-      ) : (
-        <div className="text-sm text-muted-foreground/70 text-center py-6">
-          Здесь скоро появится партнёрское предложение
-        </div>
-      )}
     </Card>
   );
 }
