@@ -99,7 +99,7 @@ export default function Tariffs() {
             <Sparkles className="w-4 h-4" />
             Тарифы и оплата
           </div>
-          <h1 className="text-3xl lg:text-5xl font-black mb-3">Выберите тариф</h1>
+          <h1 className="h-page">Выберите тариф</h1>
           <p className="text-muted-foreground lg:text-lg">
             {hasAvailable
               ? `У вас осталось расшифровок: ${remaining}`
