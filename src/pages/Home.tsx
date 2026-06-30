@@ -234,6 +234,13 @@ export default function Home() {
           </Button>
         </section>
 
+        {/* Реферальная программа */}
+        <section className="mb-12 max-w-2xl mx-auto">
+          <ReferralCard />
+        </section>
+
+
+
         {/* Telegram Bot Section */}
         <section className="rounded-3xl border-2 border-primary/20 bg-card/80 p-10 mb-12 grid grid-cols-2 gap-8 items-center shadow-md">
           <div>
