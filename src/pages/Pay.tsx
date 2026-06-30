@@ -42,16 +42,18 @@ export default function Pay() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!orderId) return;
+    let cancelled = false;
+
+    const fetchOrder = async () => {
+      const { data } = await supabase.rpc('get_my_order', { p_order_id: orderId, p_device_id: deviceId });
+      if (cancelled) return;
+      if (data && data.length > 0) setOrder(data[0] as OrderRow);
+    };
+
     (async () => {
-      if (!orderId) return;
-      const [orderRes, settingsRes] = await Promise.all([
-        supabase.rpc('get_my_order', { p_order_id: orderId, p_device_id: deviceId }),
-        supabase.from('payment_settings').select('key,value'),
-      ]);
-      if (orderRes.data && orderRes.data.length > 0) {
-        setOrder(orderRes.data[0] as OrderRow);
-      }
-      if (settingsRes.data) {
+      const settingsRes = await supabase.from('payment_settings').select('key,value');
+      if (!cancelled && settingsRes.data) {
         const s = settingsRes.data.reduce((acc, r) => {
           acc[r.key] = r.value ?? '';
           return acc;
@@ -64,15 +66,40 @@ export default function Pay() {
             .createSignedUrl(qrPath, 60 * 60 * 24 * 7);
           qr = signed?.signedUrl || '';
         }
-        setSettings({
-          qr_image_url: qr,
-          payment_instructions: s.payment_instructions || '',
-          support_contact: s.support_contact || '',
-          payment_link: s.payment_link || '',
-        });
+        if (!cancelled) {
+          setSettings({
+            qr_image_url: qr,
+            payment_instructions: s.payment_instructions || '',
+            support_contact: s.support_contact || '',
+            payment_link: s.payment_link || '',
+          });
+        }
       }
-      setLoading(false);
+      await fetchOrder();
+      if (!cancelled) setLoading(false);
     })();
+
+    // Поллинг статуса заказа каждые 5 секунд, пока он 'new'.
+    // Останавливаем, как только статус изменится (paid/processed/cancelled).
+    const interval = setInterval(() => {
+      setOrder((current) => {
+        if (!current || current.status !== 'new') return current;
+        fetchOrder();
+        return current;
+      });
+    }, 5000);
+
+    // Обновляем при возврате на вкладку
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchOrder();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [orderId, deviceId]);
 
 
