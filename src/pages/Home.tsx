@@ -241,15 +241,13 @@ export default function Home() {
               Отправьте фото анализа нашему боту — получите расшифровку на русском
               за несколько секунд. Никаких приложений устанавливать не нужно.
             </p>
-            <Button
-              asChild
-              className="h-12 px-6 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
-            >
+            <Button asChild variant="hero" size="lg">
               <a href="https://t.me/med_gid_bot" target="_blank" rel="noopener noreferrer">
                 Открыть @med_gid_bot
                 <ArrowRight className="w-5 h-5 ml-2" />
               </a>
             </Button>
+
           </div>
           <div className="flex justify-center">
             <img
