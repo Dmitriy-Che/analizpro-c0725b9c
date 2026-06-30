@@ -35,6 +35,7 @@ import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { OrdersAdmin } from "@/components/OrdersAdmin";
 import { AdsAdmin } from "@/components/AdsAdmin";
+import { ReferralsAdmin } from "@/components/ReferralsAdmin";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface AnalysisStats {
