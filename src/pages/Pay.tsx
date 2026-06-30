@@ -79,6 +79,9 @@ export default function Pay() {
             payment_instructions: s.payment_instructions || '',
             support_contact: s.support_contact || '',
             payment_link: s.payment_link || '',
+            wallet_address: s.wallet_address || '',
+            wallet_network: s.wallet_network || '',
+            support_telegram_url: s.support_telegram_url || 'https://t.me/D_METRIUS',
           });
         }
       }
