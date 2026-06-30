@@ -16,6 +16,9 @@ import {
   Stethoscope,
   Gift,
   Globe2,
+  Brain,
+  Lock,
+  MessageCircle,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -74,6 +77,31 @@ export default function Home() {
             <span className="text-xs font-medium text-muted-foreground">EN / VI / TH</span>
           </Card>
         </div>
+
+        {/* TRUST SECTION — MOBILE */}
+        <section className="mb-6">
+          <h2 className="text-lg font-bold text-center mb-4">Почему нам можно доверять</h2>
+          <div className="grid grid-cols-1 gap-3">
+            <Card className="p-4 border-2 border-primary/20 bg-card/80 flex items-start gap-3">
+              <Brain className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.
+              </p>
+            </Card>
+            <Card className="p-4 border-2 border-accent/20 bg-card/80 flex items-start gap-3">
+              <Lock className="w-6 h-6 text-accent flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Не храним ваши документы дольше необходимого для обработки.
+              </p>
+            </Card>
+            <Card className="p-4 border-2 border-secondary/20 bg-card/80 flex items-start gap-3">
+              <MessageCircle className="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Помогаем подготовиться к беседе с вашим врачом.
+              </p>
+            </Card>
+          </div>
+        </section>
 
         <Card className="p-5 mb-6 border-2 border-border/50 bg-card/80">
           <h3 className="font-semibold mb-3 text-lg">Как это работает?</h3>
@@ -200,6 +228,31 @@ export default function Home() {
               <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
             </Card>
           ))}
+        </section>
+
+        {/* TRUST SECTION — DESKTOP */}
+        <section className="mb-20">
+          <h2 className="text-3xl font-black text-center mb-10">Почему нам можно доверять</h2>
+          <div className="grid grid-cols-3 gap-6">
+            <Card className="p-7 border-2 border-primary/20 bg-card/80 hover:shadow-lg transition-all flex flex-col items-center text-center">
+              <Brain className="w-12 h-12 mb-4 text-primary" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.
+              </p>
+            </Card>
+            <Card className="p-7 border-2 border-accent/20 bg-card/80 hover:shadow-lg transition-all flex flex-col items-center text-center">
+              <Lock className="w-12 h-12 mb-4 text-accent" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Не храним ваши документы дольше необходимого для обработки.
+              </p>
+            </Card>
+            <Card className="p-7 border-2 border-secondary/20 bg-card/80 hover:shadow-lg transition-all flex flex-col items-center text-center">
+              <MessageCircle className="w-12 h-12 mb-4 text-secondary" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Помогаем подготовиться к беседе с вашим врачом.
+              </p>
+            </Card>
+          </div>
         </section>
 
         <section className="rounded-3xl bg-gradient-to-br from-primary to-accent p-12 text-center shadow-xl mb-12">
