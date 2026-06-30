@@ -76,6 +76,9 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
   const [instructions, setInstructions] = useState('');
   const [support, setSupport] = useState('');
   const [paymentLink, setPaymentLink] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
+  const [walletNetwork, setWalletNetwork] = useState('');
+  const [supportTelegram, setSupportTelegram] = useState('');
   const [tgChatId, setTgChatId] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
