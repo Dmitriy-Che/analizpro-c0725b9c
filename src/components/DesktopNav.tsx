@@ -5,6 +5,8 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo-optimized.webp';
+import { EntitlementsBadge } from './EntitlementsBadge';
+
 
 export function DesktopNav() {
   const navigate = useNavigate();
