@@ -13,8 +13,8 @@ export function DesktopNav() {
 
   const items = [
     { to: '/', label: 'Главная', icon: Home, match: (p: string) => p === '/' },
-    { to: '/analyze', label: 'Расшифровка', icon: FileText, match: (p: string) => p.startsWith('/analyze') },
-    { to: '/my-reports', label: 'Мои отчёты', icon: FolderClock, match: (p: string) => p.startsWith('/my-reports') },
+    { to: '/analyze', label: 'Анализ', icon: FileText, match: (p: string) => p.startsWith('/analyze') },
+    { to: '/my-reports', label: 'Отчёты', icon: FolderClock, match: (p: string) => p.startsWith('/my-reports') },
     { to: '/tariffs', label: 'Тарифы', icon: CreditCard, match: (p: string) => p.startsWith('/tariffs') || p.startsWith('/pay') },
   ];
 
@@ -61,42 +61,40 @@ export function DesktopNav() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {user ? (
             <Button
               onClick={handleSignOut}
-              variant="outline"
+              variant="ghost"
               size="sm"
-              className="gap-2"
+              className="h-9 px-3 gap-1.5 text-sm"
             >
               <LogOut className="w-4 h-4" />
               Выйти
             </Button>
           ) : (
-            <>
-              <Button
+            <div className="flex items-center gap-0.5 text-sm">
+              <button
                 onClick={() => navigate('/login')}
-                variant="ghost"
-                size="sm"
-                className="gap-2"
+                className="h-9 px-2.5 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 inline-flex items-center gap-1.5 transition-colors"
               >
                 <LogIn className="w-4 h-4" />
-                Войти
-              </Button>
-              <Button
+                Вход
+              </button>
+              <span className="text-border">/</span>
+              <button
                 onClick={() => navigate('/register')}
-                variant="outline"
-                size="sm"
-                className="gap-2"
+                className="h-9 px-2.5 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 inline-flex items-center gap-1.5 transition-colors"
               >
                 <UserPlus className="w-4 h-4" />
                 Регистрация
-              </Button>
-            </>
+              </button>
+            </div>
           )}
           <Button
             onClick={() => navigate('/analyze')}
-            className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold"
+            size="sm"
+            className="h-9 ml-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-semibold text-sm"
           >
             Расшифровать
           </Button>
