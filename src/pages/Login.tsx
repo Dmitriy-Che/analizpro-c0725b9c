@@ -8,6 +8,8 @@ import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import { Lock, Mail, LogIn } from "lucide-react";
 import medicalLogo from "@/assets/new-logo.png";
+import { DesktopNav } from "@/components/DesktopNav";
+import { BottomNavigation } from "@/components/BottomNavigation";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -143,6 +145,7 @@ const Login = () => {
           </Button>
         </form>
       </Card>
+      </div>
     </div>
   );
 };
