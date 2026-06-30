@@ -41,7 +41,11 @@ export default function Pay() {
     payment_instructions: '',
     support_contact: '',
     payment_link: '',
+    wallet_address: '',
+    wallet_network: '',
+    support_telegram_url: '',
   });
+  const [marking, setMarking] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
