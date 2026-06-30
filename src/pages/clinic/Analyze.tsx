@@ -365,7 +365,7 @@ export default function ClinicAnalyze() {
             className="w-20 h-20 lg:w-24 lg:h-24 mx-auto shadow-lg mb-6 animate-pulse object-contain rounded-full bg-white"
           />
           <Loader2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto mb-4 animate-spin text-primary" />
-          <h2 className="text-xl lg:text-2xl font-bold mb-2">Анализируем...</h2>
+          <h2 className="h-section">Анализируем...</h2>
           <p className="text-muted-foreground text-sm lg:text-base mb-6">
             ИИ изучает ваш анализ и готовит расшифровку
           </p>
