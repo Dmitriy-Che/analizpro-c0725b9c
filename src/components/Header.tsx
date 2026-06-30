@@ -2,7 +2,11 @@ import { Link } from 'react-router-dom';
 import logo from '@/assets/logo-optimized.webp';
 import { EntitlementsBadge } from './EntitlementsBadge';
 
-export function Header() {
+interface HeaderProps {
+  showBadge?: boolean;
+}
+
+export function Header({ showBadge = true }: HeaderProps) {
   return (
     <div className="mb-6 lg:mb-8">
       <Link to="/" className="text-center block">
@@ -18,10 +22,13 @@ export function Header() {
           АнализПро<span className="text-sm align-super">©</span>
         </h1>
       </Link>
-      <div className="flex justify-center mt-3">
-        <EntitlementsBadge variant="compact" />
-      </div>
+      {showBadge && (
+        <div className="flex justify-center mt-3">
+          <EntitlementsBadge variant="compact" />
+        </div>
+      )}
     </div>
   );
 }
+
 
