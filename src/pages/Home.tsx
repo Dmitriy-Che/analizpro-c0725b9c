@@ -96,7 +96,7 @@ export default function Home() {
           onClick={() => navigate('/analyze')}
           className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg"
         >
-          Начать расшифровку
+          Загрузить анализ
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
 
@@ -151,7 +151,7 @@ export default function Home() {
                 onClick={() => navigate('/analyze')}
                 className="h-14 px-8 text-base font-bold bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg hover:shadow-xl transition-all"
               >
-                Начать расшифровку
+                Загрузить анализ
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
