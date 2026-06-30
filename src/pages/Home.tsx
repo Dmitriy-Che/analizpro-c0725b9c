@@ -86,19 +86,21 @@ export default function Home() {
 
         <section className="mb-6">
           <h2 className="text-lg font-bold text-center mb-4">Почему нам можно доверять</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { Icon: Brain, text: 'Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.', color: 'text-primary' },
-              { Icon: ShieldCheck, text: 'Не храним ваши документы дольше необходимого для обработки.', color: 'text-accent' },
-              { Icon: MessageCircle, text: 'Объясняем показатели простым языком без лишней медицинской терминологии.', color: 'text-secondary' },
-              { Icon: Stethoscope, text: 'Помогаем подготовиться к беседе с вашим врачом.', color: 'text-primary' },
-            ].map(({ Icon, text, color }, i) => (
-              <Card key={i} className="p-3 border border-border/50 bg-card/80">
-                <Icon className={`w-6 h-6 mb-2 ${color}`} />
-                <p className="text-xs text-muted-foreground leading-snug">{text}</p>
-              </Card>
-            ))}
-          </div>
+          <Card className="p-4 border border-border/50 bg-card/80">
+            <div className="space-y-4">
+              {[
+                { Icon: Brain, text: 'Используем новейшие нейросети в медицине для структурированного анализа результатов по стандартам WHO 2026.', color: 'text-primary' },
+                { Icon: ShieldCheck, text: 'Не храним ваши документы дольше необходимого для обработки.', color: 'text-accent' },
+                { Icon: MessageCircle, text: 'Объясняем показатели простым языком без лишней медицинской терминологии.', color: 'text-secondary' },
+                { Icon: Stethoscope, text: 'Помогаем подготовиться к беседе с вашим врачом.', color: 'text-primary' },
+              ].map(({ Icon, text, color }, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <Icon className={`w-6 h-6 flex-shrink-0 ${color}`} />
+                  <p className="text-sm text-muted-foreground leading-snug">{text}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
         </section>
 
 
