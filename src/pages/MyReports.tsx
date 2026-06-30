@@ -203,7 +203,7 @@ export default function MyReports() {
           </div>
         )}
 
-        <AdPlaceholder />
+        <AdPlaceholder page="my-reports" />
       </div>
 
       <BottomNavigation />

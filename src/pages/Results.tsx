@@ -163,7 +163,7 @@ const Results = () => {
           </div>
         </Card>
 
-        <AdPlaceholder />
+        <AdPlaceholder page="results" />
 
 
         {/* Share Dialog */}
