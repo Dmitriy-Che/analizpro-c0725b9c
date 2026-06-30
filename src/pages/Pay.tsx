@@ -241,9 +241,9 @@ export default function Pay() {
               <div className="p-4 bg-muted/50 rounded-xl mb-4 text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
                 {(settings.payment_instructions ||
                   'Отсканируйте QR-код и переведите сумму [price_usd] USDT на указанные реквизиты или свяжитесь с поддержкой для альтернативы.')
-                  .replaceAll('[price_usd]', String(order.price_usd))
-                  .replaceAll('[wallet]', settings.wallet_address)
-                  .replaceAll('[network]', settings.wallet_network)}
+                  .split('[price_usd]').join(String(order.price_usd))
+                  .split('[wallet]').join(settings.wallet_address)
+                  .split('[network]').join(settings.wallet_network)}
               </div>
 
               <Button
