@@ -449,6 +449,7 @@ export type Database = {
           device_id: string | null
           id: string
           notes: string | null
+          order_number: number
           paid_at: string | null
           price_usd: number
           processed_at: string | null
@@ -461,6 +462,7 @@ export type Database = {
           device_id?: string | null
           id?: string
           notes?: string | null
+          order_number?: number
           paid_at?: string | null
           price_usd: number
           processed_at?: string | null
@@ -473,6 +475,7 @@ export type Database = {
           device_id?: string | null
           id?: string
           notes?: string | null
+          order_number?: number
           paid_at?: string | null
           price_usd?: number
           processed_at?: string | null
@@ -584,17 +587,29 @@ export type Database = {
       }
     }
     Functions: {
+      admin_change_order_tariff: {
+        Args: { p_order_id: string; p_tariff_code: string }
+        Returns: undefined
+      }
+      admin_delete_order: { Args: { p_order_id: string }; Returns: undefined }
       admin_list_orders: {
         Args: never
         Returns: {
           created_at: string
           device_id: string
+          effective_status: string
+          expires_at: string
           id: string
+          order_number: number
           paid_at: string
           price_usd: number
           processed_at: string
+          reports_left: number
+          reports_total: number
+          reports_used: number
           status: string
           tariff_code: string
+          tariff_title: string
           user_email: string
           user_id: string
         }[]
