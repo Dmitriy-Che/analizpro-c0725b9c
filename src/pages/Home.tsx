@@ -53,10 +53,13 @@ export default function Home() {
           </p>
           <Button
             onClick={() => navigate('/tariffs?claim=free')}
-            className="w-full h-14 text-lg font-bold bg-warning hover:bg-warning/90 text-white shadow-lg"
+            variant="cta"
+            size="xl"
+            className="w-full"
           >
             Попробовать бесплатно!
           </Button>
+
         </Card>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
