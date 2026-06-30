@@ -402,16 +402,22 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="orders" className="mb-6">
-          <TabsList className="grid w-full grid-cols-3 h-auto">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
             <TabsTrigger value="orders" className="py-2.5">Заказы</TabsTrigger>
+            <TabsTrigger value="payment" className="py-2.5">Настройки оплаты</TabsTrigger>
             <TabsTrigger value="stats" className="py-2.5">Статистика</TabsTrigger>
             <TabsTrigger value="partners" className="py-2.5">Для партнёров</TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders" className="mt-6">
             {/* B2C Orders */}
-            <OrdersAdmin />
+            <OrdersAdmin section="orders" />
           </TabsContent>
+
+          <TabsContent value="payment" className="mt-6">
+            <OrdersAdmin section="settings" />
+          </TabsContent>
+
 
           <TabsContent value="partners" className="mt-6">
         <Card className="p-6 border-2 border-primary/20 mb-6">
