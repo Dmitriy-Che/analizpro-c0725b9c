@@ -104,6 +104,9 @@ export function OrdersAdmin({ section = 'all' }: { section?: 'all' | 'orders' | 
       setInstructions(m.payment_instructions || '');
       setSupport(m.support_contact || '');
       setPaymentLink(m.payment_link || '');
+      setWalletAddress(m.wallet_address || '');
+      setWalletNetwork(m.wallet_network || '');
+      setSupportTelegram(m.support_telegram_url || '');
       setTgChatId(m.admin_telegram_chat_id || '');
       if (m.qr_image_path) {
         const { data: signed } = await supabase.storage.from('payment-qr').createSignedUrl(m.qr_image_path, 3600);
