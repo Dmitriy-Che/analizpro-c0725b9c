@@ -115,6 +115,93 @@ export default function MyReports() {
             </Button>
           </Card>
         ) : (
+          <div className="space-y-3">
+            {reports.map((r) => {
+              const date = new Date(r.created_at).toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+              });
+              const studyLabel = STUDY_LABELS[r.study_type || ''] || r.title || 'Расшифровка';
+              const genderLabel = r.gender === 'male' ? 'муж.' : r.gender === 'female' ? 'жен.' : null;
+              const status: string | undefined = r.result_json?.overall_status;
+              const statusMeta = status === 'critical'
+                ? { label: 'Критично', cls: 'bg-destructive/10 text-destructive border-destructive/30', Icon: XCircle }
+                : status === 'warning'
+                ? { label: 'Внимание', cls: 'bg-warning/10 text-warning border-warning/40', Icon: AlertTriangle }
+                : status === 'normal'
+                ? { label: 'Норма', cls: 'bg-success/10 text-success border-success/30', Icon: CheckCircle2 }
+                : null;
+              const daysLeft = Math.ceil((new Date(r.expires_at).getTime() - Date.now()) / 86400000);
+              const expiringSoon = daysLeft >= 0 && daysLeft <= 7;
+              const orderLabel = r.order_number ? `Заказ №${r.order_number}` : `Отчёт №${r.id.slice(0, 8).toUpperCase()}`;
+              return (
+                <Card
+                  key={r.id}
+                  className="p-4 lg:p-5 border-2 hover:border-primary/50 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <FileText className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold leading-tight">{studyLabel}</h3>
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                        {statusMeta && (
+                          <Badge variant="outline" className={`gap-1 ${statusMeta.cls}`}>
+                            <statusMeta.Icon className="w-3 h-3" />
+                            {statusMeta.label}
+                          </Badge>
+                        )}
+                        {expiringSoon && (
+                          <Badge variant="outline" className="gap-1 bg-accent/10 text-accent border-accent/40">
+                            <Timer className="w-3 h-3" />
+                            {daysLeft === 0 ? 'Истекает сегодня' : `Истекает через ${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}`}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted-foreground mb-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-primary/60 shrink-0" />
+                      <span>{date}</span>
+                    </div>
+                    {(r.age || genderLabel) && (
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-primary/60 shrink-0" />
+                        <span>
+                          {r.age ? `${r.age} лет` : ''}
+                          {r.age && genderLabel ? ' · ' : ''}
+                          {genderLabel ?? ''}
+                        </span>
+                      </div>
+                    )}
+                    {(r.tariff_title || r.tariff_code) && (
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-primary/60 shrink-0" />
+                        <span className="truncate">{r.tariff_title || r.tariff_code}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-primary/60 shrink-0" />
+                      <span>{orderLabel}</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={() => openReport(r)}
+                    className="w-full gap-2 bg-gradient-to-r from-primary to-accent"
+                  >
+                    Открыть отчёт
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Card>
+              );
+            })}
+          </div>
+        )}
           <>
             <div className="space-y-3">
               {reports.map((r) => {
