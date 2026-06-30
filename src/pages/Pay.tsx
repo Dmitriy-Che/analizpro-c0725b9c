@@ -298,7 +298,7 @@ export default function Pay() {
                     if (data && data.length > 0) setOrder(data[0] as OrderRow);
                     // Уведомление админу в Telegram (best-effort)
                     supabase.functions.invoke('notify-admin-order', {
-                      body: { order_id: order.id },
+                      body: { order_id: order.id, device_id: deviceId },
                     }).catch(() => {});
                   } catch (e: any) {
                     toast.error(e.message || 'Не удалось отправить');
