@@ -14,7 +14,6 @@ export function DesktopNav() {
   const { user } = useCurrentUser();
 
   const items = [
-    { to: '/', label: 'Главная', icon: Home, match: (p: string) => p === '/' },
     { to: '/analyze', label: 'Анализ', icon: FileText, match: (p: string) => p.startsWith('/analyze') },
     { to: '/my-reports', label: 'Отчёты', icon: FolderClock, match: (p: string) => p.startsWith('/my-reports') },
     { to: '/tariffs', label: 'Тарифы', icon: CreditCard, match: (p: string) => p.startsWith('/tariffs') || p.startsWith('/pay') },
