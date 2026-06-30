@@ -53,8 +53,7 @@ export default function Home() {
           </p>
           <Button
             onClick={() => navigate('/tariffs?claim=free')}
-            size="sm"
-            className="bg-accent hover:bg-accent/90 text-white"
+            className="w-full h-14 text-lg font-bold bg-warning hover:bg-warning/90 text-white shadow-lg"
           >
             Попробовать бесплатно!
           </Button>
