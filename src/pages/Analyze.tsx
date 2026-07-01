@@ -363,7 +363,7 @@ export default function Analyze() {
 
       <DesktopNav />
 
-      <div className="relative max-w-[480px] lg:max-w-2xl mx-auto px-4 lg:px-8 py-6 lg:py-12">
+      <div className="relative max-w-[480px] lg:max-w-6xl mx-auto px-4 lg:px-8 py-6 lg:py-12">
         {/* Header (mobile only — desktop has top nav) */}
         <div className="lg:hidden">
           <Header />

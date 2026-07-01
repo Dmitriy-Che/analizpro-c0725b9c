@@ -75,7 +75,7 @@ const Results = () => {
       <DesktopNav />
 
       <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <Card className="relative max-w-[480px] lg:max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
+        <Card className="relative max-w-[480px] lg:max-w-6xl mx-auto rounded-3xl p-6 sm:p-8 lg:p-10 shadow-[var(--shadow-large)] border-border/50 backdrop-blur-sm bg-card/95">
           {/* Header (mobile only — desktop uses top nav) */}
           <div className="lg:hidden">
             <Header />
