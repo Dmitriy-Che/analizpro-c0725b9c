@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import logo from '@/assets/logo-optimized.webp';
 import { EntitlementsBadge } from './EntitlementsBadge';
 
 interface HeaderProps {
