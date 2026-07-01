@@ -4,7 +4,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { DesktopNav } from '@/components/DesktopNav';
 import { Header } from '@/components/Header';
 import { AdPlaceholder } from '@/components/AdPlaceholder';
-import { ReferralCard } from '@/components/ReferralCard';
+
 import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,11 +77,6 @@ export default function MyReports() {
         </div>
 
         <ReferralGiftBanner />
-
-        <div className="mb-6">
-          <ReferralCard />
-        </div>
-
 
         <Card className="p-4 mb-6 border-2 border-accent/30 bg-accent/5 flex items-start gap-3">
           <Clock className="w-5 h-5 text-accent mt-0.5 shrink-0" />
