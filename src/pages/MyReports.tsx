@@ -72,8 +72,8 @@ export default function MyReports() {
         </div>
 
         <div className="stack-section">
-          <h1 className="h-page">Мои отчёты</h1>
-          <p className="t-lead">История ваших расшифровок</p>
+          <h1 className="h-page text-center">Мои отчёты</h1>
+          <p className="t-lead text-center">История ваших расшифровок</p>
         </div>
 
         <ReferralGiftBanner />
