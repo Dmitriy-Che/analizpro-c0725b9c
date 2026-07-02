@@ -23,6 +23,8 @@ export default function Tariffs() {
   const [busy, setBusy] = useState<string | null>(null);
 
   const trialUsed = entitlements.some((e) => e.source === 'free_trial');
+  const hasUsedAnalysis = entitlements.some((e) => e.reports_used > 0);
+  const hideFreeTrial = trialUsed || (!!user && hasUsedAnalysis);
 
   const handleBuy = async (code: string) => {
     if (!user) {
