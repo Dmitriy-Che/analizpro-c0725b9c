@@ -23,6 +23,8 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { ReferralCard } from '@/components/ReferralCard';
 import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useEntitlements } from '@/hooks/useEntitlements';
 
 export default function Home() {
   const navigate = useNavigate();
