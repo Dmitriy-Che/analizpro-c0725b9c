@@ -23,9 +23,15 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { ReferralCard } from '@/components/ReferralCard';
 import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useEntitlements } from '@/hooks/useEntitlements';
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const { entitlements } = useEntitlements();
+  const hasUsedAnalysis = entitlements.some((e) => e.reports_used > 0);
+  const hideFreeTrial = !!user && hasUsedAnalysis;
 
   useEffect(() => {
     supabase.functions.invoke('track-visit').catch(console.error);
@@ -50,24 +56,25 @@ export default function Home() {
 
         <ReferralGiftBanner />
 
-        <Card className="p-4 mb-6 border-2 border-accent/30 bg-gradient-to-br from-accent/10 to-primary/10">
-          <div className="flex items-center gap-3 mb-1.5">
-            <Gift className="w-4 h-4 text-accent" />
-            <span className="text-sm font-bold">1 бесплатная расшифровка</span>
-          </div>
-          <p className="text-xs text-muted-foreground mb-3">
-            Для новых пользователей — быстрая регистрация, оплата не требуется.
-          </p>
-          <Button
-            onClick={() => navigate('/tariffs?claim=free')}
-            variant="cta"
-            size="xl"
-            className="w-full"
-          >
-            Попробовать бесплатно!
-          </Button>
-
-        </Card>
+        {!hideFreeTrial && (
+          <Card className="p-4 mb-6 border-2 border-accent/30 bg-gradient-to-br from-accent/10 to-primary/10">
+            <div className="flex items-center gap-3 mb-1.5">
+              <Gift className="w-4 h-4 text-accent" />
+              <span className="text-sm font-bold">1 бесплатная расшифровка</span>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Для новых пользователей — быстрая регистрация, оплата не требуется.
+            </p>
+            <Button
+              onClick={() => navigate('/tariffs?claim=free')}
+              variant="cta"
+              size="xl"
+              className="w-full"
+            >
+              Попробовать бесплатно!
+            </Button>
+          </Card>
+        )}
 
         <div className="grid grid-cols-3 gap-3 mb-6">
           <Card className="p-3 text-center border-2 border-primary/20 bg-card/80">
@@ -184,10 +191,12 @@ export default function Home() {
               Загрузите фото исследования на английском, вьетнамском или тайском — ИИ автоматически
               переведёт и объяснит результаты на русском с учётом возраста и пола.
             </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent/10 text-accent text-sm font-semibold mb-6">
-              <Gift className="w-4 h-4" />
-              1 бесплатная расшифровка для новых пользователей
-            </div>
+            {!hideFreeTrial && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent/10 text-accent text-sm font-semibold mb-6">
+                <Gift className="w-4 h-4" />
+                1 бесплатная расшифровка для новых пользователей
+              </div>
+            )}
             <div className="flex gap-4">
               <Button
                 onClick={() => navigate('/analyze')}
