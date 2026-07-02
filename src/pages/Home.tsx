@@ -191,10 +191,12 @@ export default function Home() {
               Загрузите фото исследования на английском, вьетнамском или тайском — ИИ автоматически
               переведёт и объяснит результаты на русском с учётом возраста и пола.
             </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent/10 text-accent text-sm font-semibold mb-6">
-              <Gift className="w-4 h-4" />
-              1 бесплатная расшифровка для новых пользователей
-            </div>
+            {!hideFreeTrial && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent/10 text-accent text-sm font-semibold mb-6">
+                <Gift className="w-4 h-4" />
+                1 бесплатная расшифровка для новых пользователей
+              </div>
+            )}
             <div className="flex gap-4">
               <Button
                 onClick={() => navigate('/analyze')}
