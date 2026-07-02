@@ -111,7 +111,7 @@ export default function Tariffs() {
 
 
         {/* Бесплатная пробная */}
-        {!trialUsed && (
+        {!hideFreeTrial && (
           <Card className="p-5 lg:p-7 mb-6 lg:mb-8 border-2 border-accent/40 bg-gradient-to-br from-accent/10 to-primary/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 px-3 py-1 text-xs font-bold text-white bg-accent rounded-bl-xl">
               БЕСПЛАТНО
