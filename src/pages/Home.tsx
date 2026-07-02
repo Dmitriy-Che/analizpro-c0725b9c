@@ -26,6 +26,10 @@ import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const { entitlements } = useEntitlements();
+  const hasUsedAnalysis = entitlements.some((e) => e.reports_used > 0);
+  const hideFreeTrial = !!user && hasUsedAnalysis;
 
   useEffect(() => {
     supabase.functions.invoke('track-visit').catch(console.error);
