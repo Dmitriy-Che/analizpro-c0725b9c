@@ -40,24 +40,28 @@ export function IndicatorCard({ indicator, index }: IndicatorCardProps) {
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-3 gap-3">
-        <div className="flex-1 min-w-0">
-          <h4 className="font-bold text-foreground text-base sm:text-lg lg:text-xl leading-tight break-words">
-            {indicator.name}
-          </h4>
-          <div className="flex items-baseline gap-2 mt-1 flex-wrap">
-            <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
-              {indicator.value}
+      <div className="mb-3">
+        {/* Status badge on top */}
+        <div className="flex justify-end mb-2">
+          <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/70 border ${colors.border}`}>
+            <StatusIcon className={`w-4 h-4 lg:w-5 lg:h-5 ${colors.text}`} />
+            <span className={`text-xs sm:text-sm font-medium ${colors.text} whitespace-nowrap`}>
+              {statusLabel}
             </span>
-            <span className="text-sm sm:text-base text-muted-foreground">{indicator.unit}</span>
           </div>
         </div>
-        
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${colors.bg} border ${colors.border} flex-shrink-0`}>
-          <StatusIcon className={`w-4 h-4 lg:w-5 lg:h-5 ${colors.text}`} />
-          <span className={`text-xs sm:text-sm font-medium ${colors.text}`}>
-            {statusLabel}
+
+        {/* Full-width title */}
+        <h4 className="font-bold text-foreground text-base sm:text-lg lg:text-xl leading-snug break-words hyphens-auto">
+          {indicator.name}
+        </h4>
+
+        {/* Value */}
+        <div className="flex items-baseline gap-2 mt-2 flex-wrap">
+          <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+            {indicator.value}
           </span>
+          <span className="text-sm sm:text-base text-muted-foreground">{indicator.unit}</span>
         </div>
       </div>
 
