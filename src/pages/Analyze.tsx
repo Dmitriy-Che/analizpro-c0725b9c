@@ -138,6 +138,7 @@ export default function Analyze() {
             result: data.result,
             age,
             gender,
+            studyType,
           },
         });
       } else {
