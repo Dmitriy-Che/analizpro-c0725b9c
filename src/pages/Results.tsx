@@ -98,6 +98,7 @@ const Results = () => {
             result={parsedResult.structured}
             age={age}
             gender={gender}
+            studyType={studyType}
           />
         ) : (
           /* Fallback for text-only results */
