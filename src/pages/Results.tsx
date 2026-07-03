@@ -24,6 +24,7 @@ const Results = () => {
   const result = location.state?.result || "";
   const age = location.state?.age || "";
   const gender = location.state?.gender || "";
+  const studyType = location.state?.studyType || "";
   const fromHistory = location.state?.fromHistory || false;
 
   useEffect(() => {
@@ -97,6 +98,7 @@ const Results = () => {
             result={parsedResult.structured}
             age={age}
             gender={gender}
+            studyType={studyType}
           />
         ) : (
           /* Fallback for text-only results */
