@@ -2,11 +2,11 @@ import { Card } from '@/components/ui/card';
 import { StructuredAnalysisResult, getOverallStatusColor } from '@/types/analysis';
 import { StatusChart } from './StatusChart';
 import { IndicatorCard } from './IndicatorCard';
-import { 
-  CheckCircle2, 
-  Calendar,
+import {
+  CheckCircle2,
   FileText,
-  Sparkles
+  Sparkles,
+  AlertTriangle,
 } from 'lucide-react';
 import logo from '@/assets/new-logo.png';
 
@@ -14,64 +14,102 @@ interface AnalysisReportProps {
   result: StructuredAnalysisResult;
   age: string;
   gender: string;
+  studyType?: string;
+  orderNumber?: string;
   clinicName?: string;
   clinicLogo?: string | null;
 }
 
-export function AnalysisReport({ 
-  result, 
-  age, 
-  gender, 
+const STUDY_TYPE_LABELS: Record<string, string> = {
+  lab: 'Анализы (МОАК/биохимия)',
+  ultrasound: 'УЗИ',
+  mri: 'МРТ',
+};
+
+export function AnalysisReport({
+  result,
+  age,
+  gender,
+  studyType,
+  orderNumber,
   clinicName,
-  clinicLogo 
+  clinicLogo,
 }: AnalysisReportProps) {
   const statusColors = getOverallStatusColor(result.overall_status);
   const abnormalIndicators = result.indicators.filter(i => i.status !== 'normal');
   const hasAbnormal = abnormalIndicators.length > 0;
 
+  const dateStr = new Date().toLocaleDateString('ru-RU');
+  const studyLabel = studyType ? STUDY_TYPE_LABELS[studyType] ?? studyType : null;
+  const order = orderNumber || `№ ${Date.now().toString().slice(-6)}`;
+
   return (
     <div id="analysis-report" className="space-y-4">
-      {/* Header Card */}
-      <Card className={`border-2 ${statusColors.border} rounded-2xl shadow-xl overflow-hidden`}>
-        <div className={`${statusColors.header} p-4 sm:p-5 lg:p-6`}>
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-3">
-              <img 
-                src={clinicLogo || logo} 
-                alt="Logo" 
-                className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/20 object-contain"
+      {/* Brand Header */}
+      <Card className="rounded-2xl border-2 border-border/60 shadow-sm overflow-hidden">
+        <div className="p-4 sm:p-5 lg:p-6 bg-gradient-to-r from-primary/5 via-background to-accent/5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            {/* Brand */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <img
+                src={clinicLogo || logo}
+                alt="АнализПро"
+                className="w-11 h-11 lg:w-12 lg:h-12 rounded-full object-contain bg-white border border-border/40"
               />
-              <div>
-                <h3 className="text-white font-bold text-lg sm:text-xl lg:text-2xl flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6" />
-                  Результаты анализа
-                </h3>
+              <div className="leading-tight">
+                <div className="text-lg lg:text-xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  АнализПро<span className="text-[0.6em] align-super">©</span>
+                </div>
                 {clinicName && (
-                  <p className="text-white/80 text-xs sm:text-sm">{clinicName}</p>
+                  <div className="text-xs text-muted-foreground">{clinicName}</div>
                 )}
               </div>
             </div>
-            <div className="text-right text-white/80 text-xs sm:text-sm">
-              <div className="flex items-center gap-1 justify-end">
-                <Calendar className="w-3 h-3 lg:w-4 lg:h-4" />
-                {new Date().toLocaleDateString('ru-RU')}
-              </div>
-              <div className="mt-1">
-                {gender === 'male' ? '👨' : '👩'} {age} лет
+
+            {/* Divider */}
+            <div className="hidden sm:block w-px self-stretch bg-border/60" />
+
+            {/* Title + meta */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground leading-snug">
+                Расшифровка результата анализов
+              </h2>
+              <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+                <span>Заказ {order}</span>
+                <span>·</span>
+                <span>{dateStr}</span>
+                <span>·</span>
+                <span>{gender === 'male' ? '👨' : '👩'} {age} лет</span>
+                {studyLabel && (
+                  <>
+                    <span>·</span>
+                    <span>{studyLabel}</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
-        
+      </Card>
+
+      {/* Summary Card */}
+      <Card className={`border-2 ${statusColors.border} rounded-2xl shadow-xl overflow-hidden`}>
+        <div className={`${statusColors.header} p-4 sm:p-5 lg:p-6`}>
+          <h3 className="text-white font-bold text-lg sm:text-xl lg:text-2xl flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6" />
+            Результаты анализа
+          </h3>
+        </div>
+
         <div className={`p-5 lg:p-6 ${statusColors.body}`}>
-          {/* Summary */}
           <div className="text-center mb-4">
-            <p className="text-base sm:text-lg lg:text-xl text-foreground font-medium leading-relaxed">{result.summary}</p>
+            <p className="text-base sm:text-lg lg:text-xl text-foreground font-medium leading-relaxed">
+              {result.summary}
+            </p>
           </div>
-          
-          {/* Status Chart */}
+
           <div className="flex justify-center py-4">
-            <StatusChart 
+            <StatusChart
               normalCount={result.normal_count}
               abnormalCount={result.abnormal_count}
               overallStatus={result.overall_status}
@@ -89,13 +127,9 @@ export function AnalysisReport({
               Показатели, требующие внимания
             </h4>
           </div>
-          
+
           {abnormalIndicators.map((indicator, index) => (
-            <IndicatorCard 
-              key={index} 
-              indicator={indicator} 
-              index={index}
-            />
+            <IndicatorCard key={index} indicator={indicator} index={index} />
           ))}
         </div>
       )}
@@ -119,7 +153,9 @@ export function AnalysisReport({
           <div className="flex items-start gap-3">
             <FileText className="w-5 h-5 lg:w-6 lg:h-6 text-primary mt-0.5 flex-shrink-0" />
             <div>
-              <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl mb-1">Общие рекомендации</h4>
+              <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl mb-1">
+                Общие рекомендации
+              </h4>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed">
                 {result.general_recommendations}
               </p>
@@ -132,6 +168,16 @@ export function AnalysisReport({
           </div>
         </Card>
       )}
+
+      {/* Disclaimer */}
+      <Card className="border-2 border-warning/30 bg-warning/5 p-4 sm:p-5 rounded-2xl">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+          <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed">
+            Не является медицинской консультацией. Для точной диагностики и лечения обратитесь к квалифицированному специалисту.
+          </p>
+        </div>
+      </Card>
     </div>
   );
 }
