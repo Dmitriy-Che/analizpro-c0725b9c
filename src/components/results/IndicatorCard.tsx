@@ -71,10 +71,10 @@ export function IndicatorCard({ indicator, index }: IndicatorCardProps) {
       {/* Explanation */}
       <div className="mt-4 p-3 sm:p-4 bg-white/60 rounded-lg border border-border/30">
         <div className="flex items-start gap-2">
-          <Lightbulb className="w-4 h-4 lg:w-5 lg:h-5 text-primary mt-0.5 flex-shrink-0" />
+          <Lightbulb className="w-5 h-5 lg:w-6 lg:h-6 text-primary mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm sm:text-base font-medium text-foreground mb-1">Что это значит:</p>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg font-semibold text-foreground mb-1">Что это значит:</p>
+            <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
               {indicator.explanation}
             </p>
           </div>
@@ -84,10 +84,10 @@ export function IndicatorCard({ indicator, index }: IndicatorCardProps) {
       {/* Recommendation */}
       <div className="mt-3 p-3 sm:p-4 bg-white/60 rounded-lg border border-border/30">
         <div className="flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 lg:w-5 lg:h-5 text-warning mt-0.5 flex-shrink-0" />
+          <AlertTriangle className="w-5 h-5 lg:w-6 lg:h-6 text-warning mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm sm:text-base font-medium text-foreground mb-1">Рекомендация:</p>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg font-semibold text-foreground mb-1">Рекомендация:</p>
+            <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
               {indicator.recommendation}
             </p>
           </div>
