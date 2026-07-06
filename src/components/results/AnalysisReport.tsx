@@ -8,7 +8,7 @@ import {
   Sparkles,
   AlertTriangle,
 } from 'lucide-react';
-import logo from '@/assets/new-logo.png';
+
 
 interface AnalysisReportProps {
   result: StructuredAnalysisResult;
@@ -51,13 +51,15 @@ export function AnalysisReport({
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {/* Brand */}
             <div className="flex items-center gap-3 flex-shrink-0">
-              <img
-                src={clinicLogo || logo}
-                alt="АнализПро"
-                className="w-11 h-11 lg:w-12 lg:h-12 rounded-full object-contain bg-white border border-border/40"
-              />
+              {clinicLogo && (
+                <img
+                  src={clinicLogo}
+                  alt={clinicName || 'Клиника'}
+                  className="w-11 h-11 lg:w-12 lg:h-12 rounded-full object-contain bg-white border border-border/40"
+                />
+              )}
               <div className="leading-tight">
-                <div className="text-lg lg:text-xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <div className="text-xl lg:text-2xl font-black text-foreground">
                   АнализПро<span className="text-[0.6em] align-super">©</span>
                 </div>
                 {clinicName && (
@@ -131,6 +133,17 @@ export function AnalysisReport({
           {abnormalIndicators.map((indicator, index) => (
             <IndicatorCard key={index} indicator={indicator} index={index} />
           ))}
+
+          {result.normal_count > 0 && (
+            <Card className="p-4 sm:p-5 border-2 border-green-200 bg-green-50 rounded-2xl">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm sm:text-base lg:text-lg text-green-800 leading-relaxed">
+                  Остальные показатели ({result.normal_count}) находятся в пределах нормы.
+                </p>
+              </div>
+            </Card>
+          )}
         </div>
       )}
 

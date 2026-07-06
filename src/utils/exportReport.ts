@@ -13,15 +13,28 @@ async function canShareFiles(files: File[]): Promise<boolean> {
   }
 }
 
-async function renderElement(elementId: string): Promise<HTMLCanvasElement> {
+async function renderElement(elementId: string, grayscale = false): Promise<HTMLCanvasElement> {
   const element = document.getElementById(elementId);
   if (!element) throw new Error('Element not found');
-  return html2canvas(element, {
+  const canvas = await html2canvas(element, {
     scale: 2,
     backgroundColor: '#ffffff',
     useCORS: true,
     logging: false,
   });
+  if (grayscale) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const g = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
+        d[i] = d[i + 1] = d[i + 2] = g;
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+  }
+  return canvas;
 }
 
 function buildPDF(canvas: HTMLCanvasElement): jsPDF {
@@ -81,7 +94,7 @@ export async function exportAsPDF(
   elementId: string,
   filename: string = 'analysis-report'
 ): Promise<void> {
-  const canvas = await renderElement(elementId);
+  const canvas = await renderElement(elementId, true);
   const pdf = buildPDF(canvas);
 
   if (isMobile()) {
@@ -106,7 +119,7 @@ export async function shareAsPDF(
   elementId: string,
   filename: string = 'analysis-report'
 ): Promise<void> {
-  const canvas = await renderElement(elementId);
+  const canvas = await renderElement(elementId, true);
   const pdf = buildPDF(canvas);
   const blob = pdf.output('blob');
   const file = new File([blob], `${filename}.pdf`, { type: 'application/pdf' });
