@@ -133,6 +133,17 @@ export function AnalysisReport({
           {abnormalIndicators.map((indicator, index) => (
             <IndicatorCard key={index} indicator={indicator} index={index} />
           ))}
+
+          {result.normal_count > 0 && (
+            <Card className="p-4 sm:p-5 border-2 border-green-200 bg-green-50 rounded-2xl">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 lg:w-6 lg:h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm sm:text-base lg:text-lg text-green-800 leading-relaxed">
+                  Остальные показатели ({result.normal_count}) находятся в пределах нормы.
+                </p>
+              </div>
+            </Card>
+          )}
         </div>
       )}
 
