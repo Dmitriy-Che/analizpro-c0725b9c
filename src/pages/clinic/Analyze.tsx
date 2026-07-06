@@ -49,11 +49,9 @@ export default function ClinicAnalyze() {
 
   const canProceed = () => {
     switch (currentStep) {
-      case 'age':
+      case 'demographics':
         const ageNum = parseInt(age);
-        return age && ageNum >= 0 && ageNum <= 120;
-      case 'gender':
-        return gender !== null;
+        return age && ageNum >= 0 && ageNum <= 120 && gender !== null;
       case 'studyType':
         return studyType !== null;
       case 'upload':
