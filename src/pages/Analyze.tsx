@@ -365,7 +365,7 @@ export default function Analyze() {
 
         <div className="hidden lg:block text-center stack-section">
           <h1 className="h-page">Расшифровка анализа</h1>
-          <p className="t-lead">Заполните 4 шага — ИИ подготовит подробный отчёт</p>
+          <p className="t-lead">Заполните 3 шага — ИИ подготовит подробный отчёт</p>
         </div>
 
 
