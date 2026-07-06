@@ -27,7 +27,7 @@ import { useEntitlements } from '@/hooks/useEntitlements';
 import { AdPlaceholder } from '@/components/AdPlaceholder';
 import logo from '@/assets/new-logo.png';
 
-type Step = 'age' | 'gender' | 'studyType' | 'upload';
+type Step = 'demographics' | 'studyType' | 'upload';
 type Gender = 'male' | 'female' | null;
 type StudyType = 'lab' | 'ultrasound' | 'mri' | null;
 
@@ -47,7 +47,7 @@ export default function Analyze() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const steps: Step[] = ['age', 'gender', 'studyType', 'upload'];
+  const steps: Step[] = ['demographics', 'studyType', 'upload'];
   const currentStepIndex = steps.indexOf(currentStep);
 
   const canProceed = () => {
