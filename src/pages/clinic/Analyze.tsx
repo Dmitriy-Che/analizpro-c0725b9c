@@ -24,7 +24,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { usePartnerBySlug } from '@/hooks/usePartner';
 import logo from '@/assets/new-logo.png';
 
-type Step = 'age' | 'gender' | 'studyType' | 'upload';
+type Step = 'demographics' | 'studyType' | 'upload';
 type Gender = 'male' | 'female' | null;
 type StudyType = 'lab' | 'ultrasound' | 'mri' | null;
 
@@ -35,7 +35,7 @@ export default function ClinicAnalyze() {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { partner, loading: partnerLoading, error: partnerError } = usePartnerBySlug(slug);
 
-  const [currentStep, setCurrentStep] = useState<Step>('age');
+  const [currentStep, setCurrentStep] = useState<Step>('demographics');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState<Gender>(null);
   const [studyType, setStudyType] = useState<StudyType>(null);
@@ -44,16 +44,14 @@ export default function ClinicAnalyze() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const steps: Step[] = ['age', 'gender', 'studyType', 'upload'];
+  const steps: Step[] = ['demographics', 'studyType', 'upload'];
   const currentStepIndex = steps.indexOf(currentStep);
 
   const canProceed = () => {
     switch (currentStep) {
-      case 'age':
+      case 'demographics':
         const ageNum = parseInt(age);
-        return age && ageNum >= 0 && ageNum <= 120;
-      case 'gender':
-        return gender !== null;
+        return age && ageNum >= 0 && ageNum <= 120 && gender !== null;
       case 'studyType':
         return studyType !== null;
       case 'upload':
@@ -164,64 +162,59 @@ export default function ClinicAnalyze() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 'age':
+      case 'demographics':
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Calendar className="w-8 h-8 text-primary" />
-              </div>
-              <h2 className="h-section">Укажите возраст</h2>
-              <p className="text-muted-foreground text-sm">Для точной расшифровки с учётом возрастных норм</p>
-            </div>
-            <div className="max-w-[200px] mx-auto">
-              <Input
-                type="number"
-                min="0"
-                max="120"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                placeholder="Введите возраст"
-                className="text-center text-2xl h-14 font-bold"
-              />
-              <p className="text-xs text-muted-foreground text-center mt-2">полных лет</p>
-            </div>
-          </div>
-        );
-
-      case 'gender':
-        return (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="text-center">
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <User className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="h-section">Укажите пол</h2>
-              <p className="text-muted-foreground text-sm">Нормы показателей различаются для мужчин и женщин</p>
+              <h2 className="h-section">Данные пациента</h2>
+              <p className="text-muted-foreground text-sm">Укажите возраст и пол для точной расшифровки</p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <Button
-                variant="outline"
-                className={`h-20 text-lg font-semibold border-2 transition-all ${
-                  gender === 'male' 
-                    ? 'border-primary bg-primary/10 text-primary' 
-                    : 'hover:border-primary/50'
-                }`}
-                onClick={() => setGender('male')}
-              >
-                👨 Мужской
-              </Button>
-              <Button
-                variant="outline"
-                className={`h-20 text-lg font-semibold border-2 transition-all ${
-                  gender === 'female' 
-                    ? 'border-primary bg-primary/10 text-primary' 
-                    : 'hover:border-primary/50'
-                }`}
-                onClick={() => setGender('female')}
-              >
-                👩 Женский
-              </Button>
+
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Возраст</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="120"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  placeholder="Введите возраст"
+                  className="text-center text-2xl h-14 font-bold"
+                />
+                <p className="text-xs text-muted-foreground text-center mt-2">полных лет</p>
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Пол</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <Button
+                    variant="outline"
+                    className={`h-16 text-lg font-semibold border-2 transition-all ${
+                      gender === 'male'
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'hover:border-primary/50'
+                    }`}
+                    onClick={() => setGender('male')}
+                  >
+                    👨 Мужской
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className={`h-16 text-lg font-semibold border-2 transition-all ${
+                      gender === 'female'
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'hover:border-primary/50'
+                    }`}
+                    onClick={() => setGender('female')}
+                  >
+                    👩 Женский
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         );
