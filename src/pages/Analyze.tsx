@@ -38,7 +38,7 @@ export default function Analyze() {
   const { deviceId, user } = useCurrentUser();
   const { hasAvailable, remaining, loading: entLoading, refresh: refreshEnt } = useEntitlements();
 
-  const [currentStep, setCurrentStep] = useState<Step>('age');
+  const [currentStep, setCurrentStep] = useState<Step>('demographics');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState<Gender>(null);
   const [studyType, setStudyType] = useState<StudyType>(null);

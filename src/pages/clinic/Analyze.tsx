@@ -35,7 +35,7 @@ export default function ClinicAnalyze() {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { partner, loading: partnerLoading, error: partnerError } = usePartnerBySlug(slug);
 
-  const [currentStep, setCurrentStep] = useState<Step>('age');
+  const [currentStep, setCurrentStep] = useState<Step>('demographics');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState<Gender>(null);
   const [studyType, setStudyType] = useState<StudyType>(null);
