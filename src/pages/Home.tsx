@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Sparkles,
   Stethoscope,
+  Upload,
   Zap,
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -218,10 +219,13 @@ export default function Home() {
           </div>
 
           <div className="relative">
-            <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/20 p-1 shadow-2xl">
+            <div
+              className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/20 p-1 shadow-2xl cursor-pointer hover:shadow-3xl transition-all"
+              onClick={() => navigate('/analyze')}
+            >
               <div className="w-full h-full rounded-[22px] bg-card/90 backdrop-blur p-8 flex flex-col items-center justify-center text-center">
                 <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6">
-                  <Stethoscope className="w-12 h-12 text-white" />
+                  <Upload className="w-12 h-12 text-white" />
                 </div>
                 <h3 className="text-2xl font-black mb-2">АнализПро©</h3>
                 <p className="text-sm text-muted-foreground max-w-xs">
