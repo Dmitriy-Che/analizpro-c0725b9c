@@ -94,7 +94,7 @@ export async function exportAsPDF(
   elementId: string,
   filename: string = 'analysis-report'
 ): Promise<void> {
-  const canvas = await renderElement(elementId);
+  const canvas = await renderElement(elementId, true);
   const pdf = buildPDF(canvas);
 
   if (isMobile()) {
@@ -119,7 +119,7 @@ export async function shareAsPDF(
   elementId: string,
   filename: string = 'analysis-report'
 ): Promise<void> {
-  const canvas = await renderElement(elementId);
+  const canvas = await renderElement(elementId, true);
   const pdf = buildPDF(canvas);
   const blob = pdf.output('blob');
   const file = new File([blob], `${filename}.pdf`, { type: 'application/pdf' });
