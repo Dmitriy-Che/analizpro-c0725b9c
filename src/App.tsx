@@ -25,6 +25,7 @@ import ClinicAnalyze from "./pages/clinic/Analyze";
 import ClinicResults from "./pages/clinic/Results";
 
 import { useReferralCapture } from "@/hooks/useReferral";
+import { TelegramAutoAuthGate } from "@/components/TelegramAutoAuthGate";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ReferralCaptureMount />
+        <TelegramAutoAuthGate>
         <Routes>
           {/* Main app routes */}
           <Route path="/" element={<Home />} />
@@ -65,6 +67,7 @@ const App = () => (
           
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </TelegramAutoAuthGate>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
