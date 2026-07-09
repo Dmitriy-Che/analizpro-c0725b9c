@@ -227,7 +227,7 @@ export default function Home() {
                 <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6">
                   <Upload className="w-12 h-12 text-white" />
                 </div>
-                <h3 className="text-2xl font-black mb-2">АнализПро©</h3>
+                <h3 className="text-2xl font-black mb-2">Загрузите анализ</h3>
                 <p className="text-sm text-muted-foreground max-w-xs">
                   Поддержка анализов на 🇬🇧 английском, 🇻🇳 вьетнамском, 🇹🇭 тайском и 🇷🇺 русском.
                 </p>
