@@ -229,7 +229,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-black mb-2">Загрузите анализ</h3>
                 <p className="text-sm text-muted-foreground max-w-xs">
-                  Поддержка анализов на 🇬🇧 английском, 🇻🇳 вьетнамском, 🇹🇭 тайском и 🇷🇺 русском.
+                  Поддержка анализов на английском, вьетнамском, тайском или русском языке.
                 </p>
               </div>
             </div>
