@@ -72,9 +72,23 @@ Deno.serve(async (req) => {
 
     // Получаем email пользователя, если есть
     let email = '';
+    let tgUsername = '';
     if (order.user_id) {
       const { data: u } = await supabase.auth.admin.getUserById(order.user_id);
       email = u.user?.email || '';
+      const { data: tgRow } = await supabase
+        .from('telegram_users')
+        .select('username, first_name, last_name')
+        .eq('user_id', order.user_id)
+        .maybeSingle();
+      if (tgRow) {
+        if (tgRow.username) {
+          tgUsername = `@${tgRow.username}`;
+        } else {
+          const name = [tgRow.first_name, tgRow.last_name].filter(Boolean).join(' ');
+          if (name) tgUsername = name;
+        }
+      }
     }
 
     const created = new Date(order.created_at).toLocaleString('ru-RU', {
@@ -82,11 +96,16 @@ Deno.serve(async (req) => {
       hour: '2-digit', minute: '2-digit',
     });
 
+    const tgLine = tgUsername
+      ? `Ник в Телеграм: ${tgUsername.startsWith('@') ? `<a href="https://t.me/${tgUsername.slice(1)}">${tgUsername}</a>` : tgUsername}\n`
+      : '';
+
     const text =
       `🛒 <b>Новый заказ #${order.order_number}</b>\n` +
       `Тариф: <b>${order.tariff_code}</b>\n` +
       `Сумма: <b>$${order.price_usd}</b>\n` +
       `Клиент: ${email || `гость (${(order.device_id || '').slice(0, 8)})`}\n` +
+      tgLine +
       `Время: ${created} МСК\n\n` +
       `Откройте админ-панель для активации.`;
 
