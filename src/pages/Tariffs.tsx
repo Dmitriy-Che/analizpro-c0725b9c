@@ -116,26 +116,25 @@ export default function Tariffs() {
             <div className="absolute top-0 right-0 px-3 py-1 text-xs font-bold text-white bg-accent rounded-bl-xl">
               БЕСПЛАТНО
             </div>
-            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 text-center lg:text-left">
+            <div className="flex flex-col lg:flex-row items-center gap-4 text-center lg:text-left">
               <div className="w-12 h-12 rounded-2xl bg-accent/20 flex items-center justify-center shrink-0">
                 <Gift className="w-6 h-6 text-accent" />
               </div>
               <div className="flex-1 w-full flex flex-col items-center lg:items-start">
                 <h3 className="text-lg lg:text-xl font-bold mb-1">Пробная расшифровка</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-muted-foreground">
                   Для новых пользователей — нужна быстрая регистрация, оплата не требуется.
                 </p>
-                <Button
-                  onClick={handleFreeTrial}
-                  disabled={busy === 'free'}
-                  variant="cta"
-                  size="xl"
-                  className="w-full mx-auto lg:w-auto lg:h-11 lg:px-6 lg:text-sm"
-                >
-                  <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно!'}</span>
-                </Button>
-
               </div>
+              <Button
+                onClick={handleFreeTrial}
+                disabled={busy === 'free'}
+                variant="cta"
+                size="xl"
+                className="w-full mx-auto lg:w-auto lg:h-11 lg:px-6 lg:text-sm"
+              >
+                <span>{busy === 'free' ? 'Активация...' : 'Попробовать бесплатно!'}</span>
+              </Button>
             </div>
 
           </Card>
