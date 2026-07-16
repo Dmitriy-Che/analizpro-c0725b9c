@@ -26,6 +26,7 @@ import { ReferralCard } from '@/components/ReferralCard';
 import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useEntitlements } from '@/hooks/useEntitlements';
+import { CircleFlag } from 'react-circle-flags';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -228,6 +229,12 @@ export default function Home() {
                   <Upload className="w-12 h-12 text-white" />
                 </div>
                 <h3 className="text-2xl font-black mb-2">Загрузите анализ</h3>
+                <div className="flex items-center justify-center gap-2 mb-3" aria-label="Поддерживаемые языки">
+                  <CircleFlag countryCode="gb" inline className="w-7 h-7" title="Английский" />
+                  <CircleFlag countryCode="vn" inline className="w-7 h-7" title="Вьетнамский" />
+                  <CircleFlag countryCode="th" inline className="w-7 h-7" title="Тайский" />
+                  <CircleFlag countryCode="ru" inline className="w-7 h-7" title="Русский" />
+                </div>
                 <p className="text-sm text-muted-foreground max-w-xs">
                   Поддержка анализов на английском, вьетнамском, тайском или русском языке.
                 </p>
