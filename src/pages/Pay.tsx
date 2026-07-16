@@ -67,12 +67,11 @@ export default function Pay() {
           return acc;
         }, {} as Record<string, string>);
         let qr = s.qr_image_url || '';
-        const qrPath = s.qr_image_path || '';
-        if (qrPath && !qr) {
-          const { data: signed } = await supabase.storage
-            .from('payment-qr')
-            .createSignedUrl(qrPath, 60 * 60 * 24 * 7);
-          qr = signed?.signedUrl || '';
+        if (!qr) {
+          try {
+            const { data: qrRes } = await supabase.functions.invoke('get-payment-qr');
+            qr = (qrRes as any)?.url || '';
+          } catch { /* ignore */ }
         }
         if (!cancelled) {
           setSettings({
