@@ -18,3 +18,7 @@ verify_jwt = false
 [functions.verify-tron-payment]
 verify_jwt = false
 
+[functions.get-payment-qr]
+verify_jwt = false
+
+
