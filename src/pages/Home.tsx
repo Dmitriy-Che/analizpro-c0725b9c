@@ -27,6 +27,7 @@ import { ReferralGiftBanner } from '@/components/ReferralGiftBanner';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { CircleFlag } from 'react-circle-flags';
+import Flag from 'react-flagkit';
 
 export default function Home() {
   const navigate = useNavigate();
