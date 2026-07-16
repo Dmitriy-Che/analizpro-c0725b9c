@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Anyone reads payment-qr" ON storage.objects;
