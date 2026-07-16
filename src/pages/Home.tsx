@@ -228,7 +228,7 @@ export default function Home() {
                 <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6">
                   <Upload className="w-12 h-12 text-white" />
                 </div>
-                <h3 className="text-2xl font-black mb-2">Загрузите анализ</h3>
+                <h3 className="text-2xl font-black mb-2 whitespace-pre-line text-center leading-tight">Загрузить анализ{"\n"}(нажать сюда)</h3>
                 <div className="flex items-center justify-center gap-2 mb-3" aria-label="Поддерживаемые языки">
                   <CircleFlag countryCode="gb" inline width={32} height={32} title="Английский" />
                   <CircleFlag countryCode="vn" inline width={32} height={32} title="Вьетнамский" />
