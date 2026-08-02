@@ -70,44 +70,68 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Получаем email пользователя, если есть
+    // Контакты клиента: email и/или Telegram
     let email = '';
-    let tgUsername = '';
+    let tgRow: any = null;
     if (order.user_id) {
       const { data: u } = await supabase.auth.admin.getUserById(order.user_id);
       email = u.user?.email || '';
-      const { data: tgRow } = await supabase
+
+      const { data: byUser } = await supabase
         .from('telegram_users')
-        .select('username, first_name, last_name')
+        .select('telegram_id, username, first_name, last_name')
         .eq('user_id', order.user_id)
         .maybeSingle();
-      if (tgRow) {
-        if (tgRow.username) {
-          tgUsername = `@${tgRow.username}`;
-        } else {
-          const name = [tgRow.first_name, tgRow.last_name].filter(Boolean).join(' ');
-          if (name) tgUsername = name;
+      tgRow = byUser;
+
+      // fallback: служебный email вида tg_<telegram_id>@telegram.local
+      if (!tgRow) {
+        const m = email.match(/^tg_(\d+)@telegram\.local$/i);
+        if (m) {
+          const { data: byTgId } = await supabase
+            .from('telegram_users')
+            .select('telegram_id, username, first_name, last_name')
+            .eq('telegram_id', m[1])
+            .maybeSingle();
+          tgRow = byTgId;
         }
       }
     }
+
+    const isSyntheticEmail = /@telegram\.local$/i.test(email);
+    const displayName = tgRow
+      ? [tgRow.first_name, tgRow.last_name].filter(Boolean).join(' ')
+      : '';
 
     const created = new Date(order.created_at).toLocaleString('ru-RU', {
       timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit',
     });
 
-    const tgLine = tgUsername
-      ? `Ник в Телеграм: ${tgUsername.startsWith('@') ? `<a href="https://t.me/${tgUsername.slice(1)}">${tgUsername}</a>` : tgUsername}\n`
-      : '';
+    const contactLines: string[] = [];
+    if (email && !isSyntheticEmail) {
+      contactLines.push(`📧 Почта: <a href="mailto:${email}">${email}</a>`);
+    }
+    if (tgRow?.username) {
+      contactLines.push(`💬 Telegram: <a href="https://t.me/${tgRow.username}">@${tgRow.username}</a>`);
+    } else if (tgRow?.telegram_id) {
+      contactLines.push(
+        `💬 Telegram: <a href="tg://user?id=${tgRow.telegram_id}">${displayName || 'написать клиенту'}</a> (id ${tgRow.telegram_id})`,
+      );
+    }
+    if (contactLines.length === 0) {
+      contactLines.push(`⚠️ Контактов нет — гость (устройство ${(order.device_id || '').slice(0, 8)})`);
+    }
 
     const text =
       `🛒 <b>Новый заказ #${order.order_number}</b>\n` +
       `Тариф: <b>${order.tariff_code}</b>\n` +
       `Сумма: <b>$${order.price_usd}</b>\n` +
-      `Клиент: ${email || `гость (${(order.device_id || '').slice(0, 8)})`}\n` +
-      tgLine +
+      (displayName ? `Клиент: ${displayName}\n` : '') +
+      contactLines.join('\n') + '\n' +
       `Время: ${created} МСК\n\n` +
       `Откройте админ-панель для активации.`;
+
 
     const tg = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
