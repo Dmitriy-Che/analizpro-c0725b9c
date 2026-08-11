@@ -582,8 +582,27 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="stats" className="mt-6">
+        {/* Period Filter */}
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-sm font-medium text-muted-foreground mr-2">Период:</span>
+          {(['7', '30', '90', 'all'] as const).map((p) => (
+            <Button
+              key={p}
+              size="sm"
+              variant={periodFilter === p ? "default" : "outline"}
+              onClick={() => setPeriodFilter(p)}
+            >
+              {p === 'all' ? 'За всё время' : `За ${p} дней`}
+            </Button>
+          ))}
+        </div>
+
         {/* Stats Grid */}
-        {stats && (
+        {statsLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : stats && (
           <>
             {/* Visits Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
