@@ -778,7 +778,7 @@ const Admin = () => {
               <Card className="p-6 border-2 border-border">
                 <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-primary" />
-                  Визиты за 30 дней
+                  Визиты {chartPeriodLabel}
                 </h2>
                 <div className="h-64">
                   <ChartContainer config={chartConfig} className="h-full w-full">
