@@ -156,6 +156,8 @@ const Admin = () => {
   const [stats, setStats] = useState<AnalysisStats | null>(null);
   const [visitsByDay, setVisitsByDay] = useState<VisitsByDay[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [periodFilter, setPeriodFilter] = useState<'7' | '30' | '90' | 'all'>('30');
   const [partners, setPartners] = useState<Partner[]>([]);
   const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
   const [partnerStats, setPartnerStats] = useState<AnalysisStats | null>(null);
@@ -166,9 +168,21 @@ const Admin = () => {
 
   const partnerRegisterUrl = `${window.location.origin}/partner/register`;
 
+  const periodDays = periodFilter === 'all' ? null : parseInt(periodFilter);
+  const periodLabel = periodFilter === 'all' ? 'За всё время' : `За ${periodFilter} дн.`;
+  const chartPeriodLabel = periodFilter === 'all' ? 'за год' : `за ${periodFilter} дней`;
+
   useEffect(() => {
     checkAdminAccess();
   }, []);
+
+  useEffect(() => {
+    if (isAdmin) {
+      loadStats(periodDays);
+      loadVisitsByDay(periodDays);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin, periodFilter]);
 
   const checkAdminAccess = async () => {
     try {
@@ -194,7 +208,7 @@ const Admin = () => {
       }
 
       setIsAdmin(true);
-      await Promise.all([loadStats(), loadVisitsByDay(), loadPartners(), loadAllSubscriptions()]);
+      await Promise.all([loadPartners(), loadAllSubscriptions()]);
     } catch (error) {
       console.error("Admin check error:", error);
       toast.error("Ошибка проверки доступа");
@@ -204,9 +218,10 @@ const Admin = () => {
     }
   };
 
-  const loadStats = async () => {
+  const loadStats = async (days: number | null = null) => {
+    setStatsLoading(true);
     try {
-      const { data, error } = await supabase.rpc("get_analysis_stats");
+      const { data, error } = await supabase.rpc("get_analysis_stats", { p_days: days });
 
       if (error) throw error;
 
@@ -225,12 +240,14 @@ const Admin = () => {
     } catch (error) {
       console.error("Stats loading error:", error);
       toast.error("Ошибка загрузки статистики");
+    } finally {
+      setStatsLoading(false);
     }
   };
 
-  const loadVisitsByDay = async () => {
+  const loadVisitsByDay = async (days: number | null = 30) => {
     try {
-      const { data, error } = await supabase.rpc("get_visits_by_day");
+      const { data, error } = await supabase.rpc("get_visits_by_day", { p_days: days });
 
       if (error) throw error;
 
@@ -565,8 +582,27 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="stats" className="mt-6">
+        {/* Period Filter */}
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-sm font-medium text-muted-foreground mr-2">Период:</span>
+          {(['7', '30', '90', 'all'] as const).map((p) => (
+            <Button
+              key={p}
+              size="sm"
+              variant={periodFilter === p ? "default" : "outline"}
+              onClick={() => setPeriodFilter(p)}
+            >
+              {p === 'all' ? 'За всё время' : `За ${p} дней`}
+            </Button>
+          ))}
+        </div>
+
         {/* Stats Grid */}
-        {stats && (
+        {statsLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : stats && (
           <>
             {/* Visits Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
@@ -595,7 +631,7 @@ const Admin = () => {
                 <h3 className="text-3xl font-bold text-foreground mb-1">
                   {stats.visits_last_30_days.toLocaleString()}
                 </h3>
-                <p className="text-sm text-muted-foreground">За 30 дней</p>
+                <p className="text-sm text-muted-foreground">{periodLabel}</p>
               </Card>
 
               {/* Male Count */}
@@ -648,7 +684,7 @@ const Admin = () => {
                 <h3 className="text-3xl font-bold text-foreground mb-1">
                   {stats.total_analyses.toLocaleString()}
                 </h3>
-                <p className="text-sm text-muted-foreground">Всего анализов</p>
+                <p className="text-sm text-muted-foreground">{periodFilter === 'all' ? 'Всего анализов' : 'Анализов за период'}</p>
               </Card>
 
               {/* Today's Analyses */}
@@ -742,7 +778,7 @@ const Admin = () => {
               <Card className="p-6 border-2 border-border">
                 <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-primary" />
-                  Визиты за 30 дней
+                  Визиты {chartPeriodLabel}
                 </h2>
                 <div className="h-64">
                   <ChartContainer config={chartConfig} className="h-full w-full">
