@@ -168,9 +168,21 @@ const Admin = () => {
 
   const partnerRegisterUrl = `${window.location.origin}/partner/register`;
 
+  const periodDays = periodFilter === 'all' ? null : parseInt(periodFilter);
+  const periodLabel = periodFilter === 'all' ? 'За всё время' : `За ${periodFilter} дн.`;
+  const chartPeriodLabel = periodFilter === 'all' ? 'за год' : `за ${periodFilter} дней`;
+
   useEffect(() => {
     checkAdminAccess();
   }, []);
+
+  useEffect(() => {
+    if (isAdmin) {
+      loadStats(periodDays);
+      loadVisitsByDay(periodDays);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin, periodFilter]);
 
   const checkAdminAccess = async () => {
     try {
@@ -196,7 +208,7 @@ const Admin = () => {
       }
 
       setIsAdmin(true);
-      await Promise.all([loadStats(), loadVisitsByDay(), loadPartners(), loadAllSubscriptions()]);
+      await Promise.all([loadPartners(), loadAllSubscriptions()]);
     } catch (error) {
       console.error("Admin check error:", error);
       toast.error("Ошибка проверки доступа");
@@ -206,9 +218,10 @@ const Admin = () => {
     }
   };
 
-  const loadStats = async () => {
+  const loadStats = async (days: number | null = null) => {
+    setStatsLoading(true);
     try {
-      const { data, error } = await supabase.rpc("get_analysis_stats");
+      const { data, error } = await supabase.rpc("get_analysis_stats", { p_days: days });
 
       if (error) throw error;
 
@@ -227,12 +240,14 @@ const Admin = () => {
     } catch (error) {
       console.error("Stats loading error:", error);
       toast.error("Ошибка загрузки статистики");
+    } finally {
+      setStatsLoading(false);
     }
   };
 
-  const loadVisitsByDay = async () => {
+  const loadVisitsByDay = async (days: number | null = 30) => {
     try {
-      const { data, error } = await supabase.rpc("get_visits_by_day");
+      const { data, error } = await supabase.rpc("get_visits_by_day", { p_days: days });
 
       if (error) throw error;
 
