@@ -631,7 +631,7 @@ const Admin = () => {
                 <h3 className="text-3xl font-bold text-foreground mb-1">
                   {stats.visits_last_30_days.toLocaleString()}
                 </h3>
-                <p className="text-sm text-muted-foreground">За 30 дней</p>
+                <p className="text-sm text-muted-foreground">{periodLabel}</p>
               </Card>
 
               {/* Male Count */}
