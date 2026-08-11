@@ -684,7 +684,7 @@ const Admin = () => {
                 <h3 className="text-3xl font-bold text-foreground mb-1">
                   {stats.total_analyses.toLocaleString()}
                 </h3>
-                <p className="text-sm text-muted-foreground">Всего анализов</p>
+                <p className="text-sm text-muted-foreground">{periodFilter === 'all' ? 'Всего анализов' : 'Анализов за период'}</p>
               </Card>
 
               {/* Today's Analyses */}
