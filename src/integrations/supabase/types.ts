@@ -765,22 +765,39 @@ export type Database = {
         Args: { p_device_id: string; p_tariff_code: string }
         Returns: string
       }
-      get_analysis_stats: {
-        Args: never
-        Returns: {
-          avg_age: number
-          critical_count: number
-          female_count: number
-          male_count: number
-          normal_count: number
-          today_analyses: number
-          top_cities: Json
-          total_analyses: number
-          total_visits: number
-          visits_last_30_days: number
-          warning_count: number
-        }[]
-      }
+      get_analysis_stats:
+        | {
+            Args: never
+            Returns: {
+              avg_age: number
+              critical_count: number
+              female_count: number
+              male_count: number
+              normal_count: number
+              today_analyses: number
+              top_cities: Json
+              total_analyses: number
+              total_visits: number
+              visits_last_30_days: number
+              warning_count: number
+            }[]
+          }
+        | {
+            Args: { p_days?: number }
+            Returns: {
+              avg_age: number
+              critical_count: number
+              female_count: number
+              male_count: number
+              normal_count: number
+              today_analyses: number
+              top_cities: Json
+              total_analyses: number
+              total_visits: number
+              visits_last_30_days: number
+              warning_count: number
+            }[]
+          }
       get_my_entitlements: {
         Args: { p_device_id: string }
         Returns: {
@@ -868,13 +885,21 @@ export type Database = {
           value: string
         }[]
       }
-      get_visits_by_day: {
-        Args: never
-        Returns: {
-          visit_count: number
-          visit_date: string
-        }[]
-      }
+      get_visits_by_day:
+        | {
+            Args: never
+            Returns: {
+              visit_count: number
+              visit_date: string
+            }[]
+          }
+        | {
+            Args: { p_days?: number }
+            Returns: {
+              visit_count: number
+              visit_date: string
+            }[]
+          }
       grant_free_trial: {
         Args: { p_device_id: string; p_user_id: string }
         Returns: string
