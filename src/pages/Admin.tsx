@@ -156,6 +156,8 @@ const Admin = () => {
   const [stats, setStats] = useState<AnalysisStats | null>(null);
   const [visitsByDay, setVisitsByDay] = useState<VisitsByDay[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [periodFilter, setPeriodFilter] = useState<'7' | '30' | '90' | 'all'>('30');
   const [partners, setPartners] = useState<Partner[]>([]);
   const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
   const [partnerStats, setPartnerStats] = useState<AnalysisStats | null>(null);
