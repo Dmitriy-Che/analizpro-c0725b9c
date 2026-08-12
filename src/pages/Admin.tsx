@@ -36,6 +36,7 @@ import { SubscriptionBadge } from "@/components/SubscriptionBadge";
 import { OrdersAdmin } from "@/components/OrdersAdmin";
 import { AdsAdmin } from "@/components/AdsAdmin";
 import { ReferralsAdmin } from "@/components/ReferralsAdmin";
+import { PlatformModeAdmin } from "@/components/PlatformModeAdmin";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface AnalysisStats {
@@ -421,18 +422,24 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="orders" className="mb-6">
-          <TabsList className="grid w-full grid-cols-6 h-auto">
+          <TabsList className="grid w-full grid-cols-7 h-auto">
             <TabsTrigger value="orders" className="py-2.5">Заказы</TabsTrigger>
             <TabsTrigger value="payment" className="py-2.5">Настройки оплаты</TabsTrigger>
             <TabsTrigger value="ads" className="py-2.5">Реклама</TabsTrigger>
             <TabsTrigger value="referrals" className="py-2.5">Рефералы</TabsTrigger>
             <TabsTrigger value="stats" className="py-2.5">Статистика</TabsTrigger>
             <TabsTrigger value="partners" className="py-2.5">Для партнёров</TabsTrigger>
+            <TabsTrigger value="platform" className="py-2.5">Режим платформы</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="platform" className="mt-6">
+            <PlatformModeAdmin />
+          </TabsContent>
 
           <TabsContent value="referrals" className="mt-6">
             <ReferralsAdmin />
           </TabsContent>
+
 
           <TabsContent value="ads" className="mt-6">
             <AdsAdmin />

@@ -1,16 +1,27 @@
-import { Home, FileText, FolderClock, CreditCard } from 'lucide-react';
+import { Home, FileText, FolderClock, CreditCard, Building2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { usePlatformMode } from '@/hooks/usePlatformMode';
 
 export function BottomNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { b2cEnabled, b2bEnabled } = usePlatformMode();
 
-  const items = [
-    { to: '/', label: 'Главная', icon: Home, match: (p: string) => p === '/' },
+  const b2cItems = [
     { to: '/analyze', label: 'Анализ', icon: FileText, match: (p: string) => p.startsWith('/analyze') },
     { to: '/my-reports', label: 'Отчёты', icon: FolderClock, match: (p: string) => p.startsWith('/my-reports') },
     { to: '/tariffs', label: 'Тарифы', icon: CreditCard, match: (p: string) => p.startsWith('/tariffs') || p.startsWith('/pay') },
+  ];
+
+  const b2bItems = [
+    { to: '/partner/dashboard', label: 'Клиника', icon: Building2, match: (p: string) => p.startsWith('/partner') },
+  ];
+
+  const items = [
+    { to: '/', label: 'Главная', icon: Home, match: (p: string) => p === '/' },
+    ...(b2cEnabled ? b2cItems : []),
+    ...(!b2cEnabled && b2bEnabled ? b2bItems : []),
   ];
 
   return (
