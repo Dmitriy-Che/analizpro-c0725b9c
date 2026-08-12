@@ -26,6 +26,7 @@ import ClinicResults from "./pages/clinic/Results";
 
 import { useReferralCapture } from "@/hooks/useReferral";
 import { TelegramAutoAuthGate } from "@/components/TelegramAutoAuthGate";
+import { ModeGuard } from "@/components/ModeGuard";
 
 const queryClient = new QueryClient();
 
@@ -46,25 +47,25 @@ const App = () => (
         <Routes>
           {/* Main app routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/analyze" element={<Analyze />} />
-          <Route path="/results" element={<Results />} />
+          <Route path="/analyze" element={<ModeGuard requires="b2c"><Analyze /></ModeGuard>} />
+          <Route path="/results" element={<ModeGuard requires="b2c"><Results /></ModeGuard>} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/tariffs" element={<Tariffs />} />
-          <Route path="/pay/:orderId" element={<Pay />} />
-          <Route path="/my-reports" element={<MyReports />} />
-          
+          <Route path="/tariffs" element={<ModeGuard requires="b2c"><Tariffs /></ModeGuard>} />
+          <Route path="/pay/:orderId" element={<ModeGuard requires="b2c"><Pay /></ModeGuard>} />
+          <Route path="/my-reports" element={<ModeGuard requires="b2c"><MyReports /></ModeGuard>} />
+
           {/* Partner routes (hidden from menu, accessible by direct URL) */}
-          <Route path="/partner/register" element={<PartnerRegister />} />
-          <Route path="/partner/login" element={<PartnerLogin />} />
-          <Route path="/partner/dashboard" element={<PartnerDashboard />} />
-          
+          <Route path="/partner/register" element={<ModeGuard requires="b2b"><PartnerRegister /></ModeGuard>} />
+          <Route path="/partner/login" element={<ModeGuard requires="b2b"><PartnerLogin /></ModeGuard>} />
+          <Route path="/partner/dashboard" element={<ModeGuard requires="b2b"><PartnerDashboard /></ModeGuard>} />
+
           {/* Clinic branded routes */}
-          <Route path="/c/:slug" element={<ClinicHome />} />
-          <Route path="/c/:slug/analyze" element={<ClinicAnalyze />} />
-          <Route path="/c/:slug/results" element={<ClinicResults />} />
-          
+          <Route path="/c/:slug" element={<ModeGuard requires="b2b"><ClinicHome /></ModeGuard>} />
+          <Route path="/c/:slug/analyze" element={<ModeGuard requires="b2b"><ClinicAnalyze /></ModeGuard>} />
+          <Route path="/c/:slug/results" element={<ModeGuard requires="b2b"><ClinicResults /></ModeGuard>} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
         </TelegramAutoAuthGate>
