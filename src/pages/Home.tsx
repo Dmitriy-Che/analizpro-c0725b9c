@@ -33,12 +33,30 @@ export default function Home() {
   const navigate = useNavigate();
   const { user } = useCurrentUser();
   const { entitlements } = useEntitlements();
+  const { b2cEnabled, b2bEnabled } = usePlatformMode();
   const hasUsedAnalysis = entitlements.some((e) => e.reports_used > 0);
   const hideFreeTrial = !!user && hasUsedAnalysis;
+  const b2bOnly = !b2cEnabled && b2bEnabled;
 
   useEffect(() => {
     supabase.functions.invoke('track-visit').catch(console.error);
   }, []);
+
+  if (b2bOnly) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0 pb-6 lg:pb-12">
+        <DesktopNav />
+        <div className="lg:hidden max-w-[480px] mx-auto px-4 py-6">
+          <Header />
+          <B2BLanding />
+        </div>
+        <div className="hidden lg:block max-w-6xl mx-auto px-8 py-16">
+          <B2BLanding />
+        </div>
+        <BottomNavigation />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 pt-16 lg:pt-0 pb-6 lg:pb-12">
@@ -49,6 +67,7 @@ export default function Home() {
       </div>
 
       <DesktopNav />
+
 
       {/* MOBILE */}
       <div className="lg:hidden relative max-w-[480px] mx-auto px-4 py-6">
