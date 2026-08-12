@@ -28,6 +28,8 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { CircleFlag } from 'react-circle-flags';
 import Flag from 'react-flagkit';
+import { usePlatformMode } from '@/hooks/usePlatformMode';
+import { B2BLanding } from '@/components/B2BLanding';
 
 export default function Home() {
   const navigate = useNavigate();
