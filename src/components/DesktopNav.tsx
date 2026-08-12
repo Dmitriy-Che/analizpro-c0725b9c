@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FileText, FolderClock, CreditCard, LogIn, LogOut, UserPlus } from 'lucide-react';
+import { FileText, FolderClock, CreditCard, LogIn, LogOut, UserPlus, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { usePlatformMode } from '@/hooks/usePlatformMode';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/logo-optimized.webp';
@@ -12,11 +13,21 @@ export function DesktopNav() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useCurrentUser();
+  const { b2cEnabled, b2bEnabled } = usePlatformMode();
 
-  const items = [
+  const b2cItems = [
     { to: '/analyze', label: 'Анализ', icon: FileText, match: (p: string) => p.startsWith('/analyze') },
     { to: '/my-reports', label: 'Отчёты', icon: FolderClock, match: (p: string) => p.startsWith('/my-reports') },
     { to: '/tariffs', label: 'Тарифы', icon: CreditCard, match: (p: string) => p.startsWith('/tariffs') || p.startsWith('/pay') },
+  ];
+
+  const b2bItems = [
+    { to: '/partner/dashboard', label: 'Кабинет клиники', icon: Building2, match: (p: string) => p.startsWith('/partner') },
+  ];
+
+  const items = [
+    ...(b2cEnabled ? b2cItems : []),
+    ...(!b2cEnabled && b2bEnabled ? b2bItems : []),
   ];
 
   const handleSignOut = async () => {
@@ -63,7 +74,7 @@ export function DesktopNav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <EntitlementsBadge variant="compact" className="hidden xl:inline-flex" />
+          {b2cEnabled && <EntitlementsBadge variant="compact" className="hidden xl:inline-flex" />}
 
           {user ? (
             <Button
@@ -94,14 +105,25 @@ export function DesktopNav() {
               </button>
             </div>
           )}
-          <Button
-            onClick={() => navigate('/analyze')}
-            variant="hero"
-            size="sm"
-            className="ml-1"
-          >
-            Расшифровать
-          </Button>
+          {b2cEnabled ? (
+            <Button
+              onClick={() => navigate('/analyze')}
+              variant="hero"
+              size="sm"
+              className="ml-1"
+            >
+              Расшифровать
+            </Button>
+          ) : b2bEnabled ? (
+            <Button
+              onClick={() => navigate('/partner/register')}
+              variant="hero"
+              size="sm"
+              className="ml-1"
+            >
+              Подключить клинику
+            </Button>
+          ) : null}
 
         </div>
       </div>
