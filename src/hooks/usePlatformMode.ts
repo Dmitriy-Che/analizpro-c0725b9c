@@ -21,7 +21,10 @@ export function usePlatformMode() {
   const { data, isLoading } = useQuery({
     queryKey: PLATFORM_MODE_QUERY_KEY,
     queryFn: fetchPlatformMode,
-    staleTime: 60_000,
+    staleTime: 5_000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 15_000,
   });
 
   const mode: PlatformMode = data ?? 'both';
@@ -37,5 +40,8 @@ export function usePlatformMode() {
 
 export function useInvalidatePlatformMode() {
   const qc = useQueryClient();
-  return () => qc.invalidateQueries({ queryKey: PLATFORM_MODE_QUERY_KEY });
+  return async () => {
+    await qc.invalidateQueries({ queryKey: PLATFORM_MODE_QUERY_KEY });
+    await qc.refetchQueries({ queryKey: PLATFORM_MODE_QUERY_KEY });
+  };
 }
