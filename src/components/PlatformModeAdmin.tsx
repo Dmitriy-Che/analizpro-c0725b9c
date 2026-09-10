@@ -66,6 +66,11 @@ export function PlatformModeAdmin() {
         видит все разделы независимо от выбранного режима. Текущий режим:{' '}
         <span className="font-semibold text-foreground">{currentTitle}</span>
       </p>
+      <p className="text-xs text-muted-foreground mb-5 rounded-lg bg-muted/50 p-3">
+        Важно: пока вы вошли как администратор, сайт показывает вам все разделы — изменения режима
+        вы не увидите полностью. Чтобы проверить, как видят сайт посетители, откройте главную
+        страницу в режиме инкогнито или выйдите из аккаунта.
+      </p>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
